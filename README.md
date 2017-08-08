@@ -1,5 +1,8 @@
 # Lockerobe-API
 
+Backend API for Lockerobe. 
+
+
 ## Answer Create
 
 - action: `/questions/{question_pk}/answer/`
@@ -11,31 +14,8 @@
 }
 ```
 
-## Answer Update
-
-- action: `/answers/{pk}/`
-- method: POST
-- body:
-```
-{
-    'content': {{ content }},
-}
-```
-
-## Answer Upvote
-
-Upvote 상태가 토글됩니다.
-- action: `/answers/upvote/` (`{% url 'quora:answer_vote_toggle' type='up' %}`)
-- method: POST
-- body:
-```
-{
-    'pk': {{ answer.pk }},
-}
-```
-
 # Environment
 
-- Python 3.5
-- `python3 -m venv venv`
+- Python 3.5 'python3 '
+- virtualenv . && source bin/activate
 - `pip3 install -r requirements.txt`

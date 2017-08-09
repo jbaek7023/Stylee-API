@@ -2,7 +2,35 @@
 
 Backend API for Lockerobe.
 
-## Login with credential
+## Get Profile
+- action: `/profile/<username>/`
+- method: GET  
+- permission: `Authenticated` (Not available now)
+- body:
+```
+{
+    "user": 3,
+    "bio": ""
+}
+```
+
+## Sign Up
+- action: `/api-token-auth/`
+- method: POST
+- body:
+```
+{
+  'username' : {{ username }},
+  'password' : {{ password }},
+}
+```
+- test:
+`curl -X POST -d "username=jbaek7023&password=!Jj8803838" http://localhost:8000/api-token-auth/`
+```
+{"token":"ey-ee"}
+```
+
+## Get Token with the credential
 - action: `/api-token-auth/`
 - method: POST
 - body:
@@ -24,7 +52,6 @@ Backend API for Lockerobe.
 `curl -H "Authorization: JWT <token>" http://localhost:8000/protected-url/`
 
 ## Answer Create
-
 - action: `/questions/{question_pk}/answer/`
 - method: POST
 - body:
@@ -33,6 +60,7 @@ Backend API for Lockerobe.
     'content': {{ content }},
 }
 ```
+---
 
 # Environment
 

@@ -13,14 +13,11 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
-from django.conf.urls import url, include
-from django.contrib import admin
+from django.conf.urls import url
 
 # import JWT
-from rest_framework_jwt.views import obtain_jwt_token
+from .views import ProfileDetailView
 
 urlpatterns = [
-    url(r'^admin/', admin.site.urls),
-    url(r'^api-token-auth/', obtain_jwt_token),
-    url(r'^profile/', include('profiles.urls', namespace="auth"))
+    url(r'^(?P<username>[\w\-]+)/$', ProfileDetailView.as_view(), name="profile_detail"),
 ]

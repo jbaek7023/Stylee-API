@@ -16,7 +16,7 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 
-# import JWT 
+# import JWT
 from rest_framework_jwt.views import obtain_jwt_token
 
 urlpatterns = [

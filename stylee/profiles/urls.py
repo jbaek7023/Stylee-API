@@ -16,8 +16,12 @@ Including another URLconf
 from django.conf.urls import url
 
 # import JWT
-from .views import ProfileDetailView
+from .views import (
+    # ProfileDetailView_two,
+    ProfileDetailView
+)
 
 urlpatterns = [
-    url(r'^(?P<username>[\w\-]+)/$', ProfileDetailView.as_view(), name="profile_detail"),
+    url(r'^detail/$', ProfileDetailView.as_view(), name="user_profile"),
+    # url(r'^(?P<username>[\w\-]+)/$', ProfileDetailView_two.as_view(), name="profile_detail"),
 ]

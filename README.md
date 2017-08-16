@@ -2,6 +2,15 @@
 
 Backend API for Lockerobe.
 
+## Get Profile of logged in user
+- action: `/profile/detail`
+- method: GET  
+- permission: AllowAny
+- body:
+```
+{}
+```
+
 ## Get Profile
 - action: `/profile/<username>/`
 - method: GET  
@@ -14,7 +23,7 @@ Backend API for Lockerobe.
 }
 ```
 
-## Sign Up
+## Sign Up (Not available now)
 - action: `/api-token-auth/`
 - method: POST
 - body:

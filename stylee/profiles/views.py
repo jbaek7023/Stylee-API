@@ -8,7 +8,16 @@ from django.contrib.auth import get_user_model
 from .models import Profile
 
 # Create your views here.
-class ProfileDetailView(generics.RetrieveAPIView):
+# class ProfileDetailView_two(generics.RetrieveAPIView):
+#     queryset = Profile.objects.all()
+#     serializer_class = ProfileDetailSerializer
+#     lookup_field = 'username'
+
+class ProfileDetailView(generics.ListAPIView):
     queryset = Profile.objects.all()
     serializer_class = ProfileDetailSerializer
-    lookup_field = 'username'
+
+    def get_queryset(self):
+        qs = super(ProfileDetailView, self).get_queryset()
+        logged_in_user_profile = qs.filter(user=self.request.user)
+        return logged_in_user_profile

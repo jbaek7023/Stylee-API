@@ -17,11 +17,11 @@ from django.conf.urls import url
 
 # import JWT
 from .views import (
-    # ProfileDetailView_two,
+    ProfileDetailViewByUser,
     ProfileDetailView
 )
 
 urlpatterns = [
     url(r'^detail/$', ProfileDetailView.as_view(), name="user_profile"),
-    # url(r'^(?P<username>[\w\-]+)/$', ProfileDetailView_two.as_view(), name="profile_detail"),
+    url(r'^(?P<username>[\w\-]+)/$', ProfileDetailViewByUser.as_view(), name="profile_detail"),
 ]

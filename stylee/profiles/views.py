@@ -7,11 +7,10 @@ from django.contrib.auth import get_user_model
 
 from .models import Profile
 
-# Create your views here.
-# class ProfileDetailView_two(generics.RetrieveAPIView):
-#     queryset = Profile.objects.all()
-#     serializer_class = ProfileDetailSerializer
-#     lookup_field = 'username'
+class ProfileDetailViewByUser(generics.RetrieveAPIView):
+    queryset = Profile.objects.all()
+    serializer_class = ProfileDetailSerializer
+    lookup_field = 'username'
 
 class ProfileDetailView(generics.ListAPIView):
     queryset = Profile.objects.all()

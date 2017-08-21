@@ -9,10 +9,13 @@ command-not-found==0.3
 cryptography==1.2.3
 decorator==4.0.10
 defer==1.0.6
+defusedxml==0.5.0
 Django==1.10.5
+django-allauth==0.32.0
 django-crispy-forms==1.6.0
 django-markdown-deux==1.0.5
 django-pagedown==0.1.1
+django-rest-auth==0.9.1
 djangorestframework==3.6.3
 djangorestframework-jwt==1.11.0
 entrypoints==0.2.2
@@ -64,11 +67,13 @@ pyparsing==2.0.3
 python-apt==1.1.0b1
 python-debian==0.1.27
 python-systemd==231
+python3-openid==3.1.0
 pyxdg==0.25
 pyzmq==16.0.2
 qtconsole==4.2.1
 reportlab==3.3.0
 requests==2.9.1
+requests-oauthlib==0.8.0
 scikit-learn==0.18.1
 screen-resolution-extra==0.0.0
 sessioninstaller==0.0.0

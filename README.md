@@ -2,6 +2,8 @@
 
 Backend API for Lockerobe.
 
+## All-Auth!
+
 ## Get Profile of logged in user
 - action: `/profile/detail`
 - method: GET  

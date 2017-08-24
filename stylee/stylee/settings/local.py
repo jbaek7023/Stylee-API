@@ -150,9 +150,6 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-SOCIAL_AUTH_FACEBOOK_KEY = '1946324505614230'  # App ID
-SOCIAL_AUTH_FACEBOOK_SECRET ='7a0cb7b9ec80fbcbf78dcf6fffbaaf4e' #app key
-
 # Django RESTful Framework Settings
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (

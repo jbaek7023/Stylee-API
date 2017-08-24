@@ -1,80 +1,52 @@
-# Lockerobe-API
+# Stylee-API
 
-Backend API for Lockerobe.
+Backend API for Stylee.
 
-## All-Auth!
+### Authentication / Authorization URL
 
-## Get Profile of logged in user
-- action: `/profile/detail`
-- method: GET  
-- permission: AllowAny
-- body:
-```
-{}
-```
+| URL        | Action           | Method  | body | Return Value |
+| ------------- |:-------------:| -----:|------------- |-------------|
+| /rest-auth/login/ | Login | POST | username / password | |
+| /rest-auth/password/reset/ | Send token for Reset password | POST | email |uid / token |
+| /rest-auth/password/reset/confirm/ | Reset the password | POST |  uid / token / new_password1 / new_password2 | |
+| /rest-auth/password/change/ | change password | POST |   new_password1 / new_password2 / (old_password) | |
+| /rest-auth/registration/ | Register | POST | username / password1 / password2 / email |  |
+| /rest-auth/registration/verify-email/ | Verify Email | POST | key | |
+| /rest-auth/facebook/ | authorization with Facebook | POST | access_token | token |
 
-## Get Profile
-- action: `/profile/<username>/`
-- method: GET  
-- permission: `Authenticated` (Not available now)
-- body:
-```
-{
-    "user": 3,
-    "bio": ""
-}
-```
+### Menu URL
+| URL        | Action           | Method  | body | Return Value |
+| ------------- |:-------------:| -----:|------------- |-------------|
+| /profile/detail | Get Profile Information | GET |  |  |
 
-## Sign Up (Not available now)
-- action: `/api-token-auth/`
-- method: POST
-- body:
-```
-{
-  'username' : {{ username }},
-  'password' : {{ password }},
-}
-```
-- test:
-`curl -X POST -d "username=jbaek7023&password=!Jj8803838" http://localhost:8000/api-token-auth/`
-```
-{"token":"ey-ee"}
-```
+### Stylebook URL
+| URL        | Action           | Method  | body | Return Value |
+| ------------- |:-------------:| -----:|------------- |-------------|
+| /profile/<id>/ | Get user's Profile information | GET |  |  |
 
-## Get Token with the credential
-- action: `/api-token-auth/`
-- method: POST
-- body:
-```
-{
-  'username' : {{ username }},
-  'password' : {{ password }},
-}
-```
-- test:
-`curl -X POST -d "username=jbaek7023&password=!Jj8803838" http://localhost:8000/api-token-auth/`
-```
-{"token":"ey-ee"}
-```
+### Wardrobe URL
+| URL        | Action           | Method  | body | Return Value |
+| ------------- |:-------------:| -----:|------------- |-------------|
+| /example/<id>/ | Get user's Profile information | GET |  |  |
 
-## Authenticate with user's Token
-- action: `any url`
-- test:
-`curl -H "Authorization: JWT <token>" http://localhost:8000/protected-url/`
+### Notification URL
+| URL        | Action           | Method  | body | Return Value |
+| ------------- |:-------------:| -----:|------------- |-------------|
+| /example/<id>/ | Get user's Profile information | GET |  |  |
 
-## Answer Create
-- action: `/questions/{question_pk}/answer/`
-- method: POST
-- body:
-```
-{
-    'content': {{ content }},
-}
-```
----
+### Feed URL
+| URL        | Action           | Method  | body | Return Value |
+| ------------- |:-------------:| -----:|------------- |-------------|
+| /example/<id>/ | Get user's Profile information | GET |  |  |
+
+### Reference :
+- django-rest-auth: http://django-rest-auth.readthedocs.io/en/latest/api_endpoints.html
+
+#### Unused URL
+- /rest-auth/logout.
+- /rest-auth/user/ (GET, PUT, PATCH)
 
 # Environment
-
 - Python 3.5 'python3 '
 - virtualenv . && source bin/activate
 - `pip3 install -r requirements.txt`

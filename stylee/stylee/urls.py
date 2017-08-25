@@ -20,6 +20,7 @@ from django.contrib import admin
 from .views import FacebookLogin
 
 urlpatterns = [
+    url(r'^', include('django.contrib.auth.urls')),
     url(r'^admin/', admin.site.urls),
     # url(r'^api-token-auth/', obtain_jwt_token),
     url(r'^profile/', include('profiles.urls', namespace="auth")),

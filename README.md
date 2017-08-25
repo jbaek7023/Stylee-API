@@ -7,12 +7,11 @@ Backend API for Stylee.
 | URL        | Action           | Method  | body | Return Value |
 | ------------- |:-------------:| -----:|------------- |-------------|
 | /rest-auth/login/ | Login | POST | username / password | |
-| /rest-auth/password/reset/ | Send token for Reset password | POST | email |uid / token |
-| /rest-auth/password/reset/confirm/ | Reset the password | POST |  uid / token / new_password1 / new_password2 | |
-| /rest-auth/password/change/ | change password | POST |   new_password1 / new_password2 / (old_password) | |
-| /rest-auth/registration/ | Register | POST | username / password1 / password2 / email |  |
-| /rest-auth/registration/verify-email/ | Verify Email | POST | key | |
+| /rest-auth/password/change/ | Change Password | POST |   new_password1 / new_password2 / (old_password) | |
+| /rest-auth/registration/ | Create New User | POST | username / password1 / password2 / email |  |
 | /rest-auth/facebook/ | authorization with Facebook | POST | access_token | token |
+
+* Planned Stuff : registar phone
 
 ### Menu URL
 | URL        | Action           | Method  | body | Return Value |
@@ -45,6 +44,9 @@ Backend API for Stylee.
 #### Unused URL
 - /rest-auth/logout.
 - /rest-auth/user/ (GET, PUT, PATCH)
+- /rest-auth/password/reset/
+- /rest-auth/password/reset/confirm/ | Reset the password | POST |  uid / token / new_password1 / new_password2 | |
+- /rest-auth/registration/verify-email/ | Verify Email | POST | key | |
 
 # Environment
 - Python 3.5 'python3 '

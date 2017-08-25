@@ -52,9 +52,20 @@ INSTALLED_APPS = [
 ]
 SITE_ID = 1
 
-ACCOUNT_AUTHENTICATION_METHOD = "username_email"
-
+ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
+ACCOUNT_EMAIL_VERIFICATION = 'none'
+SOCIALACCOUNT_EMAIL_VERIFICATION = 'none'
 REST_USE_JWT = True
+
+# for gmail - free
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'jbaek7023@gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_PASSWORD = '!Jj8803838778008'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+DEFAULT_FROM_EMAIL = 'jbaek7023@gmail.com'
+SERVER_EMAIL = 'jbaek7023@gmail.com'
 
 AUTHENTICATION_BACKENDS = (
     # Needed to login by username in Django admin, regardless of `allauth`

@@ -49,6 +49,8 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.facebook',
     'allauth.socialaccount.providers.twitter',
     'django.contrib.sites',
+    'outfit',
+    'cloth',
 ]
 SITE_ID = 1
 

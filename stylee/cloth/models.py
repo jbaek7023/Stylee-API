@@ -1,11 +1,7 @@
 from django.db import models
 from django.conf import settings
 
-CLOTHES_CHOICES = (
-    ts : 't-shirt',
-    ct : 'coat',
-
-)
+from .utils import CLOTHES_CHOICES
 
 def upload_location(instance, filename):
     #filebase, extension = filename.split(".")
@@ -31,28 +27,19 @@ class Cloth(models.Model):
                                 height_field=1080)
     name            = models.CharField(max_length=20)
     color           = models.CharField(max_length=10)
-    cloth_type      = models.ForeignKey(Type)
+    cloth_type      = models.CharField(max_length=9, choices=CLOTHES_CHOICES, default='1')
     size            = models.CharField(max_length=3) #XXXS, XXS, XS, S, M, L, XL, XXL, XXXL
     # http://www.asos.com/men/t-shirts-and-polo-shirts-size-guide/?szgid=16&r=2
     create_date     = models.DateTimeField(auto_now=False, auto_now_add=True)
     updated_date    = models.DateTimeField(auto_now=True, auto_now_add=False)
     # worn_date       = models.DateTimeField(auto_now=True, auto_now_add=False)
-    link            = models.CharField(require=False)
+    link            = models.CharField(max_length=20)
 
     def __str__(self):
         return str(self.user)
 
 # This model will be very useful when we implement the Diary and statistics
 class Wear(models.Model):
-    who = models.ForeignKey()
-    which = models.ForeignKey()
+    who = models.ForeignKey(settings.AUTH_USER_MODEL)
+    which = models.ForeignKey(Cloth)
     date = models.DateTimeField(auto_now=True, auto_now_add=False)
-
-# Wear.filter(user = user.getUser)
-
-class Type(models.Model):
-    name = models.CharField(max_length=9, choices=CLOTHES_CHOICES, default='1')
-
-# user.clothes.filter('top')
-# cloth.filter('button')
-# cloth.filter('second')

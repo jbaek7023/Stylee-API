@@ -34,9 +34,10 @@ class Cloth(models.Model):
     updated_date    = models.DateTimeField(auto_now=True, auto_now_add=False)
     # worn_date       = models.DateTimeField(auto_now=True, auto_now_add=False)
     link            = models.CharField(max_length=20)
+    location        = models.CharField(max_length=20)
 
     def __str__(self):
-        return str(self.user)
+        return str(self.owner)
 
 # This model will be very useful when we implement the Diary and statistics
 class Wear(models.Model):

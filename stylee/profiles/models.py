@@ -27,14 +27,18 @@ def create_unique_username(instance, username=None):
     return username
 
 # Create your models here.
-# Add Verified? 
+# Add Verified?
 class Profile(models.Model):
-    user        =   models.OneToOneField(settings.AUTH_USER_MODEL)
-    username    =   models.SlugField(max_length=20)
-    bio         =   models.TextField(max_length=255, blank=True)
-
+    user            =   models.OneToOneField(settings.AUTH_USER_MODEL)
+    username        =   models.SlugField(max_length=20)
+    bio             =   models.TextField(max_length=255, blank=True)
+    
     def __str__(self):
         return str(self.user)
+    #
+    # def is_user_blocked_user(self, user):
+    #
+    #     return
 
 def pre_save_profile_receiver(sender, instance, *args, **kwargs):
     #if not instance.username:

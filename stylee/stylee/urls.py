@@ -22,6 +22,7 @@ from .views import FacebookLogin
 urlpatterns = [
     url(r'^', include('django.contrib.auth.urls')),
     url(r'^admin/', admin.site.urls),
+    url(r'^accounts/', include('allauth.urls')),
     # url(r'^api-token-auth/', obtain_jwt_token),
     url(r'^profile/', include('profiles.urls', namespace="auth")),
     url(r'^stylebook/', include('outfit.urls', namespace="outfit")),

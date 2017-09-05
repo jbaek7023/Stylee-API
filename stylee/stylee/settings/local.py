@@ -31,13 +31,14 @@ ALLOWED_HOSTS = ['10.0.2.2','localhost']
 # Application definition
 
 INSTALLED_APPS = [
-    'corsheaders',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
+    'corsheaders',
     'allauth',
     'allauth.account',
     'rest_auth.registration',
@@ -47,16 +48,14 @@ INSTALLED_APPS = [
     'profiles',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.facebook',
-    'allauth.socialaccount.providers.twitter',
-    'django.contrib.sites',
-    'outfit',
-    'cloth',
 ]
-SITE_ID = 1
+# localhost:8000/
+SITE_ID = 9
 
 ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
 ACCOUNT_EMAIL_VERIFICATION = 'none'
 SOCIALACCOUNT_EMAIL_VERIFICATION = 'none'
+
 REST_USE_JWT = True
 
 # for gmail - free
@@ -172,6 +171,11 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
         # 'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.BasicAuthentication',
+        # 'rest_framework.authentication.BasicAuthentication',
     ),
+}
+
+import datetime
+JWT_AUTH = {
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=30),
 }

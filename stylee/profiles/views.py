@@ -12,11 +12,13 @@ class ProfileDetailViewByUser(generics.RetrieveAPIView):
     serializer_class = ProfileDetailSerializer
     lookup_field = 'username'
 
+# /profile/detail/
 class ProfileDetailView(generics.ListAPIView):
     queryset = Profile.objects.all()
     serializer_class = ProfileDetailSerializer
 
     def get_queryset(self):
         qs = super(ProfileDetailView, self).get_queryset()
+        print(self.request.user)
         logged_in_user_profile = qs.filter(user=self.request.user)
         return logged_in_user_profile

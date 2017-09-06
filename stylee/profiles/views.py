@@ -54,7 +54,6 @@ class UserCheckEmail(APIView):
 
     def get(self, request, format=None):
         qs = User.objects.all()
-
         email = self.request.GET.get("em")
         if email:
             qs = qs.filter(

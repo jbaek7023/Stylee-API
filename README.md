@@ -17,6 +17,8 @@ Backend API for Stylee.
 | URL        | Action           | Method  | body | Return Value |
 | ------------- |:-------------:| -----:|------------- |-------------|
 | /profile/detail | Get Profile Information | GET |  |  |
+| /profile/detail | Get Profile Information | GET |  |  |
+| /profile/echeck | check email or username | GET |  |  |
 
 ### Stylebook URL
 | URL        | Action           | Method  | body | Return Value |

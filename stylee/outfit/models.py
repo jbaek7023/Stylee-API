@@ -35,9 +35,10 @@ class Outfit(models.Model):
                                 blank=True,
                                 width_field=1080,
                                 height_field=1080)
-    category        =   models.SlugField(max_length=20)
+    category        =   models.CharField(max_length=20)
     content         =   models.CharField(max_length=30)
     weathers        =   MultiSelectField(choices=WEATHER_CHOICES)
+
 
     # like, comment
 

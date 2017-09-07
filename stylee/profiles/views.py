@@ -68,4 +68,18 @@ class UserCheckEmail(APIView):
             json_output = {"username": email}
             return Response(json_output)
 
-# class UserCheckEmail(generics.)
+class UserCheckUsername(APIView):
+    def get(self, request, format=None):
+        qs = User.objects.all()
+        username = self.request.GET.get("un")
+        if username:
+            qs = qs.filter(
+                Q(username__exact=username)
+            ).distinct()
+        print(len(qs))
+        if(len(qs)==1):
+            json_output = {"obtained": True}
+            return Response(json_output)
+        else:
+            json_output = {"obtained": False}
+            return Response(json_output)

@@ -28,6 +28,7 @@ urlpatterns = [
     url(r'^stylebook/', include('outfit.urls', namespace="outfit")),
     url(r'^wardrobe/', include('cloth.urls', namespace="wardrobe")),
     url(r'^rest-auth/', include('rest_auth.urls')),
+    url(r'^auth/', include('rest_framework_social_oauth2.urls')),
     url(r'^rest-auth/registration/', include('rest_auth.registration.urls')),
     url(r'^rest-auth/facebook/$', FacebookLogin.as_view(), name='fb_login'),
 ]

@@ -28,4 +28,5 @@ urlpatterns = [
     url(r'^echeck/$', UserCheckEmail.as_view(), name="user_email_check"),
     url(r'^unamecheck/$', UserCheckUsername.as_view(), name="user_username_check"),
     url(r'^(?P<username>[\w\-]+)/$', ProfileDetailViewByUser.as_view(), name="profile_detail"),
+
 ]

@@ -1,6 +1,5 @@
 from django.db import models
 from django.db.models.signals import pre_save, post_save
-
 from django.conf import settings
 
 # create  unique username
@@ -26,13 +25,29 @@ def create_unique_username(instance, username=None):
         return create_unique_username(instance, username=new_username)
     return username
 
-# Create your models here.
-# Add Verified?
+GENDER_CHOICES = [
+    # Top
+    ('m' , 'Male'),
+    ('f' , 'Female'),
+    ('u', 'Undefined'),
+]
+
+LOCATION_CHOICES = [
+    ('ud', 'Undefined'),
+    ('us', 'United States'),
+    ('ko', 'South Korea'),
+    ('jp', 'Japan'),
+    ('ch', 'China'),
+]
+
 class Profile(models.Model):
-    user            =   models.OneToOneField(settings.AUTH_USER_MODEL)
-    username        =   models.SlugField(max_length=20)
-    bio             =   models.TextField(max_length=255, blank=True)
-    
+    user = models.OneToOneField(settings.AUTH_USER_MODEL)
+    # username        =   models.SlugField(max_length=20)
+    bio = models.TextField(max_length=255, blank=True)
+    gender = models.CharField(max_length=10, choices=GENDER_CHOICES, default='u')
+    location = models.CharField(max_length=20, choices=LOCATION_CHOICES, default='ud')
+    birth = models.DateField(default='1992-07-23')
+
     def __str__(self):
         return str(self.user)
     #
@@ -40,11 +55,11 @@ class Profile(models.Model):
     #
     #     return
 
-def pre_save_profile_receiver(sender, instance, *args, **kwargs):
-    #if not instance.username:
-    instance.username = create_unique_username(instance)
-
-pre_save.connect(pre_save_profile_receiver, sender=Profile)
+# def pre_save_profile_receiver(sender, instance, *args, **kwargs):
+#     #if not instance.username:
+#     instance.username = create_unique_username(instance)
+#
+# pre_save.connect(pre_save_profile_receiver, sender=Profile)
 
 def post_save_user_receiver(sender, instance, created, *args, **kwargs):
     if created:

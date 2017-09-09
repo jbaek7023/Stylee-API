@@ -10,12 +10,18 @@ from rest_framework.response import Response
 import random
 import string
 
-from .serializers import ProfileDetailSerializer, UserEmailSerizlier
+from .serializers import (
+    ProfileDetailSerializer,
+    UserEmailSerizlier,
+    ProfileRetrieveAndUpdateSerializer
+)
+
 from .models import Profile
 
 User = get_user_model()
 
 class ProfileDetailViewByUser(generics.RetrieveAPIView):
+    # we don't take use this function now
     queryset = Profile.objects.all()
     serializer_class = ProfileDetailSerializer
     lookup_field = 'username'
@@ -23,6 +29,21 @@ class ProfileDetailViewByUser(generics.RetrieveAPIView):
 # /profile/detail/
 class ProfileDetailView(generics.ListAPIView):
     serializer_class = ProfileDetailSerializer
+
+    def get_queryset(self):
+        qs = Profile.objects.all()
+        logged_in_user_profile = qs.filter(user=self.request.user)
+        return logged_in_user_profile
+
+# profile/update/<user_id> # only allow to logged in user (SECURE)
+class ProfileRetrieveAndUpdateProfile(generics.RetrieveUpdateAPIView):
+    """
+    PUT : Edit
+    GET : Retrieve Profile
+    """
+    queryset = Profile.objects.all()
+    serializer_class = ProfileRetrieveAndUpdateSerializer
+    lookup_field = 'user_id'
 
     def get_queryset(self):
         qs = Profile.objects.all()

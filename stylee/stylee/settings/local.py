@@ -22,10 +22,13 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__fil
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'p2fjnt=#8oh08s$2j-aw%vps#3tvs(lp6dl^2o65j9-yms1t(w'
 
+
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = ['10.0.2.2','localhost']
+
 
 
 # Application definition
@@ -50,7 +53,9 @@ INSTALLED_APPS = [
     'rest_auth',
     'profiles',
     'allauth.socialaccount',
+    'storages',
     'allauth.socialaccount.providers.facebook',
+
 ]
 # localhost:8000/
 SITE_ID = 7
@@ -192,6 +197,8 @@ REST_FRAMEWORK = {
     ),
 }
 
+
+## Social Auth JWT Setting
 import datetime
 JWT_AUTH = {
     'JWT_EXPIRATION_DELTA': datetime.timedelta(days=30),
@@ -205,4 +212,43 @@ SOCIAL_AUTH_FACEBOOK_SECRET = '7a0cb7b9ec80fbcbf78dcf6fffbaaf4e'
 SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
 SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {
     'fields': 'id, name, email'
+}
+
+### AWS settings
+AWS_ACCESS_KEY_ID = "AKIAJPOEI4BSXTLWZGMQ"
+# AKIAJPOEI4BSXTLWZGMQ
+AWS_SECRET_ACCESS_KEY = "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"
+# J3j76++C+dHoOw84JiM1CpFx3uJcWbAncF34QUTB
+AWS_FILE_EXPIRE = 200
+AWS_PRELOAD_METADATA = True
+AWS_QUERYSTRING_AUTH = True
+
+DEFAULT_FILE_STORAGE = 'stylee.utils.MediaRootS3BotoStorage'
+# Enable in Production
+# STATICFILES_STORAGE = 'stylee.utils.StaticRootS3BotoStorage'
+AWS_STORAGE_BUCKET_NAME = 'stylee-bucket'
+S3DIRECT_REGION = 'us-west-2'
+S3_URL = '//%s.s3.amazonaws.com/' % AWS_STORAGE_BUCKET_NAME
+MEDIA_URL = '//%s.s3.amazonaws.com/media/' % AWS_STORAGE_BUCKET_NAME
+MEDIA_ROOT = MEDIA_URL
+# Enable in Production
+# STATIC_URL = S3_URL + 'static/'
+STATIC_URL = '/static/'
+ADMIN_MEDIA_PREFIX = STATIC_URL + 'admin/'
+
+# Debugging purpose
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static-storage")
+]
+STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static-serve")
+
+import datetime
+
+two_months = datetime.timedelta(days=61)
+date_two_months_later = datetime.date.today() + two_months
+expires = date_two_months_later.strftime("%A, %d %B %Y 20:00:00 GMT")
+
+AWS_HEADERS = {
+	'Expires': expires,
+	'Cache-Control': 'max-age=%d' % (int(two_months.total_seconds()), ),
 }

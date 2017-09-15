@@ -19,6 +19,7 @@ Backend API for Stylee.
 | /profile/detail | Get Profile Information | GET |  |  |
 | /profile/detail | Get Profile Information | GET |  |  |
 | /profile/echeck | check email or username | GET |  |  |
+| /profile/update/<user_id> | Retrieve or change user profile | GET or PUT | | |
 
 ### Stylebook URL
 | URL        | Action           | Method  | body | Return Value |
@@ -55,3 +56,4 @@ Backend API for Stylee.
 - virtualenv . && source bin/activate
 - `pip3 install -r requirements.txt`
 - git config --global credential.helper cache
+- kill (fuser -k 8000/tcp)

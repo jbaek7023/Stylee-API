@@ -1,8 +1,8 @@
 from django.conf.urls import url, include
 from django.contrib import admin
 
-# import JWT
+from .views import OutfitListView
 
 urlpatterns = [
-    url(r'^', include('django.contrib.auth.urls')),
+    url(r'^list/$', OutfitListView.as_view(), name="user_outfits_list"),
 ]

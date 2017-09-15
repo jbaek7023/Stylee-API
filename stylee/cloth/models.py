@@ -15,29 +15,35 @@ def upload_location(instance, filename):
     Which will give us the most recently created Model instance
     We add 1 to it, so we get what should be the same id as the the post we are creating.
     """
-    return "%s/%s" % (new_id, filename)
+    ext = filename.split('.')[-1]
+    # user id, cloth id, extension
+    return "clothes/%s/%s.%s" % (instance.user.id, new_id, ext)
 
 # Create your models here.
 class Cloth(models.Model):
-    owner           = models.ForeignKey(settings.AUTH_USER_MODEL)
-    image = models.ImageField(upload_to=upload_location,
+    # normal post info
+    parent = models.ForeignKey("self", blank=True, null=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True)
+    name = models.CharField(max_length=20)
+    publish = models.DateTimeField(auto_now=False, auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True, auto_now_add=False)
+    color = models.CharField(max_length=10)
+    cloth_type = models.CharField(max_length=9, choices=CLOTHES_CHOICES, default='1')
+
+    # img up to width of 1080px.
+    # if shared a photo at a lower resolution, we enlarge it to a width of 320 pixels
+    # photo at a higher resolution, we size it DOWN to 1080 pixels
+    cloth_image = models.ImageField(upload_to=upload_location,
                                 null=True,
-                                blank=True,
-                                width_field=1080,
-                                height_field=1080)
-    name            = models.CharField(max_length=20)
-    color           = models.CharField(max_length=10)
-    cloth_type      = models.CharField(max_length=9, choices=CLOTHES_CHOICES, default='1')
-    size            = models.CharField(max_length=3) #XXXS, XXS, XS, S, M, L, XL, XXL, XXXL
+                                blank=True)
+    size = models.CharField(max_length=3) #XXXS, XXS, XS, S, M, L, XL, XXL, XXXL
     # http://www.asos.com/men/t-shirts-and-polo-shirts-size-guide/?szgid=16&r=2
-    create_date     = models.DateTimeField(auto_now=False, auto_now_add=True)
-    updated_date    = models.DateTimeField(auto_now=True, auto_now_add=False)
     # worn_date       = models.DateTimeField(auto_now=True, auto_now_add=False)
-    link            = models.CharField(max_length=20)
-    location        = models.CharField(max_length=20)
+    link = models.CharField(max_length=20)
+
 
     def __str__(self):
-        return str(self.owner)
+        return str(self.user)
 
 # This model will be very useful when we implement the Diary and statistics
 class Wear(models.Model):

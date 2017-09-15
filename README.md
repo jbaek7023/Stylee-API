@@ -24,12 +24,12 @@ Backend API for Stylee.
 ### Stylebook URL
 | URL        | Action           | Method  | body | Return Value |
 | ------------- |:-------------:| -----:|------------- |-------------|
-| /profile/<id>/ | Get user's Profile information | GET |  |  |
+| /outfits/list/ | Get User's outfit images | GET |  |  |
 
 ### Wardrobe URL
 | URL        | Action           | Method  | body | Return Value |
 | ------------- |:-------------:| -----:|------------- |-------------|
-| /example/<id>/ | Get user's Profile information | GET |  |  |
+| /clothes/list/ | Get user's wardrobe information | GET |  |  |
 
 ### Notification URL
 | URL        | Action           | Method  | body | Return Value |

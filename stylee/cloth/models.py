@@ -39,7 +39,7 @@ class Cloth(models.Model):
     size = models.CharField(max_length=3) #XXXS, XXS, XS, S, M, L, XL, XXL, XXXL
     # http://www.asos.com/men/t-shirts-and-polo-shirts-size-guide/?szgid=16&r=2
     # worn_date       = models.DateTimeField(auto_now=True, auto_now_add=False)
-    link = models.CharField(max_length=20)
+    link = models.CharField(max_length=20, blank=True, null=True)
 
 
     def __str__(self):

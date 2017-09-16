@@ -14,9 +14,9 @@ def upload_location(instance, filename):
     Which will give us the most recently created Model instance
     We add 1 to it, so we get what should be the same id as the the post we are creating.
     """
-    return "%s/%s" % (new_id, filename)
-    # return outfits/owner_id/new_id.png
-    # return ""%s/%s" % (new_id, filename)"
+    ext = filename.split('.')[-1]
+    # user id, cloth id, extension
+    return "outfits/%s/%s.%s" % (instance.user.id, new_id, ext)
 
 # Create your models here.
 class Outfit(models.Model):
@@ -29,17 +29,13 @@ class Outfit(models.Model):
     outfit_img = models.ImageField(
                             upload_to=upload_location,
                             null=True,
-                            blank=True,
-                            width_field=1080,
-                            height_field=1080)
-
-
-    # This can be MANY categories. ManyToManyField
+                            blank=True)
+    # This can be MANY categories. ManyToManyField <-..!
     category = models.CharField(max_length=20)
 
     # Tagged Clothes <-> outfit_set
     tagged_clothes = models.ManyToManyField(Cloth, blank=True)
-    location = models.CharField(max_length=20)
+    location = models.CharField(max_length=20, blank=True, null=True)
     # other Related Class
     # Like, Comment, Share,
 

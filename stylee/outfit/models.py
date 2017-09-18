@@ -1,6 +1,10 @@
 from django.db import models
-from cloth.models import Cloth
 from django.conf import settings
+from django.contrib.contenttypes.models import ContentType
+
+
+from cloth.models import Cloth
+from comments.models import Comment
 
 def upload_location(instance, filename):
     #filebase, extension = filename.split(".")
@@ -31,7 +35,6 @@ class Outfit(models.Model):
                             null=True,
                             blank=True)
     # This can be MANY categories. ManyToManyField <-..!
-    category = models.CharField(max_length=20)
 
     # Tagged Clothes <-> outfit_set
     tagged_clothes = models.ManyToManyField(Cloth, blank=True)
@@ -42,12 +45,39 @@ class Outfit(models.Model):
     def __str__(self):
         return str(self.user)
 
+    def get_categories(self):
+        # object lists
+        # we want to return array of it.
+        # it contains, ?
+        return self.category
+
+    @property
+    def comments(self):
+        instance = self
+        qs = Comment.objects.filter_by_instance(instance)
+        return qs
+
+    @property
+    def get_content_type(self):
+        instance = self
+        content_type = ContentType.objects.get_for_model(instance.__class__)
+        return content_type
+
     # is it owner?
 
     #
     # def is_user_blocked_user(self, user):
     #
     #     return
+
+class Category(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True)
+    name = models.CharField(max_length=20)
+    outfits = models.ManyToManyField(Outfit, related_name="category")
+
+    def __str__(self):
+        return str(self.name)
+
 #
 # class LikeOutfit(models.Model):
 #     who = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="liked_outfits")

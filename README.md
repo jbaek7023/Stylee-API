@@ -57,3 +57,10 @@ Backend API for Stylee.
 - `pip3 install -r requirements.txt`
 - git config --global credential.helper cache
 - kill (fuser -k 8000/tcp)
+
+#### Shell Debuggin Prompt
+from django.contrib.auth import get_user_model
+User = get_user_model()
+u = User.objects.filter(username="jbaek7023").first()
+from outfit.models import Outfit
+o = Outfit.objects.filter(user=u).first()

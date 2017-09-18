@@ -2,25 +2,24 @@ from django.shortcuts import render
 
 from rest_framework import generics
 
-from .models import Outfit
+from .models import Comment
 
-from .serializers import OutfitListSerializer, OutfitDetailSerializer
+from .serializers import CommentSerializer, CommentDetailSerializer
 
 # Create your views here.
-class OutfitListView(generics.ListAPIView):
-    serializer_class = OutfitListSerializer
+class CommentListView(generics.ListAPIView):
+    serializer_class = CommentSerializer
 
     def get_queryset(self):
-        qs = Outfit.objects.all()
-        logged_in_user_profile = qs.filter(user=self.request.user)
+        qs = Comment.objects.all()
         # if undefined user, return 404.(later)
-        return logged_in_user_profile
+        return qs
 
 # Requires [{JWT or Bearer Token} AND outfit_id
 # Returns Outfit fields
-class OutfitDetailView(generics.RetrieveAPIView):
-    queryset = Outfit.objects.all()
-    serializer_class = OutfitDetailSerializer
+class CommentDetailView(generics.RetrieveAPIView):
+    queryset = Comment.objects.all()
+    serializer_class = CommentDetailSerializer
     lookup_field = 'pk'
 
 # Requires [{JWT or Bearer Token}]

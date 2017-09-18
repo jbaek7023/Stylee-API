@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.facebook',
     'outfit',
     'cloth',
+    'comments',
 ]
 # localhost:8000/
 SITE_ID = 7

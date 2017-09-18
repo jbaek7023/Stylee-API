@@ -4,7 +4,7 @@ from rest_framework import generics
 
 from .models import Comment
 
-from .serializers import CommentSerializer, CommentDetailSerializer
+from .serializers import CommentSerializer, CommentDetailSerializer, create_comment_serializer
 
 # Create your views here.
 class CommentListView(generics.ListAPIView):
@@ -21,6 +21,22 @@ class CommentDetailView(generics.RetrieveAPIView):
     queryset = Comment.objects.all()
     serializer_class = CommentDetailSerializer
     lookup_field = 'pk'
+
+# Comment on outfit
+class CommentCreateAPIView(generics.CreateAPIView):
+    queryset = Comment.objects.all()
+
+    def get_serializer_class(self):
+        model_type = self.request.GET.get("type")
+        id = self.request.GET.get("id")
+        print(id)
+        parent_id = self.request.GET.get("parent_id", None)
+        return create_comment_serializer(
+            model_type='outfit',
+            id=id,
+            user=self.request.user,
+            parent_id=parent_id
+        )
 
 # Requires [{JWT or Bearer Token}]
 # Returns Category. [{name:'Gym', main:'aws_img', count: '5'}]

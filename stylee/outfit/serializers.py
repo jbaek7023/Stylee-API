@@ -9,6 +9,8 @@ class OutfitListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Outfit
         fields = (
+            'pk',
+            'id',
             'user',
             'content',
             'publish',

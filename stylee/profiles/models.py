@@ -52,7 +52,9 @@ def upload_location(instance, filename):
     Which will give us the most recently created Model instance
     We add 1 to it, so we get what should be the same id as the the post we are creating.
     """
-    return "%s/%s" % (new_id, filename)
+    ext = filename.split('.')[-1]
+    # user id, cloth id, extension
+    return "profiles/%s/%s.%s" % (instance.user.id, new_id, ext)
 
 class Profile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL)
@@ -67,6 +69,9 @@ class Profile(models.Model):
         blank=True)
     def __str__(self):
         return str(self.user)
+
+    def get_image_url(self):
+        return self.profile_img.url
     #
     # def is_user_blocked_user(self, user):
     #

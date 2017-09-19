@@ -28,6 +28,7 @@ urlpatterns = [
     url(r'^outfits/', include('outfit.urls', namespace="outfit")),
     url(r'^clothes/', include('cloth.urls', namespace="wardrobe")),
     url(r'^comments/', include('comments.urls', namespace="comments")),
+    url(r'^likes/', include('like.urls', namespace="likes")),
     url(r'^rest-auth/', include('rest_auth.urls')),
     url(r'^auth/', include('rest_framework_social_oauth2.urls')),
     url(r'^rest-auth/registration/', include('rest_auth.registration.urls')),

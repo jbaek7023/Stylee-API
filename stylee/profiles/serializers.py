@@ -16,6 +16,24 @@ class ProfileDetailSerializer(serializers.ModelSerializer):
     def get_username(self, obj):
         return obj.user.username
 
+class UserRowSerializer(serializers.ModelSerializer):
+    # user = UserAccountSerializer(read_only=True)
+    image = serializers.SerializerMethodField()
+    # user_id = serializers.SerializerMethodField()
+    # username = serializers.SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = ('image', 'id', 'username')
+
+    def get_image(self, obj):
+        try:
+            image = obj.profile.profile_img.url
+        except:
+            image = None
+        return image
+
+
 class UserEmailSerizlier(serializers.ModelSerializer):
     class Meta:
         model = User

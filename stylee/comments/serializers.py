@@ -2,6 +2,7 @@ from rest_framework import serializers
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth import get_user_model
 
+from profiles.serializers import UserRowSerializer
 
 from .models import Comment
 
@@ -68,18 +69,39 @@ def create_comment_serializer(model_type='outfit', id=None, parent_id=None, user
 
 class CommentSerializer(serializers.ModelSerializer):
     reply_count = serializers.SerializerMethodField()
+    user = UserRowSerializer(read_only=True)
 
     class Meta:
         model = Comment
         fields = (
             'id',
             'user',
-            'content_type',
-            'object_id',
+            # 'content_type',
+            # 'object_id',
             'content',
             'publish',
             'updated',
-            'parent',
+            # 'parent',
+            'reply_count',
+        )
+
+    def get_reply_count(self, obj):
+        if obj.is_parent:
+            return obj.children().count()
+        return 0
+
+class CommentsOnPostSerializer(serializers.ModelSerializer):
+    reply_count = serializers.SerializerMethodField()
+    user = UserRowSerializer(read_only=True)
+
+    class Meta:
+        model = Comment
+        fields = (
+            'id',
+            'user',
+            'content',
+            'publish',
+            'updated',
             'reply_count',
         )
 
@@ -90,13 +112,13 @@ class CommentSerializer(serializers.ModelSerializer):
 
 
 class CommentChildSerializer(serializers.ModelSerializer):
+    user = UserRowSerializer(read_only=True)
+
     class Meta:
         model = Comment
         fields = (
             'id',
             'user',
-            'content_type',
-            'object_id',
             'content',
             'publish',
             'updated',
@@ -104,21 +126,32 @@ class CommentChildSerializer(serializers.ModelSerializer):
 
 class CommentDetailSerializer(serializers.ModelSerializer):
     replies = serializers.SerializerMethodField()
+    user = UserRowSerializer(read_only=True)
 
     class Meta:
         model = Comment
         fields = (
             'id',
             'user',
-            'content_type',
-            'object_id',
             'content',
             'publish',
             'updated',
             'replies',
+        )
+        read_only_fields = (
         )
 
     def get_replies(self, obj):
         if obj.is_parent:
             return CommentChildSerializer(obj.children(), many=True).data
         return None
+
+class CommentEditSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = (
+            'id',
+            'content',
+            'publish',
+            'updated',
+        )

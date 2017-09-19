@@ -73,7 +73,7 @@ class Outfit(models.Model):
 class Category(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True)
     name = models.CharField(max_length=20)
-    outfits = models.ManyToManyField(Outfit, related_name="category")
+    outfits = models.ManyToManyField(Outfit, related_name="categories")
 
     def __str__(self):
         return str(self.name)

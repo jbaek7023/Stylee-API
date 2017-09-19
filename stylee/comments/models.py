@@ -3,6 +3,10 @@ from django.db import models
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 
+# from outfit.models import Outfit # circularity.
+from cloth.models import Cloth
+
+
 class CommentManager(models.Manager):
     def all(self):
         # filter only parent
@@ -53,7 +57,7 @@ class Comment(models.Model):
     objects = CommentManager()
 
     class Meta:
-        ordering = ['-publish']
+        ordering = ['publish']
 
     def __str__(self):
         if self.content==None:

@@ -4,7 +4,8 @@ from rest_framework import generics
 
 from .models import Outfit
 
-from .serializers import OutfitListSerializer, OutfitDetailSerializer
+from .serializers import OutfitListSerializer, OutfitDetailSerializer, OutfitDetailCommentSerializer
+from comments.serializers import CommentSerializer
 
 # Create your views here.
 class OutfitListView(generics.ListAPIView):
@@ -23,6 +24,11 @@ class OutfitDetailView(generics.RetrieveAPIView):
     serializer_class = OutfitDetailSerializer
     lookup_field = 'pk'
 
+class OutfitDetailCommentsView(generics.RetrieveAPIView):
+    queryset = Outfit.objects.all()
+    serializer_class = OutfitDetailCommentSerializer
+    lookup_field = 'pk'
+
 # Requires [{JWT or Bearer Token}]
 # Returns Category. [{name:'Gym', main:'aws_img', count: '5'}]
 # class OutfitCategoryListView(generics.ListAPIView):
@@ -30,4 +36,3 @@ class OutfitDetailView(generics.RetrieveAPIView):
 
 # Requires [{JWT or Bearer Token} AND Category_id]
 # Returns Outfits in the category
-# class OutfitCategoryDetailView(generi

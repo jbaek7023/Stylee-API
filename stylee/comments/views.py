@@ -3,8 +3,17 @@ from django.shortcuts import render
 from rest_framework import generics
 
 from .models import Comment
+from outfit.models import Outfit
 
-from .serializers import CommentSerializer, CommentDetailSerializer, create_comment_serializer
+from rest_framework.mixins import DestroyModelMixin, UpdateModelMixin
+
+from .serializers import (
+    CommentSerializer,
+    CommentDetailSerializer,
+    create_comment_serializer,
+    CommentEditSerializer,
+    CommentsOnPostSerializer
+)
 
 # Create your views here.
 class CommentListView(generics.ListAPIView):
@@ -18,9 +27,23 @@ class CommentListView(generics.ListAPIView):
 # Requires [{JWT or Bearer Token} AND outfit_id
 # Returns Outfit fields
 class CommentDetailView(generics.RetrieveAPIView):
-    queryset = Comment.objects.all()
+    queryset = Comment.objects.filter(id__gte=0)
     serializer_class = CommentDetailSerializer
     lookup_field = 'pk'
+
+# Edit or Delete Comment
+class CommentEditAPIView(DestroyModelMixin, UpdateModelMixin, generics.RetrieveAPIView):
+    queryset = Comment.objects.filter(id__gte=0) # all comment
+    serializer_class = CommentEditSerializer
+    lookup_field = 'pk'
+
+    #define mixin method
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
+
 
 # Comment on outfit
 class CommentCreateAPIView(generics.CreateAPIView):
@@ -29,10 +52,9 @@ class CommentCreateAPIView(generics.CreateAPIView):
     def get_serializer_class(self):
         model_type = self.request.GET.get("type")
         id = self.request.GET.get("id")
-        print(id)
         parent_id = self.request.GET.get("parent_id", None)
         return create_comment_serializer(
-            model_type='outfit',
+            model_type=model_type,
             id=id,
             user=self.request.user,
             parent_id=parent_id

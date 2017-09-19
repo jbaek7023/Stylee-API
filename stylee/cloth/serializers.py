@@ -1,8 +1,16 @@
 from rest_framework import serializers
 
 from .models import Cloth
+from profiles.serializers import UserRowSerializer
+
 
 class ClothesListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cloth
-        fields = ('user', 'name', 'publish', 'updated', 'color', 'cloth_type', 'cloth_image', 'size', 'link')
+        fields = ('cloth_image', 'id')
+
+# In Progress..!!
+class ClothDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Cloth
+        fields = ('cloth_image', 'id')

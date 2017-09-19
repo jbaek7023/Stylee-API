@@ -13,10 +13,11 @@ import string
 from .serializers import (
     ProfileDetailSerializer,
     UserEmailSerizlier,
-    ProfileRetrieveAndUpdateSerializer
+    ProfileRetrieveAndUpdateSerializer,
+    FollowCreateSerializer
 )
 
-from .models import Profile
+from .models import Profile, Follow
 
 User = get_user_model()
 
@@ -34,6 +35,24 @@ class ProfileDetailView(generics.ListAPIView):
         qs = Profile.objects.all()
         logged_in_user_profile = qs.filter(user=self.request.user)
         return logged_in_user_profile
+
+class FollowCreateAPIView(APIView):
+    def post(self, request, format=None):
+        print(self.request.POST.get('user_id'))
+        following_user = User.objects.filter(id=self.request.POST.get('user_id')).first()
+        print(following_user)
+        if following_user is not None:
+            follow_obj = Follow.objects.filter(follower=self.request.user, following=following_user).first()
+            if follow_obj is not None:
+                follow_obj.delete()
+                json_output = {"followed": False}
+                return Response(json_output)
+            else:
+                instance = Follow(follower=self.request.user, following=following_user)
+                instance.save()
+                json_output = {"followed": True}
+                return Response(json_output)
+        return Response({})
 
 # profile/update/<user_id> # only allow to logged in user (SECURE)
 class ProfileRetrieveAndUpdateProfile(generics.RetrieveUpdateAPIView):

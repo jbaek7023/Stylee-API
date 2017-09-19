@@ -43,8 +43,8 @@ LOCATION_CHOICES = [
 def upload_location(instance, filename):
     #filebase, extension = filename.split(".")
     #return "%s/%s.%s" %(instance.id, instance.id, extension)
-    PostModel = instance.__class__
-    new_id = PostModel.objects.order_by("id").last().id + 1
+    ProfileModel = instance.__class__
+    new_id = ProfileModel.objects.order_by("id").last().id + 1
     """
     instance.__class__ gets the model Post. We must use this method because the model is defined below.
     Then create a queryset ordered by the "id"s of each object,
@@ -77,11 +77,23 @@ class Profile(models.Model):
     #
     #     return
 
+
 # def pre_save_profile_receiver(sender, instance, *args, **kwargs):
 #     #if not instance.username:
 #     instance.username = create_unique_username(instance)
 #
 # pre_save.connect(pre_save_profile_receiver, sender=Profile)
+
+class Follow(models.Model):
+    follower = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='follower')
+    following = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='following')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return "{} : {}".format(
+            self.follower.username,
+            self.following.username
+        )
 
 def post_save_user_receiver(sender, instance, created, *args, **kwargs):
     if created:

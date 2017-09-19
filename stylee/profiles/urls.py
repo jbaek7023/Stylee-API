@@ -22,12 +22,14 @@ from .views import (
     ProfileRetrieveAndUpdateProfile,
     UserCheckEmail,
     UserCheckUsername,
+    FollowCreateAPIView,
 )
 
 urlpatterns = [
     url(r'^detail/$', ProfileDetailView.as_view(), name="user_profile"),
+    url(r'^follow/$', FollowCreateAPIView.as_view(), name="user_profile"),
     url(r'^echeck/$', UserCheckEmail.as_view(), name="user_email_check"),
-    url(r'^update/(?P<user_id>[\w\-]+)/$', ProfileRetrieveAndUpdateProfile.as_view(), name="profile_retrieve_update"),
+    url(r'^update/(?P<user_id>\d+)/$', ProfileRetrieveAndUpdateProfile.as_view(), name="profile_retrieve_update"),
     url(r'^unamecheck/$', UserCheckUsername.as_view(), name="user_username_check"),
     url(r'^(?P<username>[\w\-]+)/$', ProfileDetailViewByUser.as_view(), name="profile_detail"),
 

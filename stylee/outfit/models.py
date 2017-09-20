@@ -6,7 +6,7 @@ from django.contrib.contenttypes.models import ContentType
 from cloth.models import Cloth
 from comments.models import Comment
 
-def upload_location(instance, filename):
+def upload_location_outfit(instance, filename):
     #filebase, extension = filename.split(".")
     #return "%s/%s.%s" %(instance.id, instance.id, extension)
     PostModel = instance.__class__
@@ -31,7 +31,7 @@ class Outfit(models.Model):
     publish = models.DateTimeField(auto_now=False, auto_now_add=True)
     updated = models.DateTimeField(auto_now=True, auto_now_add=False)
     outfit_img = models.ImageField(
-                            upload_to=upload_location,
+                            upload_to=upload_location_outfit,
                             null=True,
                             blank=True)
     # This can be MANY categories. ManyToManyField <-..!
@@ -49,7 +49,7 @@ class Outfit(models.Model):
         # object lists
         # we want to return array of it.
         # it contains, ?
-        return self.category
+        return self.categories
 
     @property
     def comments(self):
@@ -70,13 +70,6 @@ class Outfit(models.Model):
     #
     #     return
 
-class Category(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True)
-    name = models.CharField(max_length=20)
-    outfits = models.ManyToManyField(Outfit, related_name="categories")
-
-    def __str__(self):
-        return str(self.name)
 
 #
 # class LikeOutfit(models.Model):

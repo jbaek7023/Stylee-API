@@ -3,8 +3,14 @@ from django.shortcuts import render
 from rest_framework import generics
 
 from .models import Outfit
+from category.models import Category
 
-from .serializers import OutfitListSerializer, OutfitDetailSerializer, OutfitDetailCommentSerializer
+from .serializers import (
+    OutfitListSerializer,
+    OutfitDetailSerializer,
+    OutfitDetailCommentSerializer,
+)
+
 from comments.serializers import CommentSerializer
 
 # Create your views here.
@@ -23,11 +29,17 @@ class OutfitDetailView(generics.RetrieveAPIView):
     queryset = Outfit.objects.all()
     serializer_class = OutfitDetailSerializer
     lookup_field = 'pk'
+#
+# class OutfitCategoryView(generics.RetrieveUpdateAPIView):
+#     queryset = Outfit.objects.all()
+#     serializer_class = CategoryListUpdateSerializer
+#     lookup_field = 'pk'
 
 class OutfitDetailCommentsView(generics.RetrieveAPIView):
     queryset = Outfit.objects.all()
     serializer_class = OutfitDetailCommentSerializer
     lookup_field = 'pk'
+
 
 # Requires [{JWT or Bearer Token}]
 # Returns Category. [{name:'Gym', main:'aws_img', count: '5'}]

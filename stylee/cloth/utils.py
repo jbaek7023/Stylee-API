@@ -10,3 +10,18 @@ CLOTHES_CHOICES = [
     # Shoes
     ('', 'py')
 ]
+
+# Top
+CLOTHES_SIZE_CHOICES = [
+    ('x3s', 'XXXS'),
+    ('x2s','XXS'),
+    ('xs','XS'),
+    ('s','S'),
+    ('m','M'),
+    ('l','L'),
+    ('x1l','XL'),
+    ('x2l','XXL'),
+    ('x3l','XXXL')
+]
+
+# Bottom

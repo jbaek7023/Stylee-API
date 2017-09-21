@@ -17,7 +17,7 @@ from django.conf.urls import url
 
 # import JWT
 from .views import (
-    ProfileDetailViewByUser,
+    # ProfileDetailViewByUser,
     ProfileDetailView,
     ProfileRetrieveAndUpdateProfile,
     UserCheckEmail,
@@ -31,6 +31,6 @@ urlpatterns = [
     url(r'^echeck/$', UserCheckEmail.as_view(), name="user_email_check"),
     url(r'^update/(?P<user_id>\d+)/$', ProfileRetrieveAndUpdateProfile.as_view(), name="profile_retrieve_update"),
     url(r'^unamecheck/$', UserCheckUsername.as_view(), name="user_username_check"),
-    url(r'^(?P<username>[\w\-]+)/$', ProfileDetailViewByUser.as_view(), name="profile_detail"),
+    # url(r'^(?P<username>[\w\-]+)/$', ProfileDetailViewByUser.as_view(), name="profile_detail"),
 
 ]

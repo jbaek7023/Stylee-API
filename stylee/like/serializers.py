@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from django.contrib.contenttypes.models import ContentType
+from profiles.serializers import UserRowSerializer
 
 from .models import Like
 
@@ -56,4 +57,12 @@ class LikeSerializer(serializers.ModelSerializer):
             'id',
             'user',
             'created_at'
+        )
+
+class LikeListSerializer(serializers.ModelSerializer):
+    user = UserRowSerializer(read_only=True)
+    class Meta:
+        model = Like
+        fields = (
+            'user',
         )

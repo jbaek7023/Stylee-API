@@ -6,8 +6,7 @@ from django.contrib.contenttypes.models import ContentType
 from outfit.models import Outfit
 
 def upload_location_category(instance, filename):
-    PostModel = instance.__class__
-    new_id = PostModel.objects.order_by("id").last().id + 1
+    new_id = instance.id
     ext = filename.split('.')[-1]
     return "category/%s/%s.%s" % (instance.user.id, new_id, ext)
 

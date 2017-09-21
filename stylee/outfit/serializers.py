@@ -1,34 +1,34 @@
 from rest_framework import serializers
 from django.db.models import Q
-
+from django.db.models import Case, When
 from .models import Outfit
+# from cloth.models import Cloth
 
-from comments.serializers import CommentSerializer
 from comments.models import Comment
 from like.models import Like
-from profiles.serializers import UserRowSerializer
 
+from comments.serializers import CommentSerializer
+from profiles.serializers import UserRowSerializer
+from cloth.serializers import ClothesListSerializer
+from like.serializers import LikeListSerializer
 
 class OutfitListSerializer(serializers.ModelSerializer):
-    image = serializers.SerializerMethodField()
     class Meta:
         model = Outfit
         fields = (
             'id',
             # 'user',
-            'image',
+            'outfit_img',
             # 'category',
             # 'tagged_clothes',
             # 'location'
         )
 
-    def get_image(self, obj):
-        if obj.outfit_img is not None:
-            return obj.outfit_img.url
-        return None
+
 
 from category.serializers import CategorySerializer
 from category.models import Category
+
 class OutfitDetailSerializer(serializers.ModelSerializer):
     comments = serializers.SerializerMethodField()
     comment_count = serializers.SerializerMethodField()
@@ -36,6 +36,7 @@ class OutfitDetailSerializer(serializers.ModelSerializer):
     liked = serializers.SerializerMethodField()
     categories = serializers.SerializerMethodField()
     user = UserRowSerializer(read_only=True)
+    tagged_clothes = serializers.SerializerMethodField()
 
     class Meta:
         model = Outfit
@@ -43,6 +44,7 @@ class OutfitDetailSerializer(serializers.ModelSerializer):
             'id',
             'user',
             'content',
+            'gender',
             'publish',
             'updated',
             'outfit_img',
@@ -61,14 +63,18 @@ class OutfitDetailSerializer(serializers.ModelSerializer):
     #     categories = obj.categories.filter(owner=self.context['request'].user)
     #     return CategorySerializer(categories, many=True).data
 
+    def get_tagged_clothes(self, obj):
+        clothes = obj.tagged_clothes
+        return ClothesListSerializer(clothes, many=True).data
+
     def get_categories(self, obj):
         user = self.context['request'].user
         categories = Category.objects.filter(owner=user)
-        add_f = Q(owner=user, outfits__pk__isnull=True)
-        add_t = Q(owner=user, outfits__pk=obj.pk)
-
-        pf = add_f | add_t
-        categories = categories.filter(pf).values('outfits__pk', 'name', 'id')
+        added = categories.extra(select={'added': '1'}).filter(outfits__pk=obj.pk)
+        added = list(added.values('added', 'name', 'id'))
+        added_f = categories.extra(select={'added': '0'}).exclude(outfits__pk=obj.pk)
+        added_f = list(added_f.values('added', 'name', 'id'))
+        categories = added + added_f
         return CategorySerializer(categories, many=True).data
 
     def get_like_count(self, obj):
@@ -120,3 +126,18 @@ class OutfitDetailCommentSerializer(serializers.ModelSerializer):
         object_id = obj.id
         comments = Comment.objects.filter_by_instance(obj)
         return CommentSerializer(comments, many=True).data
+
+class OutfitDetailLikeSerializer(serializers.ModelSerializer):
+    likes = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Outfit
+        fields = (
+            'likes',
+        )
+
+    def get_likes(self, obj):
+        content_type = obj.get_content_type
+        object_id = obj.id
+        likes = Like.objects.filter_by_instance(obj)
+        return LikeListSerializer(likes, many=True).data

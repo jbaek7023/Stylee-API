@@ -2,24 +2,14 @@ from django.db import models
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 
+from .utils import GENDER_CHOICES
 
 from cloth.models import Cloth
 from comments.models import Comment
 
 def upload_location_outfit(instance, filename):
-    #filebase, extension = filename.split(".")
-    #return "%s/%s.%s" %(instance.id, instance.id, extension)
-    PostModel = instance.__class__
-    new_id = PostModel.objects.order_by("id").last().id + 1
-    """
-    instance.__class__ gets the model Post. We must use this method because the model is defined below.
-    Then create a queryset ordered by the "id"s of each object,
-    Then we get the last object in the queryset with `.last()`
-    Which will give us the most recently created Model instance
-    We add 1 to it, so we get what should be the same id as the the post we are creating.
-    """
+    new_id = instance.id
     ext = filename.split('.')[-1]
-    # user id, cloth id, extension
     return "outfits/%s/%s.%s" % (instance.user.id, new_id, ext)
 
 # Create your models here.
@@ -34,7 +24,8 @@ class Outfit(models.Model):
                             upload_to=upload_location_outfit,
                             null=True,
                             blank=True)
-    # This can be MANY categories. ManyToManyField <-..!
+
+    gender = models.CharField(max_length=10, choices=GENDER_CHOICES, default='u')
 
     # Tagged Clothes <-> outfit_set
     tagged_clothes = models.ManyToManyField(Cloth, blank=True)
@@ -69,9 +60,3 @@ class Outfit(models.Model):
     # def is_user_blocked_user(self, user):
     #
     #     return
-
-
-#
-# class LikeOutfit(models.Model):
-#     who = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="liked_outfits")
-#     which = models.ForeignKey(Outfit)

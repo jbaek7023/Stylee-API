@@ -9,6 +9,7 @@ from .serializers import (
     OutfitListSerializer,
     OutfitDetailSerializer,
     OutfitDetailCommentSerializer,
+    OutfitDetailLikeSerializer
 )
 
 from comments.serializers import CommentSerializer
@@ -39,6 +40,12 @@ class OutfitDetailCommentsView(generics.RetrieveAPIView):
     queryset = Outfit.objects.all()
     serializer_class = OutfitDetailCommentSerializer
     lookup_field = 'pk'
+
+class OutfitDetailLikesView(generics.RetrieveAPIView):
+    queryset = Outfit.objects.all()
+    serializer_class = OutfitDetailLikeSerializer
+    lookup_field = 'pk'
+
 
 
 # Requires [{JWT or Bearer Token}]

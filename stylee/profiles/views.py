@@ -21,11 +21,11 @@ from .models import Profile, Follow
 
 User = get_user_model()
 
-class ProfileDetailViewByUser(generics.RetrieveAPIView):
-    # we don't take use this function now
-    queryset = Profile.objects.all()
-    serializer_class = ProfileDetailSerializer
-    lookup_field = 'username'
+# class ProfileDetailViewByUser(generics.RetrieveAPIView):
+#     # we don't take use this function now
+#     queryset = Profile.objects.all()
+#     serializer_class = ProfileDetailSerializer
+#     lookup_field = 'username'
 
 # /profile/detail/
 class ProfileDetailView(generics.ListAPIView):
@@ -38,9 +38,7 @@ class ProfileDetailView(generics.ListAPIView):
 
 class FollowCreateAPIView(APIView):
     def post(self, request, format=None):
-        print(self.request.POST.get('user_id'))
         following_user = User.objects.filter(id=self.request.POST.get('user_id')).first()
-        print(following_user)
         if following_user is not None:
             follow_obj = Follow.objects.filter(follower=self.request.user, following=following_user).first()
             if follow_obj is not None:

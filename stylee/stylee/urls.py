@@ -23,15 +23,15 @@ urlpatterns = [
     url(r'^', include('django.contrib.auth.urls')),
     url(r'^admin/', admin.site.urls),
     url(r'^accounts/', include('allauth.urls')),
-    # url(r'^api-token-auth/', obtain_jwt_token),
     url(r'^profile/', include('profiles.urls', namespace="auth")),
     url(r'^outfits/', include('outfit.urls', namespace="outfit")),
     url(r'^clothes/', include('cloth.urls', namespace="wardrobe")),
     url(r'^comments/', include('comments.urls', namespace="comments")),
     url(r'^likes/', include('like.urls', namespace="likes")),
     url(r'^category/', include('category.urls', namespace="categories")),
+
     url(r'^rest-auth/', include('rest_auth.urls')),
     url(r'^auth/', include('rest_framework_social_oauth2.urls')),
     url(r'^rest-auth/registration/', include('rest_auth.registration.urls')),
-    url(r'^rest-auth/facebook/$', FacebookLogin.as_view(), name='fb_login'),
+    # url(r'^rest-auth/facebook/$', FacebookLogin.as_view(), name='fb_login'),
 ]

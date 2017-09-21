@@ -3,7 +3,7 @@ from django.shortcuts import render
 from rest_framework import generics
 from .models import Category
 
-from .serializers import OutfitListCategorySerializer
+from .serializers import OutfitListCategorySerializer, CategoryListSerializer
 
 # Create your views here.
 class OutfitCategoryAPIView(generics.RetrieveAPIView):
@@ -13,4 +13,11 @@ class OutfitCategoryAPIView(generics.RetrieveAPIView):
 
     def get_queryset(self):
         qs = Category.objects.all()
+        return qs
+
+class CategoryListAPIView(generics.ListAPIView):
+    serializer_class = CategoryListSerializer
+
+    def get_queryset(self):
+        qs = Category.objects.filter(owner=self.request.user)
         return qs

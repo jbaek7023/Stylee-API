@@ -29,13 +29,15 @@ def upload_location(instance, filename):
 class Profile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL)
     bio = models.TextField(max_length=255, blank=True)
-    gender = models.CharField(max_length=10, choices=GENDER_CHOICES, default='u')
-    location = models.CharField(max_length=20, choices=LOCATION_CHOICES, default='ud')
-    birth = models.DateField(default='1992-07-23', blank=True, null=True)
+    gender = models.CharField(max_length=10, choices=GENDER_CHOICES, default='u') # Recommend Factor
+    location = models.CharField(max_length=20, choices=LOCATION_CHOICES, default='ud') # Recommend Factor
+    birth = models.DateField(default='1992-07-23', blank=True, null=True) # Recommend Factor
     profile_img = models.ImageField(
         upload_to=upload_location,
         null=True,
         blank=True)
+    role = models.CharField(max_length=20, blank=True, null=True) # Recommend Factor
+
     def __str__(self):
         return str(self.user)
 

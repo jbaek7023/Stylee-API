@@ -54,6 +54,7 @@ class Outfit(models.Model):
         content_type = ContentType.objects.get_for_model(instance.__class__)
         return content_type
 
+
     # is it owner?
 
     #

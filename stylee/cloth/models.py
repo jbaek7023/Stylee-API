@@ -3,7 +3,7 @@ from django.conf import settings
 from django.db.models.signals import pre_save, post_save
 from django.contrib.contenttypes.models import ContentType
 
-from .utils import CLOTHES_CHOICES, CLOTHES_SIZE_CHOICES
+from .utils import CLOTHES_CHOICES, CLOTHES_SIZE_CHOICES, BIG_CLOTHES_CATEGORIES
 
 def upload_location(instance, filename):
     new_id = instance.id
@@ -17,6 +17,7 @@ class Cloth(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True)
     content = models.CharField(max_length=20)
 
+    big_cloth_type = models.CharField(max_length=11, choices=BIG_CLOTHES_CATEGORIES, default='top')
     # Cloth Type and image
     cloth_type = models.CharField(max_length=9, choices=CLOTHES_CHOICES, default='1')
     # img up to width of 1080px.
@@ -41,6 +42,19 @@ class Cloth(models.Model):
         instance = self
         content_type = ContentType.objects.get_for_model(instance.__class__)
         return content_type
+
+    def save(self, *args, **kwargs):
+        # Set the big_cloth_type Here! (Top, Outwear, Pants, Others - (shoes, cabs, earings) )
+        cloth_type = self.cloth_type
+        if cloth_type in ['ts', 'ct', 'sh', 'j']:
+            self.big_cloth_type = 'top'
+        elif cloth_type in ['a', 'b']:
+            self.big_cloth_type = 'bottom'
+        elif cloth_type in ['c', 'd']:
+            self.big_cloth_type = 'outwear'
+        else:
+            self.big_cloth_type = 'shoes'
+        super(Cloth, self).save(*args, **kwargs)
 
 def post_save_cloth_receiver(sender, instance, created, *args, **kwargs):
     if created:

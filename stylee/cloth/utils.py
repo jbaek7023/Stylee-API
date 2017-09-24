@@ -1,3 +1,15 @@
+BIG_CLOTHES_CATEGORIES = [
+    # Top
+    ('top' , 'Top'),
+    ('bottom' , 'Bottom'),
+    ('outwear', 'Outwear'),
+
+    # Bottom
+    ('etc', 'Accessories'),
+]
+
+
+
 CLOTHES_CHOICES = [
     # Top
     ('ts' , 't-shirt'),
@@ -23,5 +35,3 @@ CLOTHES_SIZE_CHOICES = [
     ('x2l','XXL'),
     ('x3l','XXXL')
 ]
-
-# Bottom

@@ -14,11 +14,18 @@ CLOTHES_CHOICES = [
     ('ct' , 'coat'),
     ('sh', 'shirt'),
 
+    #Outwear
+    ('ja', 'jacket'),
+
     # Bottom
     ('j', 'jean'),
+    ('p', 'pants'),
 
     # Shoes
-    ('', 'py')
+    ('s', 'shoes'),
+
+    # ETC
+    ('c', 'cab'),
 ]
 
 # Top

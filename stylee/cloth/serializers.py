@@ -11,7 +11,7 @@ from like.serializers import LikeListSerializer
 class ClothesListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cloth
-        fields = ('cloth_image', 'id')
+        fields = ('cloth_image', 'id', 'big_cloth_type')
 
 class ClothDetailDetailSerializer(serializers.ModelSerializer):
     class Meta:

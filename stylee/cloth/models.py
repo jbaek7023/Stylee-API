@@ -46,12 +46,12 @@ class Cloth(models.Model):
     def save(self, *args, **kwargs):
         # Set the big_cloth_type Here! (Top, Outwear, Pants, Others - (shoes, cabs, earings) )
         cloth_type = self.cloth_type
-        if cloth_type in ['ts', 'ct', 'sh', 'j']:
+        if cloth_type in ['ts', 'ct', 'sh']:
             self.big_cloth_type = 't'
-        elif cloth_type in ['a', 'b']:
-            self.big_cloth_type = 'b'
-        elif cloth_type in ['c', 'd']:
+        elif cloth_type in ['ja']:
             self.big_cloth_type = 'o'
+        elif cloth_type in ['j', 'p']:
+            self.big_cloth_type = 'b'
         elif cloth_type in ['s']:
             self.big_cloth_type = 's'
         else:

@@ -19,7 +19,7 @@ class ClothesListView(generics.ListAPIView):
         u = self.request.user
         cloth_type = self.request.GET.get("c")
         qs = Cloth.objects.all()
-        qs1 = qs.filter(user=u).filter(big_cloth_type=cloth_type)
+        qs1 = qs.filter(user=u)
         return qs1
 
 class ClothDetailView(generics.RetrieveAPIView):

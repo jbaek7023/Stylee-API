@@ -18,7 +18,7 @@ from django.conf.urls import url
 # import JWT
 from .views import (
     # ProfileDetailViewByUser,
-    ProfileDetailView,
+    UserDetailView,
     ProfileRetrieveAndUpdateProfile,
     UserCheckEmail,
     UserCheckUsername,
@@ -26,8 +26,8 @@ from .views import (
 )
 
 urlpatterns = [
-    url(r'^detail/$', ProfileDetailView.as_view(), name="user_profile"),
-    url(r'^follow/$', FollowCreateAPIView.as_view(), name="user_profile"),
+    url(r'^detail/$', UserDetailView.as_view(), name="user_profile"),
+    url(r'^follow/$', FollowCreateAPIView.as_view(), name="follow_user"),
     url(r'^echeck/$', UserCheckEmail.as_view(), name="user_email_check"),
     url(r'^update/(?P<user_id>\d+)/$', ProfileRetrieveAndUpdateProfile.as_view(), name="profile_retrieve_update"),
     url(r'^unamecheck/$', UserCheckUsername.as_view(), name="user_username_check"),

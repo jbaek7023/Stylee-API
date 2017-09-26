@@ -1,11 +1,9 @@
 BIG_CLOTHES_CATEGORIES = [
-    # Top
-    ('top' , 'Top'),
-    ('bottom' , 'Bottom'),
-    ('outwear', 'Outwear'),
-
-    # Bottom
-    ('etc', 'Accessories'),
+    ('t' , 'Top'),
+    ('b' , 'Bottom'),
+    ('o', 'Outwear'),
+    ('s', 'Shoes'),
+    ('e', 'ETC'),
 ]
 
 

@@ -11,7 +11,7 @@ import random
 import string
 
 from .serializers import (
-    ProfileDetailSerializer,
+    UserMenuSerializer,
     UserEmailSerizlier,
     ProfileRetrieveAndUpdateSerializer,
     FollowCreateSerializer
@@ -28,8 +28,8 @@ User = get_user_model()
 #     lookup_field = 'username'
 
 # /profile/detail/
-class ProfileDetailView(generics.ListAPIView):
-    serializer_class = ProfileDetailSerializer
+class UserDetailView(generics.ListAPIView):
+    serializer_class = UserMenuSerializer
 
     def get_queryset(self):
         qs = Profile.objects.all()

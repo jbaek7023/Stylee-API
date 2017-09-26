@@ -10,15 +10,6 @@ class FollowCreateSerializer(serializers.ModelSerializer):
         model = Follow
         fields = ()
 
-class ProfileDetailSerializer(serializers.ModelSerializer):
-    username = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Profile
-        fields = ('username', 'bio', 'user_id', 'gender', 'location', 'birth')
-
-    def get_username(self, obj):
-        return obj.user.username
 
 class UserRowSerializer(serializers.ModelSerializer):
     # user = UserAccountSerializer(read_only=True)
@@ -28,7 +19,7 @@ class UserRowSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('image', 'id', 'username')
+        fields = ('image', 'id', 'username',)
 
     def get_image(self, obj):
         try:
@@ -37,6 +28,13 @@ class UserRowSerializer(serializers.ModelSerializer):
             image = None
         return image
 
+
+class UserMenuSerializer(serializers.ModelSerializer):
+    user = UserRowSerializer(read_only=True)
+
+    class Meta:
+        model = Profile
+        fields = ('user',)
 
 class UserEmailSerizlier(serializers.ModelSerializer):
     class Meta:

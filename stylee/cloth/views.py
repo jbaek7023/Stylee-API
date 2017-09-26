@@ -16,9 +16,11 @@ class ClothesListView(generics.ListAPIView):
     serializer_class = ClothesListSerializer
 
     def get_queryset(self):
+        u = self.request.user
+        cloth_type = self.request.GET.get("c")
         qs = Cloth.objects.all()
-        logged_in_user_profile = qs.filter(user=self.request.user)
-        return logged_in_user_profile
+        qs1 = qs.filter(user=u).filter(big_cloth_type=cloth_type)
+        return qs1
 
 class ClothDetailView(generics.RetrieveAPIView):
     queryset = Cloth.objects.all()

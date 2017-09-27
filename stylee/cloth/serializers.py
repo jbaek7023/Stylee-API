@@ -3,6 +3,7 @@ from rest_framework import serializers
 from .models import Cloth, ClothDetail
 from comments.models import Comment
 from like.models import Like
+from star.models import Star
 
 from comments.serializers import CommentSerializer
 from profiles.serializers import UserRowSerializer
@@ -12,6 +13,18 @@ class ClothesListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cloth
         fields = ('cloth_image', 'id', 'big_cloth_type')
+
+class ClothStarSerializer(serializers.ModelSerializer):
+    image = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Cloth
+        fields = ('image',)
+
+    def get_image(self, obj):
+        if obj.cloth_image:
+            return str(obj.cloth_image.url)
+        return None
 
 class ClothDetailDetailSerializer(serializers.ModelSerializer):
     class Meta:
@@ -35,6 +48,8 @@ class ClothDetailSerializer(serializers.ModelSerializer):
     like_count = serializers.SerializerMethodField()
     liked = serializers.SerializerMethodField()
 
+    starred = serializers.SerializerMethodField()
+
     user = UserRowSerializer(read_only=True)
 
     detail = serializers.SerializerMethodField()
@@ -51,7 +66,9 @@ class ClothDetailSerializer(serializers.ModelSerializer):
             'comments',
             'comment_count',
             'like_count',
-            'liked')
+            'liked',
+            'starred',
+            )
 
     def get_like_count(self, obj):
         content_type = obj.get_content_type
@@ -67,6 +84,16 @@ class ClothDetailSerializer(serializers.ModelSerializer):
         if my_like.count() == 0:
             return False
         return True
+
+    def get_starred(self, obj):
+        content_type = obj.get_content_type
+        object_id = obj.id
+        user = self.context['request'].user
+        my_star = Star.objects.filter_by_instance(obj).filter(user=user)
+        if my_star.count() == 0:
+            return False
+        return True
+
 
     def get_comments(self, obj):
         content_type = obj.get_content_type

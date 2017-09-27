@@ -74,7 +74,6 @@ pre_save.connect(pre_save_user_receiver, sender=settings.AUTH_USER_MODEL)
 def post_save_user_receiver(sender, instance, created, *args, **kwargs):
     if instance.username:
         instance.username = create_unique_username(instance)
-        print(instance.username)
     if created:
         # There is no chance to 'get' without creation here.
         #      => because the instance(User) is unique.

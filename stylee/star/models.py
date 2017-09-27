@@ -3,12 +3,12 @@ from django.db import models
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 
-class LikeManager(models.Manager):
+class StarManager(models.Manager):
     def filter_by_instance(self, instance):
         # content_type = ContentType.objects.get_for_model(Outfit)
         content_type = ContentType.objects.get_for_model(instance.__class__)
         obj_id = instance.id
-        qs = super(LikeManager, self).filter(content_type=content_type, object_id=obj_id)
+        qs = super(StarManager, self).filter(content_type=content_type, object_id=obj_id)
         # comments = Comment.objects.filter(content_type=content_type, object_id=obj_id)
         return qs
 
@@ -24,7 +24,7 @@ class LikeManager(models.Manager):
                 # instance.content_type = model_qs.first()
                 # instance.object_id = obj_qs.first().id
 
-                instance, created = Like.objects.get_or_create(
+                instance, created = Star.objects.get_or_create(
                     user=user,
                     content_type=model_qs.first(),
                     object_id=obj_qs.first().id
@@ -37,25 +37,20 @@ class LikeManager(models.Manager):
                     return empty_instance
         return None
 
-
 # Create your models here.
-# Create your models here.
-class Like(models.Model):
+class Star(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, default=1)
 
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey('content_type', 'object_id')
+    #
+    # cloth = models.ForeignKey(Cloth, null=True, blank=True)
+    # 
 
-    created_at = models.DateTimeField(auto_now=False, auto_now_add=True)
-
-    objects = LikeManager()
+    objects = StarManager()
 
     def __str__(self):
         if self.user.username==None:
             return 'None'
         return self.user.username
-
-# Who liked this posts
-# [{user_obj}, {user}, {user}, ]
-# user_obj = user_id, user_profile_img

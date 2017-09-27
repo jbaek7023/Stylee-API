@@ -114,7 +114,6 @@ class UserCheckUsername(APIView):
             qs = qs.filter(
                 Q(username__exact=username)
             ).distinct()
-        print(len(qs))
         if(len(qs)==1):
             json_output = {"obtained": True}
             return Response(json_output)

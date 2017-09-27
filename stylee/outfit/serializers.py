@@ -6,6 +6,7 @@ from .models import Outfit
 
 from comments.models import Comment
 from like.models import Like
+from star.models import Star
 
 from comments.serializers import CommentSerializer
 from profiles.serializers import UserRowSerializer
@@ -24,6 +25,17 @@ class OutfitListSerializer(serializers.ModelSerializer):
             # 'location'
         )
 
+class OutfitStarSerializer(serializers.ModelSerializer):
+    image = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Outfit
+        fields = ('image',)
+
+    def get_image(self, obj):
+        if obj.outfit_img:
+            return str(obj.outfit_img.url)
+        return None
 
 
 from category.serializers import CategorySerializer
@@ -37,6 +49,8 @@ class OutfitDetailSerializer(serializers.ModelSerializer):
     categories = serializers.SerializerMethodField()
     user = UserRowSerializer(read_only=True)
     tagged_clothes = serializers.SerializerMethodField()
+    starred = serializers.SerializerMethodField()
+
 
     class Meta:
         model = Outfit
@@ -55,7 +69,8 @@ class OutfitDetailSerializer(serializers.ModelSerializer):
             'comment_count',
             'like_count',
             'liked',
-            'categories'
+            'categories',
+            'starred',
         )
 
     # def get_categories(self, obj):
@@ -76,6 +91,15 @@ class OutfitDetailSerializer(serializers.ModelSerializer):
         added_f = list(added_f.values('added', 'name', 'id'))
         categories = added + added_f
         return CategorySerializer(categories, many=True).data
+
+    def get_starred(self, obj):
+        content_type = obj.get_content_type
+        object_id = obj.id
+        user = self.context['request'].user
+        my_star = Star.objects.filter_by_instance(obj).filter(user=user)
+        if my_star.count() == 0:
+            return False
+        return True
 
     def get_like_count(self, obj):
         content_type = obj.get_content_type

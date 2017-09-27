@@ -6,8 +6,6 @@ from django.contrib.contenttypes.models import ContentType
 from outfit.models import Outfit
 
 def upload_location_category(instance, filename):
-    print(instance);
-    print(instance.id);
     # instance.id is bad!
     ext = filename.split('.')[-1]
     return "category/%s/%s.%s" % (instance.owner.id, instance.id, ext)

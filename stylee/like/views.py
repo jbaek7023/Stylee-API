@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework import generics
 from rest_framework.views import APIView
 
-from like.models import Like
+from .models import Like
 
 from .serializers import LikeSerializer, create_like_serializer
 

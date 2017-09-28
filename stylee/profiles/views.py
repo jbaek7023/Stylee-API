@@ -1,8 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db.models import Q
-from django.shortcuts import render
-from django.utils.text import slugify
-
+from django.shortcuts import get_object_or_404
 from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -14,18 +12,12 @@ from .serializers import (
     UserMenuSerializer,
     UserEmailSerizlier,
     ProfileRetrieveAndUpdateSerializer,
-    FollowCreateSerializer
+    ProfilePageSerializer
 )
 
-from .models import Profile, Follow
+from .models import Profile
 
 User = get_user_model()
-
-# class ProfileDetailViewByUser(generics.RetrieveAPIView):
-#     # we don't take use this function now
-#     queryset = Profile.objects.all()
-#     serializer_class = ProfileDetailSerializer
-#     lookup_field = 'username'
 
 # /profile/detail/
 class UserDetailView(generics.ListAPIView):
@@ -36,21 +28,18 @@ class UserDetailView(generics.ListAPIView):
         logged_in_user_profile = qs.filter(user=self.request.user)
         return logged_in_user_profile
 
-class FollowCreateAPIView(APIView):
-    def post(self, request, format=None):
-        following_user = User.objects.filter(id=self.request.POST.get('user_id')).first()
-        if following_user is not None:
-            follow_obj = Follow.objects.filter(follower=self.request.user, following=following_user).first()
-            if follow_obj is not None:
-                follow_obj.delete()
-                json_output = {"followed": False}
-                return Response(json_output)
-            else:
-                instance = Follow(follower=self.request.user, following=following_user)
-                instance.save()
-                json_output = {"followed": True}
-                return Response(json_output)
-        return Response({})
+class ProfilePageView(generics.RetrieveAPIView):
+    serializer_class = ProfilePageSerializer
+
+    def get_queryset(self):
+        logged_in_user = User.objects.filter(username=self.request.user.username)
+        return logged_in_user
+
+    def get_object(self):
+        queryset = self.get_queryset()
+        obj = get_object_or_404(queryset)
+        return obj
+
 
 # profile/update/<user_id> # only allow to logged in user (SECURE)
 class ProfileRetrieveAndUpdateProfile(generics.RetrieveUpdateAPIView):
@@ -60,12 +49,16 @@ class ProfileRetrieveAndUpdateProfile(generics.RetrieveUpdateAPIView):
     """
     queryset = Profile.objects.all()
     serializer_class = ProfileRetrieveAndUpdateSerializer
-    lookup_field = 'user_id'
 
     def get_queryset(self):
         qs = Profile.objects.all()
         logged_in_user_profile = qs.filter(user=self.request.user)
         return logged_in_user_profile
+
+    def get_object(self):
+        queryset = self.get_queryset()
+        obj = get_object_or_404(queryset)
+        return obj
 
 def random_string_generator(size=10, chars=string.ascii_lowercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))

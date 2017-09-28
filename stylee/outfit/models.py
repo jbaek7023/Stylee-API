@@ -8,9 +8,11 @@ from cloth.models import Cloth
 from comments.models import Comment
 
 def upload_location_outfit(instance, filename):
-    new_id = instance.id
     ext = filename.split('.')[-1]
-    return "outfits/%s/%s.%s" % (instance.user.id, new_id, ext)
+    random_number = uuid.uuid4()
+    random_number = str(random_number).replace('-', '_')
+    firstpart, secondpart = random_number[::2], random_number[1::2]
+    return "outfits/%s%s%s.%s" % (firstpart, instance.user.id, secondpart, ext)
 
 # Create your models here.
 class Outfit(models.Model):

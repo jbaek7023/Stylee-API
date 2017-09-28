@@ -7,11 +7,7 @@ from .models import Outfit
 from comments.models import Comment
 from like.models import Like
 from star.models import Star
-
-from comments.serializers import CommentSerializer
-from profiles.serializers import UserRowSerializer
-from cloth.serializers import ClothesListSerializer
-from like.serializers import LikeListSerializer
+from category.models import Category
 
 class OutfitListSerializer(serializers.ModelSerializer):
     class Meta:
@@ -38,9 +34,11 @@ class OutfitStarSerializer(serializers.ModelSerializer):
         return None
 
 
+from comments.serializers import CommentSerializer
+from cloth.serializers import ClothesListSerializer
+from like.serializers import LikeListSerializer
 from category.serializers import CategorySerializer
-from category.models import Category
-
+from profiles.serializers import UserRowSerializer
 class OutfitDetailSerializer(serializers.ModelSerializer):
     comments = serializers.SerializerMethodField()
     comment_count = serializers.SerializerMethodField()

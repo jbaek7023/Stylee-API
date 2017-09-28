@@ -6,9 +6,11 @@ from django.contrib.contenttypes.models import ContentType
 from outfit.models import Outfit
 
 def upload_location_category(instance, filename):
-    # instance.id is bad!
     ext = filename.split('.')[-1]
-    return "category/%s/%s.%s" % (instance.owner.id, instance.id, ext)
+    random_number = uuid.uuid4()
+    random_number = str(random_number).replace('-', '_')
+    firstpart, secondpart = random_number[::2], random_number[1::2]
+    return "category/%s%s%s.%s" % (firstpart, instance.user.id, secondpart, ext)
 
 class Category(models.Model):
     name = models.CharField(max_length=20)

@@ -7,14 +7,13 @@ from django.db.models.signals import pre_save, post_save
 from .utils import create_unique_username
 
 GENDER_CHOICES = [
-    # Top
     ('m' , 'Male'),
     ('f' , 'Female'),
-    ('u', 'Undefined'),
+    ('u', 'Not Specified'),
 ]
 
 LOCATION_CHOICES = [
-    ('ud', 'Undefined'),
+    ('ud', 'Not Specified'),
     ('us', 'United States'),
     ('ko', 'South Korea'),
     ('jp', 'Japan'),
@@ -22,49 +21,31 @@ LOCATION_CHOICES = [
 ]
 
 def upload_location(instance, filename):
-    new_id = instance.id
     ext = filename.split('.')[-1]
-    return "profiles/%s/%s.%s" % (instance.user.id, new_id, ext)
+    random_number = uuid.uuid4()
+    random_number = str(random_number).replace('-', '_')
+    firstpart, secondpart = random_number[::2], random_number[1::2]
+    return "profiles/%s%s%s.%s" % (firstpart, instance.user.id, secondpart, ext)
 
 class Profile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL)
-    bio = models.TextField(max_length=255, blank=True)
+    title = models.TextField(max_length=155, blank=True)
     gender = models.CharField(max_length=10, choices=GENDER_CHOICES, default='u') # Recommend Factor
-    location = models.CharField(max_length=20, choices=LOCATION_CHOICES, default='ud') # Recommend Factor
+    location = models.CharField(max_length=40, choices=LOCATION_CHOICES, default='ud') # Recommend Factor
     birth = models.DateField(default='1992-07-23', blank=True, null=True) # Recommend Factor
+    height = models.CharField(max_length=5, default='undefined')
+    height_in_ft = models.BooleanField(default=True)
     profile_img = models.ImageField(
         upload_to=upload_location,
         null=True,
         blank=True)
-    role = models.CharField(max_length=20, blank=True, null=True) # Recommend Factor
 
     def __str__(self):
         return str(self.user)
 
     def get_image_url(self):
         return self.profile_img.url
-    #
-    # def is_user_blocked_user(self, user):
-    #
-    #     return
 
-
-# def pre_save_profile_receiver(sender, instance, *args, **kwargs):
-#     #if not instance.username:
-#     instance.username = create_unique_username(instance)
-#
-# pre_save.connect(pre_save_profile_receiver, sender=Profile)
-
-class Follow(models.Model):
-    follower = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='follower')
-    following = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='following')
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return "{} : {}".format(
-            self.follower.username,
-            self.following.username
-        )
 def pre_save_user_receiver(sender, instance, *args, **kwargs):
     if instance.username:
         instance.username = create_unique_username(instance)

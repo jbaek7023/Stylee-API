@@ -30,7 +30,8 @@ urlpatterns = [
     url(r'^likes/', include('like.urls', namespace="likes")),
     url(r'^stars/', include('star.urls', namespace="stars")),
     url(r'^category/', include('category.urls', namespace="categories")),
-
+    url(r'^follows/', include('follow.urls', namespace="follows")),
+    
     url(r'^rest-auth/', include('rest_auth.urls')),
     url(r'^auth/', include('rest_framework_social_oauth2.urls')),
     url(r'^rest-auth/registration/', include('rest_auth.registration.urls')),

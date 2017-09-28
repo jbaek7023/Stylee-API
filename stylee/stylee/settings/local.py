@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     'like',
     'category',
     'star',
+    'follow',
 ]
 # localhost:8000/
 SITE_ID = 7

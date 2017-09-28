@@ -3,12 +3,16 @@ from django.conf import settings
 from django.db.models.signals import pre_save, post_save
 from django.contrib.contenttypes.models import ContentType
 
+import uuid
+
 from .utils import CLOTHES_CHOICES, CLOTHES_SIZE_CHOICES, BIG_CLOTHES_CATEGORIES
 
 def upload_location(instance, filename):
-    new_id = instance.id
     ext = filename.split('.')[-1]
-    return "clothes/%s/%s.%s" % (instance.user.id, new_id, ext)
+    random_number = uuid.uuid4()
+    random_number = str(random_number).replace('-', '_')
+    firstpart, secondpart = random_number[::2], random_number[1::2]
+    return "clothes/%s%s%s.%s" % (firstpart, instance.user.id, secondpart, ext)
 
 # Create your models here.
 class Cloth(models.Model):

@@ -10,6 +10,7 @@ from .views import (
 
 urlpatterns = [
     url(r'^list/$', CommentListView.as_view(), name="comments_list"),
+    # comment and its detail
     url(r'^detail/(?P<pk>\d+)/$', CommentDetailView.as_view(), name="comment_detail"),
     url(r'^edit/(?P<pk>\d+)/$', CommentEditAPIView.as_view(), name="comment_edit"),
     url(r'^create/$', CommentCreateAPIView.as_view(), name="create_comment"),

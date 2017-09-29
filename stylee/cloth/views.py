@@ -17,9 +17,18 @@ class ClothesListView(generics.ListAPIView):
 
     def get_queryset(self):
         u = self.request.user
-        qs = Cloth.objects.all(user=self.request.user)
+        qs = Cloth.objects.all(user=u)
         qs1 = qs.filter(user=u)
         return qs1
+
+class ClothesArchieveList(generics.ListAPIView):
+    serializer_class = ClothesListSerializer
+
+    def get_queryset(self):
+        u = self.request.user
+        qs = Cloth.objects.filter(user=u, archieve=True)
+        return qs
+
 
 class ClothesListByIdView(generics.ListAPIView):
     serializer_class = ClothesListSerializer
@@ -44,7 +53,7 @@ class ClothDetailView(generics.RetrieveAPIView):
 class ClothDetailCommentsView(generics.RetrieveAPIView):
     serializer_class = ClothDetailCommentSerializer
     lookup_field = 'pk'
-    
+
     def get_queryset(self):
         qs = Cloth.objects.all(user=self.request.user)
         return qs

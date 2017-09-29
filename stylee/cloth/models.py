@@ -21,7 +21,7 @@ class ClothManager(models.Manager):
 
         # owned by user
         if user: #user logged in
-            qs = qs.exclude(Q(only_me=True) & ~Q(user=user))
+            qs = qs.exclude(Q(only_me=True) & ~Q(user=user) | Q(archieve=True))
             print(qs)
         return qs
 
@@ -43,6 +43,7 @@ class Cloth(models.Model):
                                 blank=True)
     in_wardrobe = models.BooleanField(default=True)
     only_me = models.BooleanField(default=False)
+    archieve = models.BooleanField(default=False)
 
     objects = ClothManager()
 

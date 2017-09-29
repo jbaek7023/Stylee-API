@@ -7,7 +7,8 @@ from .views import (
     ClothDetailView,
     ClothDetailCommentsView,
     ClothDetailLikesView,
-    ClothesListByIdView
+    ClothesListByIdView,
+    ClothesArchieveList,
 )
 
 urlpatterns = [
@@ -16,4 +17,5 @@ urlpatterns = [
     url(r'^comments/(?P<pk>\d+)/$', ClothDetailCommentsView.as_view(), name="clo_comments"),
     url(r'^likes/(?P<pk>\d+)/$', ClothDetailLikesView.as_view(), name="clo_likes"),
     url(r'^clothlist/(?P<user_id>\d+)/$', ClothesListByIdView.as_view(), name="clo_list_id"),
+    url(r'^archieve/$', ClothesArchieveList.as_view(), name="archieve_clo_list"),
 ]

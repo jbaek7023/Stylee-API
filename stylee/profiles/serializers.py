@@ -71,6 +71,7 @@ class ProfilePageSerializer(serializers.ModelSerializer):
     clothes_count = serializers.SerializerMethodField()
     outfits = serializers.SerializerMethodField()
     is_owner = serializers.SerializerMethodField()
+    is_following = serializers.SerializerMethodField()
 
     class Meta:
         model = User
@@ -85,6 +86,7 @@ class ProfilePageSerializer(serializers.ModelSerializer):
             'clothes_count',
             'outfits',
             'is_owner',
+            'is_following',
         )
 
     def get_title(self, obj):
@@ -125,3 +127,6 @@ class ProfilePageSerializer(serializers.ModelSerializer):
 
     def get_is_owner(self, obj):
         return obj == self.context['request'].user
+
+    def get_is_following(self, obj):
+        return obj.following.filter(follower=self.context['request'].user).exists()

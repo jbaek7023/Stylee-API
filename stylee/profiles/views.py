@@ -12,7 +12,8 @@ from .serializers import (
     UserMenuSerializer,
     UserEmailSerizlier,
     ProfileRetrieveAndUpdateSerializer,
-    ProfilePageSerializer
+    ProfilePageSerializer,
+    # ProfilePageByIdSerializer
 )
 
 from .models import Profile
@@ -40,6 +41,20 @@ class ProfilePageView(generics.RetrieveAPIView):
         obj = get_object_or_404(queryset)
         return obj
 
+class ProfilePageByIdView(generics.RetrieveAPIView):
+    serializer_class = ProfilePageSerializer
+
+    def get_queryset(self):
+        uid = self.kwargs['user_id']
+        User = get_user_model()
+        profile_user = User.objects.filter(id=uid)
+        # logged_in_user = User.objects.filter(username=self.request.user.username)
+        return profile_user
+
+    def get_object(self):
+        queryset = self.get_queryset()
+        obj = get_object_or_404(queryset)
+        return obj
 
 # profile/update/<user_id> # only allow to logged in user (SECURE)
 class ProfileRetrieveAndUpdateProfile(generics.RetrieveUpdateAPIView):

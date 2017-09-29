@@ -60,7 +60,8 @@ class ProfileUpdateProfileImageSerializer(serializers.ModelSerializer):
         fields = ('profile_img',)
 
 from outfit.serializers import OutfitListSerializer
-# Profile Page
+
+#ProfilePage
 class ProfilePageSerializer(serializers.ModelSerializer):
     outfit_count = serializers.SerializerMethodField()
     followed_count = serializers.SerializerMethodField()
@@ -69,10 +70,12 @@ class ProfilePageSerializer(serializers.ModelSerializer):
     category_count = serializers.SerializerMethodField()
     clothes_count = serializers.SerializerMethodField()
     outfits = serializers.SerializerMethodField()
+    is_owner = serializers.SerializerMethodField()
 
     class Meta:
         model = User
         fields = (
+            'id',
             'username',
             'outfit_count',
             'followed_count',
@@ -81,6 +84,7 @@ class ProfilePageSerializer(serializers.ModelSerializer):
             'category_count',
             'clothes_count',
             'outfits',
+            'is_owner',
         )
 
     def get_title(self, obj):
@@ -115,5 +119,9 @@ class ProfilePageSerializer(serializers.ModelSerializer):
 
     def get_outfits(self, obj):
         if(obj.outfit_set):
-            return OutfitListSerializer(obj.outfit_set, many=True).data
+            filtered_set = obj.outfit_set.all(user=self.context['request'].user)
+            return OutfitListSerializer(filtered_set, many=True).data
         return {}
+
+    def get_is_owner(self, obj):
+        return obj == self.context['request'].user

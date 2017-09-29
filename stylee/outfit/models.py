@@ -1,7 +1,7 @@
 from django.db import models
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
-
+from django.db.models import Q
 from .utils import GENDER_CHOICES
 
 from cloth.models import Cloth
@@ -13,6 +13,16 @@ def upload_location_outfit(instance, filename):
     random_number = str(random_number).replace('-', '_')
     firstpart, secondpart = random_number[::2], random_number[1::2]
     return "outfits/%s%s%s.%s" % (firstpart, instance.user.id, secondpart, ext)
+
+class OutfitManager(models.Manager):
+    def all(self, user=None, request=None, *args, **kwargs):
+        qs = super(OutfitManager, self).all()
+
+        # owned by user
+        if user: #user logged in
+            qs = qs.exclude(Q(only_me=True) & ~Q(user=user))
+            print(qs)
+        return qs
 
 # Create your models here.
 class Outfit(models.Model):
@@ -32,8 +42,11 @@ class Outfit(models.Model):
     # Tagged Clothes <-> outfit_set
     tagged_clothes = models.ManyToManyField(Cloth, blank=True)
     location = models.CharField(max_length=20, blank=True, null=True)
+    only_me = models.BooleanField(default=False)
     # other Related Class
     # Like, Comment, Share,
+
+    objects = OutfitManager()
 
     def __str__(self):
         return str(self.user)
@@ -55,11 +68,3 @@ class Outfit(models.Model):
         instance = self
         content_type = ContentType.objects.get_for_model(instance.__class__)
         return content_type
-
-
-    # is it owner?
-
-    #
-    # def is_user_blocked_user(self, user):
-    #
-    #     return

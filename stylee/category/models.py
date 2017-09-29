@@ -1,7 +1,7 @@
 from django.db import models
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
-
+from django.db.models import Q
 
 from outfit.models import Outfit
 
@@ -12,6 +12,16 @@ def upload_location_category(instance, filename):
     firstpart, secondpart = random_number[::2], random_number[1::2]
     return "category/%s%s%s.%s" % (firstpart, instance.user.id, secondpart, ext)
 
+class CategoryManager(models.Manager):
+    def all(self, user=None, request=None, *args, **kwargs):
+        qs = super(CategoryManager, self).all()
+        # owned by user
+        if user: #user logged in
+            print(user)
+            qs = qs.exclude(Q(only_me=True) & ~Q(owner=user))
+            # qs = qs.exclude(~Q(owner=user))
+        return qs
+
 class Category(models.Model):
     name = models.CharField(max_length=20)
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True)
@@ -21,6 +31,9 @@ class Category(models.Model):
                             null=True,
                             blank=True)
     detail = models.CharField(max_length=50, blank=True, null=True)
+    only_me = models.BooleanField(default=False)
+
+    objects = CategoryManager()
 
     def __str__(self):
         if(self.owner):

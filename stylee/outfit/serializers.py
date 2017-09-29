@@ -18,7 +18,8 @@ class OutfitListSerializer(serializers.ModelSerializer):
             'outfit_img',
             # 'category',
             # 'tagged_clothes',
-            # 'location'
+            # 'location',
+            'only_me'
         )
 
 class OutfitStarSerializer(serializers.ModelSerializer):
@@ -48,7 +49,7 @@ class OutfitDetailSerializer(serializers.ModelSerializer):
     user = UserRowSerializer(read_only=True)
     tagged_clothes = serializers.SerializerMethodField()
     starred = serializers.SerializerMethodField()
-
+    is_owner = serializers.SerializerMethodField()
 
     class Meta:
         model = Outfit
@@ -69,6 +70,7 @@ class OutfitDetailSerializer(serializers.ModelSerializer):
             'liked',
             'categories',
             'starred',
+            'is_owner',
         )
 
     # def get_categories(self, obj):
@@ -130,6 +132,10 @@ class OutfitDetailSerializer(serializers.ModelSerializer):
         comments_count = comments_count - 2
         return comments_count
 
+    def get_is_owner(self, obj):
+        if(obj.user):
+            return obj.user == self.context['request'].user
+        return False
     # user = user_serializer
     # user = category_serializer
     # tagged_clothes = clothes_serializer

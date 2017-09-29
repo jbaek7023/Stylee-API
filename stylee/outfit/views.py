@@ -1,6 +1,7 @@
 from django.shortcuts import render
 
 from rest_framework import generics
+from django.contrib.auth import get_user_model
 
 from .models import Outfit
 from category.models import Category
@@ -19,39 +20,44 @@ class OutfitListView(generics.ListAPIView):
     serializer_class = OutfitListSerializer
 
     def get_queryset(self):
-        qs = Outfit.objects.all()
+        qs = Outfit.objects.all(user=self.request.user)
         logged_in_user_profile = qs.filter(user=self.request.user)
         # if undefined user, return 404.(later)
         return logged_in_user_profile
 
+class OutfitListByIdView(generics.ListAPIView):
+    serializer_class = OutfitListSerializer
+
+    def get_queryset(self):
+        uid = self.kwargs['user_id']
+        User = get_user_model()
+        outfit_owner = User.objects.filter(id=uid).first()
+        qs = Outfit.objects.all(user=self.request.user)
+        qs = qs.filter(user=outfit_owner)
+        return qs
+
 # Requires [{JWT or Bearer Token} AND outfit_id
 # Returns Outfit fields
 class OutfitDetailView(generics.RetrieveAPIView):
-    queryset = Outfit.objects.all()
     serializer_class = OutfitDetailSerializer
     lookup_field = 'pk'
-#
-# class OutfitCategoryView(generics.RetrieveUpdateAPIView):
-#     queryset = Outfit.objects.all()
-#     serializer_class = CategoryListUpdateSerializer
-#     lookup_field = 'pk'
+
+    def get_queryset(self):
+        qs = Outfit.objects.all(user=self.request.user)
+        return qs
 
 class OutfitDetailCommentsView(generics.RetrieveAPIView):
-    queryset = Outfit.objects.all()
     serializer_class = OutfitDetailCommentSerializer
     lookup_field = 'pk'
 
+    def get_queryset(self):
+        qs = Outfit.objects.all(user=self.request.user)
+        return qs
+
 class OutfitDetailLikesView(generics.RetrieveAPIView):
-    queryset = Outfit.objects.all()
     serializer_class = OutfitDetailLikeSerializer
     lookup_field = 'pk'
 
-
-
-# Requires [{JWT or Bearer Token}]
-# Returns Category. [{name:'Gym', main:'aws_img', count: '5'}]
-# class OutfitCategoryListView(generics.ListAPIView):
-#     serializer_class = OutfitListSerializer
-
-# Requires [{JWT or Bearer Token} AND Category_id]
-# Returns Outfits in the category
+    def get_queryset(self):
+        qs = Outfit.objects.all(user=self.request.user)
+        return qs

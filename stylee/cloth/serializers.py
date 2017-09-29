@@ -12,7 +12,7 @@ from like.serializers import LikeListSerializer
 class ClothesListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cloth
-        fields = ('cloth_image', 'id', 'big_cloth_type')
+        fields = ('cloth_image', 'id', 'big_cloth_type', 'only_me',)
 
 class ClothStarSerializer(serializers.ModelSerializer):
     image = serializers.SerializerMethodField()
@@ -53,6 +53,9 @@ class ClothDetailSerializer(serializers.ModelSerializer):
     user = UserRowSerializer(read_only=True)
 
     detail = serializers.SerializerMethodField()
+
+    is_owner = serializers.SerializerMethodField()
+
     class Meta:
         model = Cloth
         fields = (
@@ -68,6 +71,8 @@ class ClothDetailSerializer(serializers.ModelSerializer):
             'like_count',
             'liked',
             'starred',
+            'only_me',
+            'is_owner',
             )
 
     def get_like_count(self, obj):
@@ -111,6 +116,11 @@ class ClothDetailSerializer(serializers.ModelSerializer):
     def get_detail(self, obj):
         cloth_detail = obj.c_detail
         return ClothDetailDetailSerializer(cloth_detail).data
+
+    def get_is_owner(self, obj):
+        if(obj.user):
+            return obj.user == self.context['request'].user
+        return False
 
 class ClothDetailCommentSerializer(serializers.ModelSerializer):
     comments = serializers.SerializerMethodField()

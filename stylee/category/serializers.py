@@ -16,19 +16,26 @@ class CategorySerializer(serializers.ModelSerializer):
 
 class OutfitListCategorySerializer(serializers.ModelSerializer):
     outfits = serializers.SerializerMethodField()
+    is_owner = serializers.SerializerMethodField()
+
     class Meta:
         model = Category
         fields = (
             'id',
             'name',
-            'outfits'
-            # 'image',
+            'is_owner',
+            'outfits',
         )
 
     def get_outfits(self, obj):
         if obj.outfits is not None:
             return OutfitListSerializer(obj.outfits, many=True).data
         return None
+
+    def get_is_owner(self, obj):
+        if(obj.owner):
+            return obj.owner == self.context['request'].user
+        return False
 
 class CategoryListSerializer(serializers.ModelSerializer):
     image = serializers.SerializerMethodField()
@@ -38,6 +45,7 @@ class CategoryListSerializer(serializers.ModelSerializer):
             'id',
             'name',
             'image',
+            'only_me',
         )
 
     def get_image(self, obj):

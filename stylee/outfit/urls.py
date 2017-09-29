@@ -5,7 +5,8 @@ from .views import (
     OutfitListView,
     OutfitDetailView,
     OutfitDetailCommentsView,
-    OutfitDetailLikesView
+    OutfitDetailLikesView,
+    OutfitListByIdView
 )
 
 urlpatterns = [
@@ -13,4 +14,5 @@ urlpatterns = [
     url(r'^detail/(?P<pk>\d+)/$', OutfitDetailView.as_view(), name="outfit_detail"),
     url(r'^comments/(?P<pk>\d+)/$', OutfitDetailCommentsView.as_view(), name="outfit_comments"),
     url(r'^likes/(?P<pk>\d+)/$', OutfitDetailLikesView.as_view(), name="outfit_likes"),
+    url(r'^outlist/(?P<user_id>\d+)/$', OutfitListByIdView.as_view(), name="outfit_list_by_id"),
 ]

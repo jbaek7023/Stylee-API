@@ -52,7 +52,6 @@ class Comment(models.Model):
 
     content = models.TextField(max_length=500, blank=True, null=True)
     publish = models.DateTimeField(auto_now=False, auto_now_add=True)
-    updated = models.DateTimeField(auto_now=True, auto_now_add=False)
 
     objects = CommentManager()
 

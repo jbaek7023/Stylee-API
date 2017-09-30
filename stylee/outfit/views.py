@@ -2,6 +2,7 @@ from django.shortcuts import render
 
 from rest_framework import generics
 from django.contrib.auth import get_user_model
+from rest_framework.mixins import DestroyModelMixin, UpdateModelMixin
 
 from .models import Outfit
 from category.models import Category
@@ -10,7 +11,7 @@ from .serializers import (
     OutfitListSerializer,
     OutfitDetailSerializer,
     OutfitDetailCommentSerializer,
-    OutfitDetailLikeSerializer
+    OutfitDetailLikeSerializer,
 )
 
 from comments.serializers import CommentSerializer
@@ -45,6 +46,21 @@ class OutfitDetailView(generics.RetrieveAPIView):
     def get_queryset(self):
         qs = Outfit.objects.all(user=self.request.user)
         return qs
+
+class OutfitEditView(DestroyModelMixin, UpdateModelMixin, generics.RetrieveAPIView):
+    serializer_class = OutfitDetailSerializer
+    lookup_field = 'pk'
+
+    def get_queryset(self):
+        qs = Outfit.objects.all(user=self.request.user)
+        return qs
+
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
+
 
 class OutfitDetailCommentsView(generics.RetrieveAPIView):
     serializer_class = OutfitDetailCommentSerializer

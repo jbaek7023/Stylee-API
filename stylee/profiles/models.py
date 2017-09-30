@@ -33,7 +33,7 @@ class Profile(models.Model):
     gender = models.CharField(max_length=10, choices=GENDER_CHOICES, default='u') # Recommend Factor
     location = models.CharField(max_length=40, choices=LOCATION_CHOICES, default='ud') # Recommend Factor
     birth = models.DateField(default='1992-07-23', blank=True, null=True) # Recommend Factor
-    height = models.CharField(max_length=5, default='undefined')
+    height = models.CharField(max_length=8, default='undefined')
     height_in_ft = models.BooleanField(default=True)
     profile_img = models.ImageField(
         upload_to=upload_location,
@@ -47,18 +47,21 @@ class Profile(models.Model):
         return self.profile_img.url
 
 def pre_save_user_receiver(sender, instance, *args, **kwargs):
+    # for facebook only
+    # Automatically, it can't assign
+    # if not instance.username:
+    #     instance.username = create_unique_username(instance)
+    # pass
     if instance.username:
-        instance.username = create_unique_username(instance)
-
+        instance.username = instance.username.lower()
 pre_save.connect(pre_save_user_receiver, sender=settings.AUTH_USER_MODEL)
 
 def post_save_user_receiver(sender, instance, created, *args, **kwargs):
-    if instance.username:
-        instance.username = create_unique_username(instance)
     if created:
         # There is no chance to 'get' without creation here.
         #      => because the instance(User) is unique.
         #           => we call get_or_create just for Creation
         profile, is_created = Profile.objects.get_or_create(user=instance)
+        print('passed')
 
 post_save.connect(post_save_user_receiver, sender=settings.AUTH_USER_MODEL)

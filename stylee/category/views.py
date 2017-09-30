@@ -1,10 +1,11 @@
 from django.shortcuts import render
 from django.contrib.auth import get_user_model
+from rest_framework.mixins import DestroyModelMixin, UpdateModelMixin
 
 from rest_framework import generics
 from .models import Category
 
-from .serializers import OutfitListCategorySerializer, CategoryListSerializer
+from .serializers import CategoryDetailSerializer, CategoryListSerializer
 
 
 
@@ -13,12 +14,27 @@ from .serializers import OutfitListCategorySerializer, CategoryListSerializer
 # Create your views here.
 class OutfitCategoryAPIView(generics.RetrieveAPIView):
     # queryset = Outfit.objects.all()
-    serializer_class = OutfitListCategorySerializer
+    serializer_class = CategoryDetailSerializer
     lookup_field = 'pk'
 
     def get_queryset(self):
         qs = Category.objects.all(owner=self.request.user)
         return qs
+
+class CategoryEditAPIView(DestroyModelMixin, UpdateModelMixin, generics.RetrieveAPIView):
+    serializer_class = CategoryDetailSerializer
+    lookup_field = 'pk'
+
+    def get_queryset(self):
+        qs = Category.objects.all(owner=self.request.user)
+        return qs
+
+    def put(self, request, *args, **kwargs):
+        # Raise 404 if user has self.request.user != Category(obj_.id).owner
+        return self.update(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
 
 class CategoryListAPIView(generics.ListAPIView):
     serializer_class = CategoryListSerializer

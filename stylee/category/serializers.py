@@ -14,17 +14,19 @@ class CategorySerializer(serializers.ModelSerializer):
             'added'
         )
 
-class OutfitListCategorySerializer(serializers.ModelSerializer):
+class CategoryDetailSerializer(serializers.ModelSerializer):
     outfits = serializers.SerializerMethodField()
     is_owner = serializers.SerializerMethodField()
 
     class Meta:
         model = Category
         fields = (
-            'id',
             'name',
+            'owner',
             'is_owner',
             'outfits',
+            'only_me',
+            'detail',
         )
 
     def get_outfits(self, obj):

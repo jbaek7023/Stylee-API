@@ -59,8 +59,20 @@ class ProfileUpdateProfileImageSerializer(serializers.ModelSerializer):
         model = Profile
         fields = ('profile_img',)
 
-from outfit.serializers import OutfitListSerializer
+class ProfileEditSerializer(serializers.ModelSerializer):
 
+    class Meta:
+        model = Profile
+        fields = (
+            'title',
+            'gender',
+            'birth',
+            'height',
+            'height_in_ft',
+            'profile_img',
+        )
+
+from outfit.serializers import OutfitListSerializer
 #ProfilePage
 class ProfilePageSerializer(serializers.ModelSerializer):
     outfit_count = serializers.SerializerMethodField()

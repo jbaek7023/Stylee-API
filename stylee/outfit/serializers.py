@@ -59,7 +59,6 @@ class OutfitDetailSerializer(serializers.ModelSerializer):
             'content',
             'gender',
             'publish',
-            'updated',
             'outfit_img',
             # 'category',
             'tagged_clothes',
@@ -70,6 +69,7 @@ class OutfitDetailSerializer(serializers.ModelSerializer):
             'liked',
             'categories',
             'starred',
+            'only_me',
             'is_owner',
         )
 

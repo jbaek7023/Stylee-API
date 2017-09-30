@@ -30,8 +30,6 @@ class ClothDetailDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = ClothDetail
         fields = (
-            'publish',
-            'updated',
             'color',
             'brand',
             'size',
@@ -39,7 +37,8 @@ class ClothDetailDetailSerializer(serializers.ModelSerializer):
             'seasons',
             'delivery_loc',
             'link',
-            'detail')
+            'detail',
+        )
 
 # In Progress..!!
 class ClothDetailSerializer(serializers.ModelSerializer):
@@ -73,6 +72,7 @@ class ClothDetailSerializer(serializers.ModelSerializer):
             'starred',
             'only_me',
             'is_owner',
+            'publish',
             )
 
     def get_like_count(self, obj):

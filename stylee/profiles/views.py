@@ -4,6 +4,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.mixins import DestroyModelMixin, UpdateModelMixin
 
 import random
 import string
@@ -13,6 +14,8 @@ from .serializers import (
     UserEmailSerizlier,
     ProfileRetrieveAndUpdateSerializer,
     ProfilePageSerializer,
+    ProfileEditSerializer,
+    UserAccountSerializer,
     # ProfilePageByIdSerializer
 )
 
@@ -40,6 +43,36 @@ class ProfilePageView(generics.RetrieveAPIView):
         queryset = self.get_queryset()
         obj = get_object_or_404(queryset)
         return obj
+
+class ProfileEditAPIView(UpdateModelMixin, generics.RetrieveAPIView):
+    serializer_class = ProfileEditSerializer
+
+    def get_queryset(self):
+        logged_in_user = User.objects.filter(id=self.request.user.id)
+        return logged_in_user
+
+    def get_object(self):
+        queryset = self.get_queryset()
+        obj = get_object_or_404(queryset)
+        return obj.profile
+
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+
+class EmailEditAPIView(UpdateModelMixin, generics.RetrieveAPIView):
+    serializer_class = UserEmailSerizlier
+
+    def get_queryset(self):
+        logged_in_user = User.objects.filter(id=self.request.user.id)
+        return logged_in_user
+
+    def get_object(self):
+        queryset = self.get_queryset()
+        obj = get_object_or_404(queryset)
+        return obj
+
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
 
 class ProfilePageByIdView(generics.RetrieveAPIView):
     serializer_class = ProfilePageSerializer

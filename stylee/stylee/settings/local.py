@@ -208,6 +208,7 @@ REST_FRAMEWORK = {
 import datetime
 JWT_AUTH = {
     'JWT_EXPIRATION_DELTA': datetime.timedelta(days=30),
+    'JWT_ALLOW_REFRESH': True,
 }
 
 # Facebook configuration
@@ -247,6 +248,9 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static-storage")
 ]
 STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static-serve")
+
+#
+# LOGOUT_ON_PASSWORD_CHANGE = False
 
 import datetime
 

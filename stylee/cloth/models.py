@@ -44,7 +44,8 @@ class Cloth(models.Model):
     in_wardrobe = models.BooleanField(default=True)
     only_me = models.BooleanField(default=False)
     archieve = models.BooleanField(default=False)
-
+    publish = models.DateTimeField(auto_now=False, auto_now_add=True)
+    
     objects = ClothManager()
 
     def __str__(self):
@@ -90,8 +91,6 @@ class ClothDetail(models.Model):
     # Cloth Detail
     cloth = models.OneToOneField(Cloth, null=True, on_delete=models.CASCADE, related_name='c_detail')
 
-    publish = models.DateTimeField(auto_now=False, auto_now_add=True)
-    updated = models.DateTimeField(auto_now=True, auto_now_add=False)
     color = models.CharField(max_length=6, blank=True, null=True)
     brand = models.CharField(max_length=30, blank=True, null=True)
     size = models.CharField(max_length=12, choices=CLOTHES_SIZE_CHOICES, blank=True, null=True)

@@ -31,7 +31,6 @@ class Outfit(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True)
     content = models.CharField(max_length=30)
     publish = models.DateTimeField(auto_now=False, auto_now_add=True)
-    updated = models.DateTimeField(auto_now=True, auto_now_add=False)
     outfit_img = models.ImageField(
                             upload_to=upload_location_outfit,
                             null=True,

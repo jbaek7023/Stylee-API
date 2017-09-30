@@ -15,6 +15,7 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
+from rest_framework_jwt.views import refresh_jwt_token
 
 # import JWT
 from .views import FacebookLogin
@@ -31,7 +32,7 @@ urlpatterns = [
     url(r'^stars/', include('star.urls', namespace="stars")),
     url(r'^category/', include('category.urls', namespace="categories")),
     url(r'^follows/', include('follow.urls', namespace="follows")),
-    
+    url(r'^api-token-refresh/', refresh_jwt_token),
     url(r'^rest-auth/', include('rest_auth.urls')),
     url(r'^auth/', include('rest_framework_social_oauth2.urls')),
     url(r'^rest-auth/registration/', include('rest_auth.registration.urls')),

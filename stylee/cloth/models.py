@@ -45,7 +45,7 @@ class Cloth(models.Model):
     only_me = models.BooleanField(default=False)
     archieve = models.BooleanField(default=False)
     publish = models.DateTimeField(auto_now=False, auto_now_add=True)
-    
+
     objects = ClothManager()
 
     def __str__(self):

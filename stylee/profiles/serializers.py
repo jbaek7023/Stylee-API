@@ -84,12 +84,14 @@ class ProfilePageSerializer(serializers.ModelSerializer):
     outfits = serializers.SerializerMethodField()
     is_owner = serializers.SerializerMethodField()
     is_following = serializers.SerializerMethodField()
+    image = serializers.SerializerMethodField()
 
     class Meta:
         model = User
         fields = (
             'id',
             'username',
+            'image',
             'outfit_count',
             'followed_count',
             'following_count',
@@ -100,6 +102,11 @@ class ProfilePageSerializer(serializers.ModelSerializer):
             'is_owner',
             'is_following',
         )
+
+    def get_image(self, obj):
+        if(obj.profile.profile_img):
+            return obj.profile.profile_img.url
+        return None
 
     def get_title(self, obj):
         if(obj.profile):

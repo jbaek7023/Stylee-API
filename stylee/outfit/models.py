@@ -6,7 +6,7 @@ from .utils import GENDER_CHOICES
 
 from cloth.models import Cloth
 from comments.models import Comment
-
+import uuid
 def upload_location_outfit(instance, filename):
     ext = filename.split('.')[-1]
     random_number = uuid.uuid4()

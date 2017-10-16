@@ -2,6 +2,7 @@ from rest_framework import serializers
 
 from .models import Category
 from outfit.serializers import OutfitListSerializer
+from profiles.serializers import UserRowSerializer
 
 class CategorySerializer(serializers.ModelSerializer):
     # added = serializers.BooleanField(source='outfits__pk')
@@ -17,6 +18,7 @@ class CategorySerializer(serializers.ModelSerializer):
 class CategoryDetailSerializer(serializers.ModelSerializer):
     outfits = serializers.SerializerMethodField()
     is_owner = serializers.SerializerMethodField()
+    owner = UserRowSerializer(read_only=True)
 
     class Meta:
         model = Category

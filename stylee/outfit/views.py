@@ -1,9 +1,9 @@
 from django.shortcuts import render
-
+from re import sub
 from rest_framework import generics
 from django.contrib.auth import get_user_model
 from rest_framework.mixins import DestroyModelMixin, UpdateModelMixin
-
+from rest_framework.authtoken.models import Token
 from .models import Outfit
 from category.models import Category
 

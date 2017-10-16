@@ -108,6 +108,7 @@ class ProfilePageSerializer(serializers.ModelSerializer):
             return obj.profile.profile_img.url
         return None
 
+
     def get_title(self, obj):
         if(obj.profile):
             return obj.profile.title

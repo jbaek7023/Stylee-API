@@ -41,6 +41,7 @@ class Outfit(models.Model):
     # Tagged Clothes <-> outfit_set
     tagged_clothes = models.ManyToManyField(Cloth, blank=True)
     location = models.CharField(max_length=20, blank=True, null=True)
+    link = models.CharField(max_length=20, blank=True, null=True)
     only_me = models.BooleanField(default=False)
     # other Related Class
     # Like, Comment, Share,

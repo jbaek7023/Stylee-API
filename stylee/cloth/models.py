@@ -43,9 +43,10 @@ class Cloth(models.Model):
                                 blank=True)
     in_wardrobe = models.BooleanField(default=True)
     only_me = models.BooleanField(default=False)
+    link = models.CharField(max_length=20, blank=True, null=True)
+
     archieve = models.BooleanField(default=False)
     publish = models.DateTimeField(auto_now=False, auto_now_add=True)
-
     objects = ClothManager()
 
     def __str__(self):
@@ -88,16 +89,14 @@ def post_save_cloth_receiver(sender, instance, created, *args, **kwargs):
 post_save.connect(post_save_cloth_receiver, sender=Cloth)
 
 class ClothDetail(models.Model):
-    # Cloth Detail
+    # Cloth Detail => this is for search only.
     cloth = models.OneToOneField(Cloth, null=True, on_delete=models.CASCADE, related_name='c_detail')
-
     color = models.CharField(max_length=6, blank=True, null=True)
     brand = models.CharField(max_length=30, blank=True, null=True)
     size = models.CharField(max_length=12, choices=CLOTHES_SIZE_CHOICES, blank=True, null=True)
     sex = models.CharField(max_length=1, blank=True, null=True)
     seasons = models.CharField(max_length=1, blank=True, null=True)
     delivery_loc = models.CharField(max_length=20, blank=True, null=True)
-    link = models.CharField(max_length=20, blank=True, null=True)
     detail = models.TextField(max_length=300, blank=True, null=True)
 
     def __str__(self):

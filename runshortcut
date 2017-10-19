@@ -1,0 +1,1 @@
+source bin/activate && cd stylee && python3 manage.py runserver

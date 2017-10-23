@@ -9,11 +9,10 @@ import uuid
 from .utils import CLOTHES_CHOICES, CLOTHES_SIZE_CHOICES, BIG_CLOTHES_CATEGORIES
 
 def upload_location(instance, filename):
+    # This is 100% valid.
     ext = filename.split('.')[-1]
     random_number = uuid.uuid4()
-    random_number = str(random_number).replace('-', '_')
-    firstpart, secondpart = random_number[::2], random_number[1::2]
-    return "clothes/%s%s%s.%s" % (firstpart, instance.user.id, secondpart, ext)
+    return "clothes/%s.%s" % (random_number, ext)
 
 class ClothManager(models.Manager):
     def all(self, user=None, request=None, *args, **kwargs):
@@ -25,7 +24,7 @@ class ClothManager(models.Manager):
             print(qs)
         return qs
 
-# Create your models here.
+# Outfit Detail과 비슷한 구조로가기. 
 class Cloth(models.Model):
     # normal post info
     parent = models.ForeignKey("self", blank=True, null=True)

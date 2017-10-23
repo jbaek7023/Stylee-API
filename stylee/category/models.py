@@ -8,9 +8,7 @@ from outfit.models import Outfit
 def upload_location_category(instance, filename):
     ext = filename.split('.')[-1]
     random_number = uuid.uuid4()
-    random_number = str(random_number).replace('-', '_')
-    firstpart, secondpart = random_number[::2], random_number[1::2]
-    return "category/%s%s%s.%s" % (firstpart, instance.user.id, secondpart, ext)
+    return "category/%s.%s" % (random_number, ext)
 
 class CategoryManager(models.Manager):
     def all(self, user=None, request=None, *args, **kwargs):

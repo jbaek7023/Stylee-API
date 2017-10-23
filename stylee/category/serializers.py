@@ -19,6 +19,7 @@ class CategoryDetailSerializer(serializers.ModelSerializer):
     outfits = serializers.SerializerMethodField()
     is_owner = serializers.SerializerMethodField()
     owner = UserRowSerializer(read_only=True)
+    outfit_count = serializers.SerializerMethodField()
 
     class Meta:
         model = Category
@@ -27,6 +28,7 @@ class CategoryDetailSerializer(serializers.ModelSerializer):
             'owner',
             'is_owner',
             'outfits',
+            'outfit_count',
             'only_me',
             'detail',
         )
@@ -35,6 +37,10 @@ class CategoryDetailSerializer(serializers.ModelSerializer):
         if obj.outfits is not None:
             return OutfitListSerializer(obj.outfits, many=True).data
         return None
+
+    def get_outfit_count(self, obj):
+        if obj.outfits is not None:
+            return obj.outfits.count()
 
     def get_is_owner(self, obj):
         if(obj.owner):

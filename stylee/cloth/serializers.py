@@ -36,7 +36,6 @@ class ClothDetailDetailSerializer(serializers.ModelSerializer):
             'sex',
             'seasons',
             'delivery_loc',
-            'link',
             'detail',
         )
 

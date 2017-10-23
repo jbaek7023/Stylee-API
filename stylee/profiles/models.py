@@ -23,9 +23,7 @@ LOCATION_CHOICES = [
 def upload_location(instance, filename):
     ext = filename.split('.')[-1]
     random_number = uuid.uuid4()
-    random_number = str(random_number).replace('-', '_')
-    firstpart, secondpart = random_number[::2], random_number[1::2]
-    return "profiles/%s%s%s.%s" % (firstpart, instance.user.id, secondpart, ext)
+    return "profiles/%s.%s" % (random_number, ext)
 
 class Profile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL)

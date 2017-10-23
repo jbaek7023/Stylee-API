@@ -72,6 +72,7 @@ class ProfileEditSerializer(serializers.ModelSerializer):
             'profile_img',
         )
 
+from outfit.serializers import OutfitDetailFeedSerializer
 from outfit.serializers import OutfitListSerializer
 #ProfilePage
 class ProfilePageSerializer(serializers.ModelSerializer):
@@ -108,7 +109,6 @@ class ProfilePageSerializer(serializers.ModelSerializer):
             return obj.profile.profile_img.url
         return None
 
-
     def get_title(self, obj):
         if(obj.profile):
             return obj.profile.title
@@ -142,7 +142,8 @@ class ProfilePageSerializer(serializers.ModelSerializer):
     def get_outfits(self, obj):
         if(obj.outfit_set):
             filtered_set = obj.outfit_set.all(user=self.context['request'].user)
-            return OutfitListSerializer(filtered_set, many=True).data
+            # return OutfitListSerializer(filtered_set, many=True).data
+            return OutfitDetailFeedSerializer(filtered_set, many=True, context={'request': self.context['request']}).data
         return {}
 
     def get_is_owner(self, obj):

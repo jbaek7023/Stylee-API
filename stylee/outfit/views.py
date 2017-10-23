@@ -12,9 +12,26 @@ from .serializers import (
     OutfitDetailSerializer,
     OutfitDetailCommentSerializer,
     OutfitDetailLikeSerializer,
+    OutfitCreateSerializer,
+    OutfitDetailFeedSerializer,
 )
 
 from comments.serializers import CommentSerializer
+
+class OutfitCreateAPIView(generics.CreateAPIView):
+    serializer_class = OutfitCreateSerializer
+    get_queryset = Outfit.objects.all()
+
+    def perform_create(self, serializer):
+        logged_in_user = self.request.user
+        # set user as logged in user
+        if(logged_in_user):
+            serializer.save(user=self.request.user)
+        else:
+            serializer.save()
+
+        # set the clothes has tagged clothes
+        # id,
 
 # Create your views here.
 class OutfitListView(generics.ListAPIView):
@@ -33,7 +50,9 @@ class OutfitListByIdView(generics.ListAPIView):
         uid = self.kwargs['user_id']
         User = get_user_model()
         outfit_owner = User.objects.filter(id=uid).first()
+        # this is wrong.
         qs = Outfit.objects.all(user=self.request.user)
+        # This is not quite.
         qs = qs.filter(user=outfit_owner)
         return qs
 
@@ -45,6 +64,22 @@ class OutfitDetailView(generics.RetrieveAPIView):
 
     def get_queryset(self):
         qs = Outfit.objects.all(user=self.request.user)
+        return qs
+
+# Requires [{JWT or Bearer Token} AND outfit_id
+# Returns Outfit fields
+# By Id
+class OutfitFeedListView(generics.ListAPIView):
+    serializer_class = OutfitDetailFeedSerializer
+
+    def get_queryset(self):
+        uid = self.kwargs['user_id']
+        User = get_user_model()
+        outfit_owner = User.objects.filter(id=uid).first()
+        # this is wrong.
+        qs = Outfit.objects.all(user=self.request.user)
+        # This is not quite.
+        qs = qs.filter(user=outfit_owner)
         return qs
 
 class OutfitEditView(DestroyModelMixin, UpdateModelMixin, generics.RetrieveAPIView):

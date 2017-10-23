@@ -10,9 +10,7 @@ import uuid
 def upload_location_outfit(instance, filename):
     ext = filename.split('.')[-1]
     random_number = uuid.uuid4()
-    random_number = str(random_number).replace('-', '_')
-    firstpart, secondpart = random_number[::2], random_number[1::2]
-    return "outfits/%s%s%s.%s" % (firstpart, instance.user.id, secondpart, ext)
+    return "outfits/%s.%s" % (random_number, ext)
 
 class OutfitManager(models.Manager):
     def all(self, user=None, request=None, *args, **kwargs):
@@ -45,7 +43,6 @@ class Outfit(models.Model):
     only_me = models.BooleanField(default=False)
     # other Related Class
     # Like, Comment, Share,
-
     objects = OutfitManager()
 
     def __str__(self):

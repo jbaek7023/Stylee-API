@@ -2,8 +2,9 @@ from django.shortcuts import render
 from rest_framework.mixins import DestroyModelMixin, UpdateModelMixin
 from rest_framework import generics
 from django.contrib.auth import get_user_model
-from .models import Cloth
+from .models import Cloth, ClothDetail
 from django.shortcuts import get_object_or_404
+from rest_framework.views import APIView
 
 from .serializers import (
     ClothesListSerializer,
@@ -13,7 +14,28 @@ from .serializers import (
     ClothDetailDetailSerializer,
 )
 
-# Create your views here.
+class ClothCreateAPIView(APIView):
+    def post(self):
+        # # Get input from the request
+        # id=self.request.POST.get('user_id')
+        # outfit_id_list=self.request.POST.get('user_id')
+        # id=self.request.POST.get('user_id')
+        #
+        # cloth_instance = Cloth(
+        #     follower=self.request.user,
+        #     following=following_user
+        #     )
+        # cloth_instance.save()
+        # # Delete the post_save on Cloth and Create ClothDetail connect to Cloth
+        # # get or create
+        # detail_instance = ClothDetail.objects.get_or_create(
+        #     cloth=cloth_instance,
+        #     detail...
+        #     )
+        #
+        # detail_instance.save()
+        pass
+
 class ClothesListView(generics.ListAPIView):
     serializer_class = ClothesListSerializer
 

@@ -6,6 +6,7 @@ from rest_framework.mixins import DestroyModelMixin, UpdateModelMixin
 from rest_framework.authtoken.models import Token
 from .models import Outfit
 from category.models import Category
+from rest_framework.views import APIView
 
 from .serializers import (
     OutfitListSerializer,
@@ -18,20 +19,17 @@ from .serializers import (
 
 from comments.serializers import CommentSerializer
 
-class OutfitCreateAPIView(generics.CreateAPIView):
-    serializer_class = OutfitCreateSerializer
-    get_queryset = Outfit.objects.all()
+class OutfitCreateAPIView(APIView):
+    def post(self):
+        # id = self.request.POST.get('user_id')
 
-    def perform_create(self, serializer):
-        logged_in_user = self.request.user
-        # set user as logged in user
-        if(logged_in_user):
-            serializer.save(user=self.request.user)
-        else:
-            serializer.save()
+        # Outfit.Create
 
-        # set the clothes has tagged clothes
-        # id,
+        # Img width and height, positionX, Y
+        # Cloth.get_create()
+
+        # ?조금더 하면됨. 굳.
+        pass
 
 # Create your views here.
 class OutfitListView(generics.ListAPIView):

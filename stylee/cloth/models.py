@@ -24,7 +24,7 @@ class ClothManager(models.Manager):
             print(qs)
         return qs
 
-# Outfit Detail과 비슷한 구조로가기. 
+# Outfit Detail과 비슷한 구조로가기.
 class Cloth(models.Model):
     # normal post info
     parent = models.ForeignKey("self", blank=True, null=True)

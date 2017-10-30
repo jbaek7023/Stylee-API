@@ -39,6 +39,8 @@ class ClothDetailDetailSerializer(serializers.ModelSerializer):
             'detail',
         )
 
+from outfit.serializers import OutfitListSerializer
+
 # In Progress..!!
 class ClothDetailSerializer(serializers.ModelSerializer):
     comments = serializers.SerializerMethodField()
@@ -54,6 +56,8 @@ class ClothDetailSerializer(serializers.ModelSerializer):
 
     is_owner = serializers.SerializerMethodField()
 
+    tagged_outfits = serializers.SerializerMethodField()
+
     class Meta:
         model = Cloth
         fields = (
@@ -67,12 +71,17 @@ class ClothDetailSerializer(serializers.ModelSerializer):
             'comments',
             'comment_count',
             'like_count',
+            'tagged_outfits',
             'liked',
             'starred',
             'only_me',
             'is_owner',
             'publish',
             )
+
+    def get_tagged_outfits(self, obj):
+        outfits = obj.outfit_set;
+        return OutfitListSerializer(outfits, many=True).data
 
     def get_like_count(self, obj):
         content_type = obj.get_content_type

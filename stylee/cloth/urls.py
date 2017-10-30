@@ -11,10 +11,12 @@ from .views import (
     ClothesArchieveList,
     ClothEditAPIView,
     ClothDetailDetailEditAPIView,
+    ClothCreateAPIView,
 )
 
 urlpatterns = [
     url(r'^list/$', ClothesListView.as_view(), name="clo_wardrobe_list"),
+    url(r'^create/$', ClothCreateAPIView.as_view(), name="create_cloth"),
     url(r'^detail/(?P<pk>\d+)/$', ClothDetailView.as_view(), name="clo_detail"),
     url(r'^edit/(?P<pk>\d+)/$', ClothEditAPIView.as_view(), name="clo_edit"),
     url(r'^comments/(?P<pk>\d+)/$', ClothDetailCommentsView.as_view(), name="clo_comments"),

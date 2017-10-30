@@ -1,6 +1,5 @@
 from django.conf.urls import url
 
-# import JWT
 from .views import (
     # ProfileDetailViewByUser,
     UserDetailView,

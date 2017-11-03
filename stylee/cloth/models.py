@@ -3,7 +3,7 @@ from django.db.models import Q
 from django.conf import settings
 from django.db.models.signals import pre_save, post_save
 from django.contrib.contenttypes.models import ContentType
-
+from django.core.validators import validate_comma_separated_integer_list
 import uuid
 
 from .utils import CLOTHES_CHOICES, CLOTHES_SIZE_CHOICES, BIG_CLOTHES_CATEGORIES
@@ -29,11 +29,11 @@ class Cloth(models.Model):
     # normal post info
     parent = models.ForeignKey("self", blank=True, null=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True)
-    content = models.CharField(max_length=20)
+    content = models.CharField(max_length=20, null=True, blank=True)
 
-    big_cloth_type = models.CharField(max_length=11, choices=BIG_CLOTHES_CATEGORIES, default='t')
+    big_cloth_type = models.CharField(max_length=11, choices=BIG_CLOTHES_CATEGORIES, default='t', null=True, blank=True)
     # Cloth Type and image
-    cloth_type = models.CharField(max_length=9, choices=CLOTHES_CHOICES, default='1')
+    cloth_type = models.CharField(max_length=9, choices=CLOTHES_CHOICES, default='1', null=True, blank=True)
     # img up to width of 1080px.
     # if shared a photo at a lower resolution, we enlarge it to a width of 320 pixels
     # photo at a higher resolution, we size it DOWN to 1080 pixels
@@ -90,13 +90,12 @@ post_save.connect(post_save_cloth_receiver, sender=Cloth)
 class ClothDetail(models.Model):
     # Cloth Detail => this is for search only.
     cloth = models.OneToOneField(Cloth, null=True, on_delete=models.CASCADE, related_name='c_detail')
-    color = models.CharField(max_length=6, blank=True, null=True)
+    color = models.CharField(validators=[validate_comma_separated_integer_list], max_length=30, blank=True, null=True)
     brand = models.CharField(max_length=30, blank=True, null=True)
-    size = models.CharField(max_length=12, choices=CLOTHES_SIZE_CHOICES, blank=True, null=True)
-    sex = models.CharField(max_length=1, blank=True, null=True)
-    seasons = models.CharField(max_length=1, blank=True, null=True)
-    delivery_loc = models.CharField(max_length=20, blank=True, null=True)
-    detail = models.TextField(max_length=300, blank=True, null=True)
+    size = models.CharField(validators=[validate_comma_separated_integer_list], max_length=30, blank=True, null=True)
+    sex = models.CharField(max_length=5, blank=True, null=True)
+    seasons = models.CharField(validators=[validate_comma_separated_integer_list], max_length=30, blank=True, null=True)
+    location = models.CharField(max_length=20, blank=True, null=True)
 
     def __str__(self):
         if self.cloth is not None:

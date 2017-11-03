@@ -3,8 +3,11 @@ from rest_framework.mixins import DestroyModelMixin, UpdateModelMixin
 from rest_framework import generics
 from django.contrib.auth import get_user_model
 from .models import Cloth, ClothDetail
+from outfit.models import Outfit
 from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
+from base64 import b64decode
+from django.core.files.base import ContentFile
 
 from .serializers import (
     ClothesListSerializer,
@@ -13,28 +16,101 @@ from .serializers import (
     ClothDetailLikeSerializer,
     ClothDetailDetailSerializer,
 )
+import base64
+from PIL import Image
+from io import BytesIO
 
 class ClothCreateAPIView(APIView):
-    def post(self):
-        # # Get input from the request
-        # id=self.request.POST.get('user_id')
-        # outfit_id_list=self.request.POST.get('user_id')
-        # id=self.request.POST.get('user_id')
-        #
-        # cloth_instance = Cloth(
-        #     follower=self.request.user,
-        #     following=following_user
-        #     )
-        # cloth_instance.save()
-        # # Delete the post_save on Cloth and Create ClothDetail connect to Cloth
-        # # get or create
-        # detail_instance = ClothDetail.objects.get_or_create(
-        #     cloth=cloth_instance,
-        #     detail...
-        #     )
-        #
-        # detail_instance.save()
-        pass
+    def post(self, request, format='multipart/form-data'):
+        # Create Cloth
+
+
+        image_base64 = self.request.data.get('image')
+
+        cloth_image = ContentFile(base64.b64decode(image_base64), name='temp.jpg')
+        # image_data = b64decode(b64_text)
+        # my_model_instance.cool_image_field = ContentFile(image_data, 'whatup.png')
+        # my_model_instance.save()
+
+        logged_in_user = self.request.user
+        content = self.request.data.get('text')
+        big_cloth_type = self.request.data.get('bigType')
+        cloth_type = self.request.data.get('clothType')
+        in_wardrobe = self.request.data.get('inWardrobe')
+        only_me = self.request.data.get('onlyMe')
+        link = self.request.data.get('link')
+
+        cloth_instance = Cloth(
+            user=logged_in_user,
+            content=content,
+            big_cloth_type=big_cloth_type,
+            cloth_type=cloth_type,
+            cloth_image=cloth_image,
+            in_wardrobe=in_wardrobe,
+            only_me=only_me,
+            link=link,
+            )
+        cloth_instance.save()
+        print('---TAGGED 2')
+        print(request.data)
+        # Add outfit
+        styleIds = request.data.get('selectedStyleIds')
+        print(styleIds)
+        for styleId in styleIds:
+            print(styleId)
+            try:
+                outfit = Outfit.objects.get(id=styleId)
+                print('outfit passing')
+                print(outfit)
+            except SomeModel.DoesNotExist:
+                outfit = None
+            if outfit is not None:
+                outfit.tagged_clothes.add(cloth_instance)
+                # don' need to do save()
+        print('----------PRINTING TAGGED SET = 2')
+        print(cloth_instance.outfit_set)
+
+
+        # Create Cloth Detail
+        color = self.request.data.get('selectedColorIds') # multiple
+        brand = self.request.data.get('brand')
+        size = self.request.data.get('selectedSizeIds') # multiple
+        sex = self.request.data.get('gender')
+        seasons = self.request.data.get('selectedSeasonIds') # multiple
+        location = self.request.data.get('location')
+
+
+        detail_instance = ClothDetail.objects.get_or_create(cloth=cloth_instance)
+        detail_instance.color = color
+        detail_instance.brand = brand
+        detail_instance.size = size
+        detail_instance.sex = sex
+        detail_instance.seasons = seasons
+        detail_instance.location = location
+        detail_instance.save()
+
+        print('----------PRINTING DETAIL INSTANCE')
+        print(detail_instance)
+
+        json_output = {"success": True}
+        return Response(json_output)
+
+
+# "bigType": "Top",
+# "brand": "cvb",
+# "clothType": "Field Jacket",
+# "gender": "Female",
+# "image": undefined,
+# "inWardrobe": true,
+# "link": "sdfsdf",
+# "location": "sdfsd",
+# "onlyMe": false,
+
+# "selectedColorIds": Array [110,113,],
+# "selectedSeasonIds": Array [ 7,9,],
+# "selectedSizeIds": Array [26,69, ],
+# "selectedStyleIds": Array [101, 303],
+# "text": "",}
 
 class ClothesListView(generics.ListAPIView):
     serializer_class = ClothesListSerializer

@@ -35,8 +35,7 @@ class ClothDetailDetailSerializer(serializers.ModelSerializer):
             'size',
             'sex',
             'seasons',
-            'delivery_loc',
-            'detail',
+            'location',
         )
 
 from outfit.serializers import OutfitListSerializer

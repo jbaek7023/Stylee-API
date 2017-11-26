@@ -8,6 +8,8 @@ from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from base64 import b64decode
 from django.core.files.base import ContentFile
+from rest_framework.response import Response
+from rest_framework import status
 
 from .serializers import (
     ClothesListSerializer,
@@ -23,14 +25,8 @@ from io import BytesIO
 class ClothCreateAPIView(APIView):
     def post(self, request, format='multipart/form-data'):
         # Create Cloth
-
-
         image_base64 = self.request.data.get('image')
-
         cloth_image = ContentFile(base64.b64decode(image_base64), name='temp.jpg')
-        # image_data = b64decode(b64_text)
-        # my_model_instance.cool_image_field = ContentFile(image_data, 'whatup.png')
-        # my_model_instance.save()
 
         logged_in_user = self.request.user
         content = self.request.data.get('text')
@@ -51,25 +47,17 @@ class ClothCreateAPIView(APIView):
             link=link,
             )
         cloth_instance.save()
-        print('---TAGGED 2')
-        print(request.data)
+
         # Add outfit
         styleIds = request.data.get('selectedStyleIds')
-        print(styleIds)
         for styleId in styleIds:
-            print(styleId)
             try:
                 outfit = Outfit.objects.get(id=styleId)
-                print('outfit passing')
-                print(outfit)
             except SomeModel.DoesNotExist:
                 outfit = None
             if outfit is not None:
                 outfit.tagged_clothes.add(cloth_instance)
                 # don' need to do save()
-        print('----------PRINTING TAGGED SET = 2')
-        print(cloth_instance.outfit_set)
-
 
         # Create Cloth Detail
         color = self.request.data.get('selectedColorIds') # multiple
@@ -79,8 +67,7 @@ class ClothCreateAPIView(APIView):
         seasons = self.request.data.get('selectedSeasonIds') # multiple
         location = self.request.data.get('location')
 
-
-        detail_instance = ClothDetail.objects.get_or_create(cloth=cloth_instance)
+        detail_instance, created = ClothDetail.objects.get_or_create(cloth=cloth_instance)
         detail_instance.color = color
         detail_instance.brand = brand
         detail_instance.size = size
@@ -89,28 +76,8 @@ class ClothCreateAPIView(APIView):
         detail_instance.location = location
         detail_instance.save()
 
-        print('----------PRINTING DETAIL INSTANCE')
-        print(detail_instance)
-
         json_output = {"success": True}
-        return Response(json_output)
-
-
-# "bigType": "Top",
-# "brand": "cvb",
-# "clothType": "Field Jacket",
-# "gender": "Female",
-# "image": undefined,
-# "inWardrobe": true,
-# "link": "sdfsdf",
-# "location": "sdfsd",
-# "onlyMe": false,
-
-# "selectedColorIds": Array [110,113,],
-# "selectedSeasonIds": Array [ 7,9,],
-# "selectedSizeIds": Array [26,69, ],
-# "selectedStyleIds": Array [101, 303],
-# "text": "",}
+        return Response(json_output, status=status.HTTP_201_CREATED)
 
 class ClothesListView(generics.ListAPIView):
     serializer_class = ClothesListSerializer

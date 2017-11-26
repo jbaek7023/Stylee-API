@@ -6,7 +6,15 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.validators import validate_comma_separated_integer_list
 import uuid
 
-from .utils import CLOTHES_CHOICES, CLOTHES_SIZE_CHOICES, BIG_CLOTHES_CATEGORIES
+from .utils import (
+    CLOTHES_SIZE_CHOICES,
+    BIG_CLOTHES_CATEGORIES,
+    TOP_TYPES,
+    OUTWEAR_TYPES,
+    SHOE_TYPES,
+    BOTTOM_TYPES,
+    ETC_TYPES
+)
 
 def upload_location(instance, filename):
     # This is 100% valid.
@@ -33,7 +41,7 @@ class Cloth(models.Model):
 
     big_cloth_type = models.CharField(max_length=11, choices=BIG_CLOTHES_CATEGORIES, default='t', null=True, blank=True)
     # Cloth Type and image
-    cloth_type = models.CharField(max_length=9, choices=CLOTHES_CHOICES, default='1', null=True, blank=True)
+    cloth_type = models.CharField(max_length=15, default='1', null=True, blank=True)
     # img up to width of 1080px.
     # if shared a photo at a lower resolution, we enlarge it to a width of 320 pixels
     # photo at a higher resolution, we size it DOWN to 1080 pixels
@@ -66,16 +74,16 @@ class Cloth(models.Model):
     def save(self, *args, **kwargs):
         # Set the big_cloth_type Here! (Top, Outwear, Pants, Others - (shoes, cabs, earings) )
         cloth_type = self.cloth_type
-        if cloth_type in ['ts', 'ct', 'sh']:
-            self.big_cloth_type = 't'
-        elif cloth_type in ['ja']:
-            self.big_cloth_type = 'o'
-        elif cloth_type in ['j', 'p']:
-            self.big_cloth_type = 'b'
-        elif cloth_type in ['s']:
-            self.big_cloth_type = 's'
+        if cloth_type in TOP_TYPES:
+            self.big_cloth_type = 'Top'
+        elif cloth_type in OUTWEAR_TYPES:
+            self.big_cloth_type = 'Outwear'
+        elif cloth_type in BOTTOM_TYPES:
+            self.big_cloth_type = 'Bottom'
+        elif cloth_type in SHOE_TYPES:
+            self.big_cloth_type = 'Shoes'
         else:
-            self.big_cloth_type = 'e'
+            self.big_cloth_type = 'ETC'
         super(Cloth, self).save(*args, **kwargs)
 
 def post_save_cloth_receiver(sender, instance, created, *args, **kwargs):
@@ -99,5 +107,7 @@ class ClothDetail(models.Model):
 
     def __str__(self):
         if self.cloth is not None:
+            if self.cloth.content is "":
+                return 'No Content'
             return self.cloth.content
         return 'No Content'

@@ -15,7 +15,6 @@ class CategoryManager(models.Manager):
         qs = super(CategoryManager, self).all()
         # owned by user
         if user: #user logged in
-            print(user)
             qs = qs.exclude(Q(only_me=True) & ~Q(owner=user))
             # qs = qs.exclude(~Q(owner=user))
         return qs

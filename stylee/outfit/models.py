@@ -19,7 +19,6 @@ class OutfitManager(models.Manager):
         # owned by user
         if user: #user logged in
             qs = qs.exclude(Q(only_me=True) & ~Q(user=user))
-            print(qs)
         return qs
 
 # Create your models here.

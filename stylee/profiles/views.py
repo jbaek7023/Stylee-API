@@ -5,6 +5,7 @@ from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.mixins import DestroyModelMixin, UpdateModelMixin
+from rest_framework import status
 
 import random
 import string
@@ -141,11 +142,11 @@ class UserCheckEmail(APIView):
 
         if(len(qs)==1):
             json_output = {"obtained": 0}
-            return Response(json_output)
+            return Response(json_output, status=status.HTTP_200_OK)
         else:
             email = create_unique_username(email)
             json_output = {"username": email}
-            return Response(json_output)
+            return Response(json_output, status=status.HTTP_200_OK)
 
 class UserCheckUsername(APIView):
     def get(self, request, format=None):

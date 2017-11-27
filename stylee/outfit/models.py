@@ -33,7 +33,7 @@ class Outfit(models.Model):
                             null=True,
                             blank=True)
 
-    gender = models.CharField(max_length=10, choices=GENDER_CHOICES, default='u')
+    gender = models.CharField(max_length=10, choices=GENDER_CHOICES, default='Unisex')
 
     # Tagged Clothes <-> outfit_set
     tagged_clothes = models.ManyToManyField(Cloth, blank=True)

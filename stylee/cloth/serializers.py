@@ -117,7 +117,7 @@ class ClothDetailSerializer(serializers.ModelSerializer):
         content_type = obj.get_content_type
         object_id = obj.id
         comments_count = Comment.objects.filter_by_instance(obj).count()
-        comments_count = comments_count - 2
+        comments_count = comments_count
         return comments_count
 
     def get_detail(self, obj):

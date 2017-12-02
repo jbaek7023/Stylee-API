@@ -2,9 +2,11 @@ from django.conf.urls import url
 
 # import JWT
 from .views import (
-    FollowCreateAPIView,
+    FollowAPIView,
+    UnFollowAPIView,
 )
 
 urlpatterns = [
-    url(r'^follow/$', FollowCreateAPIView.as_view(), name="follow_user"),
+    url(r'^follow/$', FollowAPIView.as_view(), name="follow_user"),
+    url(r'^unfollow/$', UnFollowAPIView.as_view(), name="unfollow_user"),
 ]

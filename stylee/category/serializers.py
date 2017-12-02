@@ -62,3 +62,12 @@ class CategoryListSerializer(serializers.ModelSerializer):
         if obj.main_img:
             return obj.main_img.url
         return None
+
+class CategorySimpleListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = (
+            'id',
+            'name',
+            'only_me',
+        )

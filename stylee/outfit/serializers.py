@@ -67,6 +67,7 @@ class OutfitDetailSerializer(serializers.ModelSerializer):
     tagged_clothes = serializers.SerializerMethodField()
     starred = serializers.SerializerMethodField()
     is_owner = serializers.SerializerMethodField()
+    is_following = serializers.SerializerMethodField()
 
     class Meta:
         model = Outfit
@@ -88,6 +89,7 @@ class OutfitDetailSerializer(serializers.ModelSerializer):
             'starred',
             'only_me',
             'is_owner',
+            'is_following',
         )
 
     # def get_categories(self, obj):
@@ -153,6 +155,9 @@ class OutfitDetailSerializer(serializers.ModelSerializer):
         if(obj.user):
             return obj.user == self.context['request'].user
         return False
+
+    def get_is_following(self, obj):
+        return obj.user.following.filter(follower=self.context['request'].user).exists()
     # user = user_serializer
     # user = category_serializer
     # tagged_clothes = clothes_serializer
@@ -181,6 +186,7 @@ class OutfitDetailFeedSerializer(serializers.ModelSerializer):
             'starred',
             'only_me',
             'is_owner',
+
         )
 
     # def get_categories(self, obj):
@@ -193,7 +199,6 @@ class OutfitDetailFeedSerializer(serializers.ModelSerializer):
         object_id = obj.id
         user = self.context['request'].user
         my_star = Star.objects.filter_by_instance(obj).filter(user=user)
-        print('no problem here------------------')
         if my_star.count() == 0:
             return False
         return True
@@ -223,16 +228,13 @@ class OutfitDetailFeedSerializer(serializers.ModelSerializer):
         return CommentSerializer(comments, many=True).data
 
     def get_comment_count(self, obj):
-        print('print OBJ')
-        print(obj)
         content_type = obj.get_content_type
         object_id = obj.id
         comments_count = Comment.objects.filter_by_instance(obj).count()
-        comments_count = comments_count - 2
+        comments_count = comments_count
         return comments_count
 
     def get_is_owner(self, obj):
-        print(obj)
         if(obj.user):
             return obj.user == self.context['request'].user
         return False

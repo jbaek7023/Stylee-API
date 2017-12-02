@@ -46,15 +46,11 @@ class ClothDetailSerializer(serializers.ModelSerializer):
     comment_count = serializers.SerializerMethodField()
     like_count = serializers.SerializerMethodField()
     liked = serializers.SerializerMethodField()
-
     starred = serializers.SerializerMethodField()
-
     user = UserRowSerializer(read_only=True)
-
     detail = serializers.SerializerMethodField()
-
     is_owner = serializers.SerializerMethodField()
-
+    is_following = serializers.SerializerMethodField()
     tagged_outfits = serializers.SerializerMethodField()
 
     class Meta:
@@ -71,11 +67,13 @@ class ClothDetailSerializer(serializers.ModelSerializer):
             'comment_count',
             'like_count',
             'tagged_outfits',
+            'link',
             'liked',
             'starred',
             'only_me',
             'is_owner',
             'publish',
+            'is_following',
             )
 
     def get_tagged_outfits(self, obj):
@@ -106,7 +104,6 @@ class ClothDetailSerializer(serializers.ModelSerializer):
             return False
         return True
 
-
     def get_comments(self, obj):
         content_type = obj.get_content_type
         object_id = obj.id
@@ -128,6 +125,9 @@ class ClothDetailSerializer(serializers.ModelSerializer):
         if(obj.user):
             return obj.user == self.context['request'].user
         return False
+
+    def get_is_following(self, obj):
+        return obj.user.following.filter(follower=self.context['request'].user).exists()
 
 class ClothDetailCommentSerializer(serializers.ModelSerializer):
     comments = serializers.SerializerMethodField()

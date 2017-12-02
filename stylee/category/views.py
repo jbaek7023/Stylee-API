@@ -5,11 +5,11 @@ from rest_framework.mixins import DestroyModelMixin, UpdateModelMixin
 from rest_framework import generics
 from .models import Category
 
-from .serializers import CategoryDetailSerializer, CategoryListSerializer
-
-
-
-
+from .serializers import (
+    CategoryDetailSerializer,
+    CategoryListSerializer,
+    CategorySimpleListSerializer
+)
 
 # Create your views here.
 class OutfitCategoryAPIView(generics.RetrieveAPIView):
@@ -38,6 +38,14 @@ class CategoryEditAPIView(DestroyModelMixin, UpdateModelMixin, generics.Retrieve
 
 class CategoryListAPIView(generics.ListAPIView):
     serializer_class = CategoryListSerializer
+
+    def get_queryset(self):
+        qs = Category.objects.all(user=self.request.user)
+        qs = qs.filter(owner=self.request.user)
+        return qs
+
+class CategorySimpleListAPIView(generics.ListAPIView):
+    serializer_class = CategorySimpleListSerializer
 
     def get_queryset(self):
         qs = Category.objects.all(user=self.request.user)

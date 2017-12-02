@@ -12,30 +12,41 @@ class LikeManager(models.Manager):
         # comments = Comment.objects.filter(content_type=content_type, object_id=obj_id)
         return qs
 
-    def create_by_model_type(self, model_type, id, user, parent_obj=None):
-        model_qs = ContentType.objects.filter(model=model_type)
-        if model_qs.exists():
-            SomeModel = model_qs.first().model_class()
-            obj_qs = SomeModel.objects.filter(id=id)
-
-            if obj_qs.exists() and obj_qs.count() ==1:
-                # Make Comment here
-                # instance.user = user
-                # instance.content_type = model_qs.first()
-                # instance.object_id = obj_qs.first().id
-
-                instance, created = Like.objects.get_or_create(
-                    user=user,
-                    content_type=model_qs.first(),
-                    object_id=obj_qs.first().id
-                    )
-                if created:
-                    return instance
-                else:
-                    instance.delete()
-                    empty_instance = self.model()
-                    return empty_instance
-        return None
+    # def create_by_model_type(self, model_type, id, user, parent_obj=None):
+    #     model_qs = ContentType.objects.filter(model=model_type)
+    #     if model_qs.exists():
+    #         SomeModel = model_qs.first().model_class()
+    #         obj_qs = SomeModel.objects.filter(id=id)
+    #
+    #         if obj_qs.exists() and obj_qs.count() ==1:
+    #             instance, created = Like.objects.get_or_create(
+    #                 user=user,
+    #                 content_type=model_qs.first(),
+    #                 object_id=obj_qs.first().id
+    #                 )
+    #             if created:
+    #                 return instance
+    #             else:
+    #                 # instance.delete()
+    #                 empty_instance = self.model()
+    #                 return empty_instance
+    #     return None
+    #
+    # def delete_by_model_type(self, model_type, id, user, parent_obj=None):
+    #     model_qs = ContentType.objects.filter(model=model_type)
+    #     if model_qs.exists():
+    #         SomeModel = model_qs.first().model_class()
+    #         obj_qs = SomeModel.objects.filter(id=id)
+    #
+    #         if obj_qs.exists() and obj_qs.count() == 1:
+    #             like_obj = Like.objects.filter(user=user, content_type=model_qs.first(), object_id=obj_qs.first().id).first()
+    #             if like_obj is not None:
+    #                 like_obj.delete()
+    #                 empty_instance = self.model()
+    #                 return empty_instance
+    #             else:
+    #                 return empty_instance
+    #     return None
 
 
 # Create your models here.

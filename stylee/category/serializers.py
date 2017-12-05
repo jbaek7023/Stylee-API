@@ -4,16 +4,7 @@ from .models import Category
 from outfit.serializers import OutfitListSerializer
 from profiles.serializers import UserRowSerializer
 
-class CategorySerializer(serializers.ModelSerializer):
-    # added = serializers.BooleanField(source='outfits__pk')
-    added = serializers.BooleanField()
-    class Meta:
-        model = Category
-        fields = (
-            'id',
-            'name',
-            'added'
-        )
+
 
 class CategoryDetailSerializer(serializers.ModelSerializer):
     outfits = serializers.SerializerMethodField()
@@ -49,6 +40,7 @@ class CategoryDetailSerializer(serializers.ModelSerializer):
 
 class CategoryListSerializer(serializers.ModelSerializer):
     image = serializers.SerializerMethodField()
+    length = serializers.SerializerMethodField()
     class Meta:
         model = Category
         fields = (
@@ -56,12 +48,17 @@ class CategoryListSerializer(serializers.ModelSerializer):
             'name',
             'image',
             'only_me',
+            'length',
         )
 
     def get_image(self, obj):
-        if obj.main_img:
-            return obj.main_img.url
-        return None
+        if obj.outfits.first() is not None:
+            return obj.outfits.first().outfit_img.url
+        else:
+            return None
+
+    def get_length(self, obj):
+        return obj.outfits.count()
 
 class CategorySimpleListSerializer(serializers.ModelSerializer):
     class Meta:
@@ -70,4 +67,16 @@ class CategorySimpleListSerializer(serializers.ModelSerializer):
             'id',
             'name',
             'only_me',
+        )
+
+class CategorySerializer(serializers.ModelSerializer):
+    # added = serializers.BooleanField(source='outfits__pk')
+    added = serializers.BooleanField()
+    class Meta:
+        model = Category
+        fields = (
+            'only_me',
+            'id',
+            'name',
+            'added',
         )

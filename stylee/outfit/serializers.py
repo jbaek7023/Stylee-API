@@ -55,7 +55,7 @@ class OutfitCreateSerializer(serializers.ModelSerializer):
 from comments.serializers import CommentSerializer
 from cloth.serializers import ClothesListSerializer
 from like.serializers import LikeListSerializer
-from category.serializers import CategorySerializer
+from category.serializers import CategorySerializer, CategorySimpleListSerializer
 from profiles.serializers import UserRowSerializer
 class OutfitDetailSerializer(serializers.ModelSerializer):
     comments = serializers.SerializerMethodField()
@@ -91,11 +91,6 @@ class OutfitDetailSerializer(serializers.ModelSerializer):
             'is_owner',
             'is_following',
         )
-
-    # def get_categories(self, obj):
-    #     all_categories = Category.objects.filter(owner=self.context['request'].user)
-    #     categories = obj.categories.filter(owner=self.context['request'].user)
-    #     return CategorySerializer(categories, many=True).data
 
     def get_tagged_clothes(self, obj):
         clothes = obj.tagged_clothes
@@ -158,9 +153,28 @@ class OutfitDetailSerializer(serializers.ModelSerializer):
 
     def get_is_following(self, obj):
         return obj.user.following.filter(follower=self.context['request'].user).exists()
-    # user = user_serializer
-    # user = category_serializer
-    # tagged_clothes = clothes_serializer
+
+class CategoryListOnOutfitSerializer(serializers.ModelSerializer):
+    categories = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Outfit
+        fields = (
+            'id',
+            'categories',
+        )
+
+    #Field name.. declare here too
+    def get_categories(self, obj):
+        user = self.context['request'].user
+        categories = Category.objects.filter(owner=user)
+        added = categories.extra(select={'added': '1'}).filter(outfits__pk=obj.pk)
+        added = list(added.values('added', 'name', 'id', 'only_me'))
+        added_f = categories.extra(select={'added': '0'}).exclude(outfits__pk=obj.pk)
+        added_f = list(added_f.values('added', 'name', 'id', 'only_me'))
+        categories = added + added_f
+        return CategorySerializer(categories, many=True).data
+        # return CategorySerializer(categories, many=True).data
 
 class OutfitDetailFeedSerializer(serializers.ModelSerializer):
     comments = serializers.SerializerMethodField()

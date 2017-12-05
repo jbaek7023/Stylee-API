@@ -29,7 +29,7 @@ class ClothCreateAPIView(APIView):
         cloth_image = ContentFile(base64.b64decode(image_base64), name='temp.jpg')
 
         logged_in_user = self.request.user
-        content = self.request.data.get('text')
+        content = self.request.data.get('name')
         big_cloth_type = self.request.data.get('bigType')
         cloth_type = self.request.data.get('clothType')
         in_wardrobe = self.request.data.get('inWardrobe')
@@ -66,6 +66,7 @@ class ClothCreateAPIView(APIView):
         sex = self.request.data.get('gender')
         seasons = self.request.data.get('selectedSeasonIds') # multiple
         location = self.request.data.get('location')
+        description = self.request.data.get('description')
 
         detail_instance, created = ClothDetail.objects.get_or_create(cloth=cloth_instance)
         detail_instance.color = color
@@ -74,6 +75,7 @@ class ClothCreateAPIView(APIView):
         detail_instance.sex = sex
         detail_instance.seasons = seasons
         detail_instance.location = location
+        detail_instance.description = description
         detail_instance.save()
 
         json_output = {"success": True}

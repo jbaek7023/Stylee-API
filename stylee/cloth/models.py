@@ -104,6 +104,7 @@ class ClothDetail(models.Model):
     sex = models.CharField(max_length=5, blank=True, null=True)
     seasons = models.CharField(validators=[validate_comma_separated_integer_list], max_length=30, blank=True, null=True)
     location = models.CharField(max_length=20, blank=True, null=True)
+    description = models.CharField(max_length=299, blank=True, null=True)
 
     def __str__(self):
         if self.cloth is not None:

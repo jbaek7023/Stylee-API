@@ -5,10 +5,13 @@ from django.contrib.auth import get_user_model
 from rest_framework.mixins import DestroyModelMixin, UpdateModelMixin
 from rest_framework.authtoken.models import Token
 from .models import Outfit
+from cloth.models import Cloth
 from category.models import Category
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.response import Response
+from base64 import b64decode
+from django.core.files.base import ContentFile
 
 from .serializers import (
     OutfitListSerializer,
@@ -19,67 +22,95 @@ from .serializers import (
     OutfitDetailFeedSerializer,
     CategoryListOnOutfitSerializer,
 )
+import base64
 
 from comments.serializers import CommentSerializer
 
 class OutfitCreateAPIView(APIView):
     def post(self, request, format='multipart/form-data'):
-        # Create Cloth
-        image_base64 = self.request.data.get('image')
-        cloth_image = ContentFile(base64.b64decode(image_base64), name='temp.jpg')
-
-        logged_in_user = self.request.user
+        # Create Outfits
         content = self.request.data.get('name')
-        big_cloth_type = self.request.data.get('bigType')
-        cloth_type = self.request.data.get('clothType')
-        in_wardrobe = self.request.data.get('inWardrobe')
-        only_me = self.request.data.get('onlyMe')
-        link = self.request.data.get('link')
-
-        cloth_instance = Cloth(
-            user=logged_in_user,
-            content=content,
-            big_cloth_type=big_cloth_type,
-            cloth_type=cloth_type,
-            cloth_image=cloth_image,
-            in_wardrobe=in_wardrobe,
-            only_me=only_me,
-            link=link,
-            )
-        cloth_instance.save()
-
-        # Add outfit
-        styleIds = request.data.get('selectedStyleIds')
-        for styleId in styleIds:
-            try:
-                outfit = Outfit.objects.get(id=styleId)
-            except SomeModel.DoesNotExist:
-                outfit = None
-            if outfit is not None:
-                outfit.tagged_clothes.add(cloth_instance)
-                # don' need to do save()
-
-        # Create Cloth Detail
-        color = self.request.data.get('selectedColorIds') # multiple
-        brand = self.request.data.get('brand')
-        size = self.request.data.get('selectedSizeIds') # multiple
-        sex = self.request.data.get('gender')
-        seasons = self.request.data.get('selectedSeasonIds') # multiple
+        base_img_data = self.request.data.get('base64')
+        outfit_img = ContentFile(base64.b64decode(base_img_data), name='temp.jpg')
+        gender = self.request.data.get('gender')
         location = self.request.data.get('location')
         description = self.request.data.get('description')
+        only_me = self.request.data.get('onlyMe')
+        link=self.request.data.get('link')
 
-        detail_instance, created = ClothDetail.objects.get_or_create(cloth=cloth_instance)
-        detail_instance.color = color
-        detail_instance.brand = brand
-        detail_instance.size = size
-        detail_instance.sex = sex
-        detail_instance.seasons = seasons
-        detail_instance.location = location
-        detail_instance.description = description
-        detail_instance.save()
+        outfit_instance = Outfit(
+            user=self.request.user,
+            content=content,
+            outfit_img=outfit_img,
+            gender=gender,
+            location=location,
+            description=description,
+            only_me=only_me,
+            link=link
+        )
+        outfit_instance.save()
 
-        json_output = {"success": True}
+        tagged_categories = self.request.data.get('taggedCategories')
+        for category_id in tagged_categories:
+            category_instance = Category.objects.get(id=category_id, owner=self.request.user)
+            if category_instance is not None:
+                category_instance.outfits.add(outfit_instance)
+        cloth_ids = self.request.data.get('selectedClothesIds')
+
+        for cloth_id in cloth_ids:
+            cloth_instance = Cloth.objects.get(id=cloth_id, user=self.request.user)
+            if cloth_instance is not None:
+                outfit_instance.tagged_clothes.add(cloth_instance)
+
+        tagged_clothes = self.request.data.get('taggedClothes')
+
+        for tagged_cloth in tagged_clothes:
+            image_base = tagged_cloth.get('base64')
+            cloth_image = ContentFile(base64.b64decode(image_base), name='temp.jpg')
+            print(cloth_image)
+            new_cloth_instance = Cloth(
+                user=self.request.user,
+                cloth_image=cloth_image
+            )
+            new_cloth_instance.save()
+
+            cloth_content = tagged_cloth.get('name')
+            if cloth_content is not None:
+                new_cloth_instance.content = cloth_content
+
+            cloth_type = tagged_cloth.get('clothType')
+            if cloth_type is not None:
+                new_cloth_instance.cloth_type = cloth_type
+
+            in_wardrobe = tagged_cloth.get('inWardrobe')
+            if in_wardrobe is not None:
+                new_cloth_instance.in_wardrobe = in_wardrobe
+
+            only_me = tagged_cloth.get('onlyMe')
+            if only_me is not None:
+                new_cloth_instance.only_me = only_me
+
+            gender = tagged_cloth.get('gender')
+            if gender is not None:
+                new_cloth_instance.gender = gender
+
+            seasons = tagged_cloth.get('selectedSeasonIds')
+            if seasons is not None:
+                new_cloth_instance.seasons = seasons
+
+            size = tagged_cloth.get('selectedSizeIds')
+            if size is not None:
+                new_cloth_instance.size = size
+
+            color = tagged_cloth.get('selectedColorIds')
+            if color is not None:
+                new_cloth_instance.color = color
+            outfit_instance.tagged_clothes.add(new_cloth_instance)
+
+        # Tag Clothes to the Outfits
+        json_output = {"success": True, "created": outfit_instance.publish }
         return Response(json_output, status=status.HTTP_201_CREATED)
+
 
 class AddOutfitOnCategory(APIView):
     def post(self, request, format=None):

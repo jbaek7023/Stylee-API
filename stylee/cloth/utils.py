@@ -1,7 +1,7 @@
 BIG_CLOTHES_CATEGORIES = [
     ('Top' , 'Top'),
     ('Bottom' , 'Bottom'),
-    ('Outwear', 'Outwear'),
+    ('Outerwear', 'Outerwear'),
     ('Shoes', 'Shoes'),
     ('ETC', 'ETC'),
 ]

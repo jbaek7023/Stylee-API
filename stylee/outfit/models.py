@@ -43,6 +43,8 @@ class Outfit(models.Model):
     # other Related Class
     # Like, Comment, Share,
     objects = OutfitManager()
+    description = models.CharField(max_length=299, blank=True, null=True)
+
 
     def __str__(self):
         return str(self.user)

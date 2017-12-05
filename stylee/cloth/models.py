@@ -108,7 +108,7 @@ class ClothDetail(models.Model):
 
     def __str__(self):
         if self.cloth is not None:
-            if self.cloth.content is "":
+            if self.cloth.content is "" or self.cloth.content is None:
                 return 'No Content'
             return self.cloth.content
         return 'No Content'

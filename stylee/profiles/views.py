@@ -6,6 +6,9 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.mixins import DestroyModelMixin, UpdateModelMixin
 from rest_framework import status
+from base64 import b64decode
+from django.core.files.base import ContentFile
+import base64
 
 import random
 import string
@@ -23,6 +26,26 @@ from .serializers import (
 from .models import Profile
 
 User = get_user_model()
+import datetime
+
+class ProfileImageChangeView(APIView):
+    def post(self, request, format=None):
+        base_img_data = self.request.data.get('base64')
+        profile_img = ContentFile(base64.b64decode(base_img_data), name='temp.jpg')
+
+        qs = Profile.objects.all()
+        logged_in_user_profile = qs.filter(user=self.request.user)
+        profile_instance = logged_in_user_profile.first()
+        if profile_instance is not None:
+            profile_instance.profile_img = profile_img
+            profile_instance.save()
+            print(str(datetime.datetime.now()))
+            json_output = {"changed": str(datetime.datetime.now())}
+            return Response(json_output, status=status.HTTP_200_OK)
+        else:
+            email = create_unique_username(email)
+            json_output = {"username": email}
+            return Response(json_output, status=status.HTTP_200_OK)
 
 # /profile/detail/
 class UserDetailView(generics.ListAPIView):
@@ -45,20 +68,6 @@ class ProfilePageView(generics.RetrieveAPIView):
         obj = get_object_or_404(queryset)
         return obj
 
-class ProfileEditAPIView(UpdateModelMixin, generics.RetrieveAPIView):
-    serializer_class = ProfileEditSerializer
-
-    def get_queryset(self):
-        logged_in_user = User.objects.filter(id=self.request.user.id)
-        return logged_in_user
-
-    def get_object(self):
-        queryset = self.get_queryset()
-        obj = get_object_or_404(queryset)
-        return obj.profile
-
-    def put(self, request, *args, **kwargs):
-        return self.update(request, *args, **kwargs)
 
 class EmailEditAPIView(UpdateModelMixin, generics.RetrieveAPIView):
     serializer_class = UserEmailSerizlier
@@ -89,6 +98,23 @@ class ProfilePageByIdView(generics.RetrieveAPIView):
         queryset = self.get_queryset()
         obj = get_object_or_404(queryset)
         return obj
+
+
+# EDIT
+class ProfileEditAPIView(UpdateModelMixin, generics.RetrieveAPIView):
+    serializer_class = ProfileEditSerializer
+
+    def get_queryset(self):
+        logged_in_user = User.objects.filter(id=self.request.user.id)
+        return logged_in_user
+
+    def get_object(self):
+        queryset = self.get_queryset()
+        obj = get_object_or_404(queryset)
+        return obj.profile
+
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
 
 # profile/update/<user_id> # only allow to logged in user (SECURE)
 class ProfileRetrieveAndUpdateProfile(generics.RetrieveUpdateAPIView):

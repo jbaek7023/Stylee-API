@@ -49,9 +49,22 @@ class UserAccountSerializer(serializers.ModelSerializer):
 
 # User Profile Edit
 class ProfileRetrieveAndUpdateSerializer(serializers.ModelSerializer):
+    username = serializers.SerializerMethodField()
+
     class Meta:
         model = Profile
-        fields = ('title', 'gender','location', 'birth', 'height', 'height_in_ft', 'profile_img')
+        fields = (
+            'title',
+            'gender',
+            # 'birth',
+            # 'height',
+            # 'height_in_ft',
+            'profile_img',
+            'username',
+        )
+
+    def get_username(self, obj):
+        return obj.user.username
 
 # Image Update
 class ProfileUpdateProfileImageSerializer(serializers.ModelSerializer):
@@ -60,17 +73,22 @@ class ProfileUpdateProfileImageSerializer(serializers.ModelSerializer):
         fields = ('profile_img',)
 
 class ProfileEditSerializer(serializers.ModelSerializer):
+    username = serializers.SerializerMethodField()
 
     class Meta:
         model = Profile
         fields = (
             'title',
             'gender',
-            'birth',
-            'height',
-            'height_in_ft',
+            # 'birth',
+            # 'height',
+            # 'height_in_ft',
             'profile_img',
+            'username',
         )
+
+    def get_username(self, obj):
+        return obj.user.username
 
 from outfit.serializers import OutfitDetailFeedSerializer
 from outfit.serializers import OutfitListSerializer

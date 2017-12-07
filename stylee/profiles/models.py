@@ -7,9 +7,9 @@ import uuid
 from .utils import create_unique_username
 
 GENDER_CHOICES = [
-    ('m' , 'Male'),
-    ('f' , 'Female'),
-    ('u', 'Not Specified'),
+    ('Male' , 'Male'),
+    ('Female' , 'Female'),
+    ('Undefined', 'Undefined'),
 ]
 
 LOCATION_CHOICES = [
@@ -29,10 +29,10 @@ class Profile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL)
     title = models.TextField(max_length=155, blank=True)
     gender = models.CharField(max_length=10, choices=GENDER_CHOICES, default='u') # Recommend Factor
-    location = models.CharField(max_length=40, choices=LOCATION_CHOICES, default='ud') # Recommend Factor
-    birth = models.DateField(default='1992-07-23', blank=True, null=True) # Recommend Factor
-    height = models.CharField(max_length=8, default='undefined')
-    height_in_ft = models.BooleanField(default=True)
+    # location = models.CharField(max_length=40, choices=LOCATION_CHOICES, default='ud') # Recommend Factor
+    # birth = models.DateField(default='1992-07-23', blank=True, null=True) # Recommend Factor
+    # height = models.CharField(max_length=8, default='undefined')
+    # height_in_ft = models.BooleanField(default=True)
     profile_img = models.ImageField(
         upload_to=upload_location,
         null=True,

@@ -3,6 +3,7 @@ from rest_framework import generics
 from rest_framework.views import APIView
 from django.contrib.contenttypes.models import ContentType
 from rest_framework.response import Response
+from rest_framework import status
 
 from .models import Star
 
@@ -40,10 +41,10 @@ class StarCreateView(APIView):
                 if created:
                     json_output = {"success": True}
                     # 404 later
-                    return Response(json_output)
+                    return Response(json_output, status.HTTP_201_CREATED)
                 else:
                     json_output = {"success": False}
-                    return Response(json_output)
+                    return Response(json_output, status.HTTP_200_OK)
 
 class StarDestroyView(APIView):
     def post(self, request, format=None):
@@ -65,10 +66,10 @@ class StarDestroyView(APIView):
                 if star_instance is not None:
                     star_instance.delete()
                     json_output = {"success": True}
-                    return Response(json_output)
+                    return Response(json_output, status.HTTP_200_OK)
                 else:
                     json_output = {"success": False}
-                    return Response(json_output)
+                    return Response(json_output, status.HTTP_200_OK)
 
 
 class StarListAPIView(generics.ListAPIView):

@@ -12,6 +12,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from base64 import b64decode
 from django.core.files.base import ContentFile
+import base64
 
 from .serializers import (
     OutfitListSerializer,
@@ -22,7 +23,6 @@ from .serializers import (
     OutfitDetailFeedSerializer,
     CategoryListOnOutfitSerializer,
 )
-import base64
 
 from comments.serializers import CommentSerializer
 

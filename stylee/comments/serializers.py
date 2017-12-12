@@ -19,7 +19,7 @@ def create_comment_serializer(model_type='outfit', id=None, parent_id=None, user
                 # 'content_type',
                 # 'object_id',
                 'content',
-                'publish',
+                'created_at',
                 'parent',
             ]
         def __init__(self, *args, **kwargs):
@@ -78,7 +78,7 @@ class CommentSerializer(serializers.ModelSerializer):
             # 'content_type',
             # 'object_id',
             'content',
-            'publish',
+            'created_at',
             # 'parent',
             'reply_count',
         )
@@ -98,7 +98,7 @@ class CommentsOnPostSerializer(serializers.ModelSerializer):
             'id',
             'user',
             'content',
-            'publish',
+            'created_at',
             'reply_count',
         )
 
@@ -117,7 +117,7 @@ class CommentChildSerializer(serializers.ModelSerializer):
             'id',
             'user',
             'content',
-            'publish',
+            'created_at',
         )
 
 class CommentDetailSerializer(serializers.ModelSerializer):
@@ -130,7 +130,7 @@ class CommentDetailSerializer(serializers.ModelSerializer):
             'id',
             'user',
             'content',
-            'publish',
+            'created_at',
             'replies',
         )
         read_only_fields = (
@@ -147,5 +147,5 @@ class CommentEditSerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'content',
-            'publish',
+            'created_at',
         )

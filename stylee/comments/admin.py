@@ -2,7 +2,7 @@ from django.contrib import admin
 from .models import Comment
 
 class CommentAdmin(admin.ModelAdmin):
-    list_display = ('user', 'content', 'publish', 'content_type')
+    list_display = ('user', 'content', 'created_at', 'content_type')
     class Meta:
         model = Comment
 

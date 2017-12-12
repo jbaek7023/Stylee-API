@@ -2,6 +2,7 @@ from django.conf import settings
 from django.db import models
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
+from stream_django.feed_manager import feed_manager
 
 # from outfit.models import Outfit # circularity.
 from cloth.models import Cloth
@@ -51,12 +52,12 @@ class Comment(models.Model):
     parent = models.ForeignKey("self", null=True, blank=True)
 
     content = models.TextField(max_length=500, blank=True, null=True)
-    publish = models.DateTimeField(auto_now=False, auto_now_add=True)
+    created_at = models.DateTimeField(auto_now=False, auto_now_add=True)
 
     objects = CommentManager()
 
     class Meta:
-        ordering = ['publish']
+        ordering = ['created_at']
 
     def __str__(self):
         if self.content==None:
@@ -71,14 +72,28 @@ class Comment(models.Model):
             return False
         return True
 
+    @property
+    def activity_object_attr(self):
+        return self
 
-# view,
-# instance.comment_set.all ? nope!
-# ContentType.objects.get_for_model(User)
-# content_type = ContentType.objects.get_for_model(Outfit)
-# obj_id = instance.id
-# comments = Comment.objects.filter(content_type=content_type, object_id=obj_id)
-# comment.content_object <-- parentObject ... object.post_name
+    @property
+    def activity_author_feed(self):
+        return 'Comment'
 
-# you can do this on view, but we recommend you to do it on ModelManager
-# returns qs we want.
+    @property
+    def activity_notify(self):
+        SomeModel = self.content_type.model_class()
+        object_id = self.object_id
+        qs = SomeModel.objects.filter(id=self.object_id)
+        if qs.exists():
+            target_instance = SomeModel.objects.filter(id=self.object_id).first()
+            if target_instance:
+                user_object = target_instance.user
+                if user_object:
+                    user_id = user_object.id
+                    author_id = self.user.id
+                    if user_id != author_id:
+                    # notify
+                        target_feed = feed_manager.get_notification_feed(user_id)
+                        return [target_feed]
+        return []

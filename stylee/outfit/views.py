@@ -12,6 +12,8 @@ from rest_framework import status
 from rest_framework.response import Response
 from base64 import b64decode
 from django.core.files.base import ContentFile
+from stream_django.enrich import Enrich
+from stream_django.feed_manager import feed_manager
 import base64
 
 from .serializers import (
@@ -25,6 +27,17 @@ from .serializers import (
 )
 
 from comments.serializers import CommentSerializer
+
+enricher = Enrich()
+
+class StyleFeedAPIView(APIView):
+    def get(self, request, format=None):
+        feeds = feed_manager.get_news_feeds(request.user.id)
+        # get the newsfeed for user.
+        activities = feeds.get('timeline').get()['results']
+        activities = enricher.enrich_activities(activities)
+        json_output = { "feed" : activities }
+        return Response(json_output, status=status.HTTP_200_OK)
 
 class OutfitCreateAPIView(APIView):
     def post(self, request, format='multipart/form-data'):
@@ -108,7 +121,7 @@ class OutfitCreateAPIView(APIView):
             outfit_instance.tagged_clothes.add(new_cloth_instance)
 
         # Tag Clothes to the Outfits
-        json_output = {"success": True, "created": outfit_instance.publish }
+        json_output = {"success": True, "created": outfit_instance.created_at }
         return Response(json_output, status=status.HTTP_201_CREATED)
 
 

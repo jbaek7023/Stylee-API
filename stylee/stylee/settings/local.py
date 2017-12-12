@@ -59,7 +59,13 @@ INSTALLED_APPS = [
     'category',
     'star',
     'follow',
+    'stream_django',
 ]
+
+# Stream Setting
+STREAM_API_KEY = 'qt4u3h4rves3'
+STREAM_API_SECRET = 'f7rw6demrrn25d2w26qtce5c474ufp5uykzdbueq4m2gqaeas28vhmf8jpqfk8xq'
+STREAM_LOCATION = 'us-west'
 # localhost:8000/
 SITE_ID = 7
 

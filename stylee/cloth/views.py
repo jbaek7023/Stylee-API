@@ -76,7 +76,7 @@ class ClothCreateAPIView(APIView):
         detail_instance.description = description
         detail_instance.save()
 
-        json_output = {"success": True, "created": cloth_instance.publish}
+        json_output = {"success": True, "created": cloth_instance.created_at}
         return Response(json_output, status=status.HTTP_201_CREATED)
 
 class ClothesListView(generics.ListAPIView):

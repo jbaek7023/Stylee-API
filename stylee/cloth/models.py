@@ -5,6 +5,7 @@ from django.db.models.signals import pre_save, post_save
 from django.contrib.contenttypes.models import ContentType
 from django.core.validators import validate_comma_separated_integer_list
 import uuid
+from stream_django.activity import Activity
 
 from .utils import (
     CLOTHES_SIZE_CHOICES,
@@ -53,7 +54,7 @@ class Cloth(models.Model):
     link = models.CharField(max_length=20, blank=True, null=True)
 
     archieve = models.BooleanField(default=False)
-    publish = models.DateTimeField(auto_now=False, auto_now_add=True)
+    created_at = models.DateTimeField(auto_now=False, auto_now_add=True)
     objects = ClothManager()
 
     def __str__(self):
@@ -77,7 +78,7 @@ class Cloth(models.Model):
         if cloth_type in TOP_TYPES:
             self.big_cloth_type = 'Top'
         elif cloth_type in OUTWEAR_TYPES:
-            self.big_cloth_type = 'Outwear'
+            self.big_cloth_type = 'Outerwear'
         elif cloth_type in BOTTOM_TYPES:
             self.big_cloth_type = 'Bottom'
         elif cloth_type in SHOE_TYPES:
@@ -85,6 +86,7 @@ class Cloth(models.Model):
         else:
             self.big_cloth_type = 'ETC'
         super(Cloth, self).save(*args, **kwargs)
+
 
 def post_save_cloth_receiver(sender, instance, created, *args, **kwargs):
     if created:

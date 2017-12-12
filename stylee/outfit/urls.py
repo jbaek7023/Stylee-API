@@ -13,9 +13,12 @@ from .views import (
     CategoryListOnOutfitView,
     AddOutfitOnCategory,
     DeleteOutfitOnCategory,
+    StyleFeedAPIView,
 )
 
 urlpatterns = [
+    url(r'^feed/$', StyleFeedAPIView.as_view(), name="style_feed"),
+
     url(r'^create/$', OutfitCreateAPIView.as_view(), name="create_outfit"),
     url(r'^addto/$', AddOutfitOnCategory.as_view(), name="add_outfit_to_category"),
     url(r'^deletefrom/$', DeleteOutfitOnCategory.as_view(), name="delete_outfit_from_category"),

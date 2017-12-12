@@ -2,6 +2,8 @@ from django.conf import settings
 from django.db import models
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
+from stream_django.activity import Activity
+from stream_django.feed_manager import feed_manager
 
 class LikeManager(models.Manager):
     def filter_by_instance(self, instance):
@@ -51,7 +53,7 @@ class LikeManager(models.Manager):
 
 # Create your models here.
 # Create your models here.
-class Like(models.Model):
+class Like(models.Model, Activity):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, default=1)
 
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
@@ -67,6 +69,29 @@ class Like(models.Model):
             return 'None'
         return self.user.username
 
-# Who liked this posts
-# [{user_obj}, {user}, {user}, ]
-# user_obj = user_id, user_profile_img
+    @property
+    def activity_object_attr(self):
+        return self
+
+    @property
+    def activity_author_feed(self):
+        return 'Like'
+
+    @property
+    def activity_notify(self):
+        # get liked object
+        # content_type, object_id
+        SomeModel = self.content_type.model_class()
+        object_id = self.object_id
+        qs = SomeModel.objects.filter(id=self.object_id)
+        if qs.exists():
+            target_instance = SomeModel.objects.filter(id=self.object_id).first()
+            if target_instance:
+                user_object = target_instance.user
+                if user_object:
+                    user_id = user_object.id
+                    author_id = self.user.id
+                    if user_id != author_id:
+                        target_feed = feed_manager.get_notification_feed(user_id)
+                        return [target_feed]
+        return []

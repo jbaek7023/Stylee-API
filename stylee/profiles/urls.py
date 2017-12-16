@@ -11,10 +11,12 @@ from .views import (
     ProfileEditAPIView,
     EmailEditAPIView,
     ProfileImageChangeView,
+    SearchProfileListView,
 )
 
 urlpatterns = [
     url(r'^detail/$', UserDetailView.as_view(), name="user_profile"),
+    url(r'^search/$', SearchProfileListView.as_view(), name="search_user"),
 
     url(r'^edit/$', ProfileEditAPIView.as_view(), name="edit_profile"),
 

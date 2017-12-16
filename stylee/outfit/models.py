@@ -5,9 +5,11 @@ from django.db.models import Q
 from .utils import GENDER_CHOICES
 from cloth.models import Cloth
 from comments.models import Comment
+from like.models import Like
 import uuid
 from stream_django.activity import Activity
 from stream_django.feed_manager import feed_manager
+from django.contrib.contenttypes.fields import GenericRelation
 
 def upload_location_outfit(instance, filename):
     ext = filename.split('.')[-1]
@@ -46,9 +48,10 @@ class Outfit(models.Model, Activity):
     # Like, Comment, Share,
     objects = OutfitManager()
     description = models.CharField(max_length=299, blank=True, null=True)
+    likes = GenericRelation(Like)
 
     def __str__(self):
-        return str(self.user)
+        return str(self.user)+" "+str(self.id)
 
     def get_categories(self):
         return self.categories

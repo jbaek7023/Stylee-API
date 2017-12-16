@@ -10,6 +10,11 @@ from base64 import b64decode
 from django.core.files.base import ContentFile
 import base64
 
+from rest_framework.filters import (
+    SearchFilter,
+    OrderingFilter,
+)
+
 import random
 import string
 
@@ -21,12 +26,36 @@ from .serializers import (
     ProfileEditSerializer,
     UserAccountSerializer,
     # ProfilePageByIdSerializer
+    UserRowSerializer,
+)
+
+from rest_framework.permissions import (
+    AllowAny,
+    IsAuthenticated,
+    IsAdminUser,
+    IsAuthenticatedOrReadOnly,
 )
 
 from .models import Profile
 
 User = get_user_model()
 import datetime
+
+class NotificationAPIView(APIView):
+    def get(self, request, format=None):
+        # Get Notification for user requset.user.id
+        json_output = { "feed" : 'feed' }
+        return Response(json_output, status=status.HTTP_200_OK)
+
+# allow only logged in user
+class SearchProfileListView(generics.ListAPIView):
+    serializer_class = UserRowSerializer
+    filter_backends = [SearchFilter, OrderingFilter]
+    search_fields = ['username']
+    permission_classes = [IsAuthenticated]
+    def get_queryset(self):
+        queryset_list = User.objects.all()
+        return queryset_list
 
 class ProfileImageChangeView(APIView):
     def post(self, request, format=None):

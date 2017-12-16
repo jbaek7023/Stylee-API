@@ -92,7 +92,6 @@ class ProfileEditSerializer(serializers.ModelSerializer):
 
 from outfit.serializers import OutfitDetailFeedSerializer
 from outfit.serializers import OutfitListSerializer
-#ProfilePage
 class ProfilePageSerializer(serializers.ModelSerializer):
     outfit_count = serializers.SerializerMethodField()
     followed_count = serializers.SerializerMethodField()
@@ -160,6 +159,7 @@ class ProfilePageSerializer(serializers.ModelSerializer):
     def get_outfits(self, obj):
         if(obj.outfit_set):
             filtered_set = obj.outfit_set.all(user=self.context['request'].user)
+            print(filtered_set)
             # return OutfitListSerializer(filtered_set, many=True).data
             return OutfitDetailFeedSerializer(filtered_set, many=True, context={'request': self.context['request']}).data
         return {}
@@ -168,4 +168,4 @@ class ProfilePageSerializer(serializers.ModelSerializer):
         return obj == self.context['request'].user
 
     def get_is_following(self, obj):
-        return obj.following.filter(follower=self.context['request'].user).exists()
+        return obj.following.filter(user=self.context['request'].user).exists()

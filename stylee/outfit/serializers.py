@@ -78,7 +78,6 @@ class OutfitDetailSerializer(serializers.ModelSerializer):
             'gender',
             'created_at',
             'outfit_img',
-            # 'category',
             'tagged_clothes',
             'location',
             'comments',
@@ -152,7 +151,7 @@ class OutfitDetailSerializer(serializers.ModelSerializer):
         return False
 
     def get_is_following(self, obj):
-        return obj.user.target.filter(user=self.context['request'].user).exists()
+        return obj.user.following.filter(user=self.context['request'].user).exists()
 
 class CategoryListOnOutfitSerializer(serializers.ModelSerializer):
     categories = serializers.SerializerMethodField()

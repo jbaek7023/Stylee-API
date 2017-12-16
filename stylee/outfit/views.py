@@ -14,8 +14,9 @@ from base64 import b64decode
 from django.core.files.base import ContentFile
 from stream_django.enrich import Enrich
 from stream_django.feed_manager import feed_manager
+from django.db.models import Count
 import base64
-
+import datetime
 from .serializers import (
     OutfitListSerializer,
     OutfitDetailSerializer,
@@ -26,8 +27,14 @@ from .serializers import (
     CategoryListOnOutfitSerializer,
 )
 
-from comments.serializers import CommentSerializer
+from rest_framework.pagination import (
+    LimitOffsetPagination,
+    PageNumberPagination
+)
+from .pagination import OutfitLimitOffsetPagination
 
+
+from comments.serializers import CommentSerializer
 enricher = Enrich()
 
 class StyleFeedAPIView(APIView):
@@ -36,8 +43,20 @@ class StyleFeedAPIView(APIView):
         # get the newsfeed for user.
         activities = feeds.get('timeline').get()['results']
         activities = enricher.enrich_activities(activities)
-        json_output = { "feed" : activities }
+        json_output = { "feed" : 'feed' }
         return Response(json_output, status=status.HTTP_200_OK)
+
+class PopularFeedAPIView(generics.ListAPIView):
+    serializer_class = OutfitDetailFeedSerializer
+    pagination_class = OutfitLimitOffsetPagination
+
+    # User Profile 에 나오는 거 Page 따라하기.
+    def get_queryset(self):
+        today = datetime.date.today()
+        # qs = Outfit.objects.filter(created_at__gte=today)
+        qs = Outfit.objects.filter(only_me=False).annotate(like_count=Count('likes')).order_by('-like_count')
+        # order_by created_at '-created_at'
+        return qs
 
 class OutfitCreateAPIView(APIView):
     def post(self, request, format='multipart/form-data'):

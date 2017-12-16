@@ -127,7 +127,7 @@ class ClothDetailSerializer(serializers.ModelSerializer):
         return False
 
     def get_is_following(self, obj):
-        return obj.user.target.filter(user=self.context['request'].user).exists()
+        return obj.user.following.filter(user=self.context['request'].user).exists()
 
 class ClothDetailCommentSerializer(serializers.ModelSerializer):
     comments = serializers.SerializerMethodField()

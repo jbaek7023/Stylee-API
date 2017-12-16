@@ -14,10 +14,12 @@ from .views import (
     AddOutfitOnCategory,
     DeleteOutfitOnCategory,
     StyleFeedAPIView,
+    PopularFeedAPIView,
 )
 
 urlpatterns = [
     url(r'^feed/$', StyleFeedAPIView.as_view(), name="style_feed"),
+    url(r'^popular/$', PopularFeedAPIView.as_view(), name="popular_feed"),
 
     url(r'^create/$', OutfitCreateAPIView.as_view(), name="create_outfit"),
     url(r'^addto/$', AddOutfitOnCategory.as_view(), name="add_outfit_to_category"),

@@ -52,7 +52,7 @@ class StyleFeedAPIView(APIView):
                 outfit_instance,
                 context={'request': request}).data
             feed.append(data)
-
+        print(feed)
         json_output = { "feed" : feed }
         return Response(json_output, status=status.HTTP_200_OK)
 

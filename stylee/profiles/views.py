@@ -37,13 +37,61 @@ from rest_framework.permissions import (
 )
 
 from .models import Profile
+from stream_django.feed_manager import feed_manager
 
 User = get_user_model()
 import datetime
+from stream_django.enrich import Enrich
+enricher = Enrich()
 
 class NotificationAPIView(APIView):
     def get(self, request, format=None):
-        # Get Notification for user requset.user.id
+        feeds = feed_manager.get_notification_feed(request.user.id)
+        notifications = feeds.get(limit=25, mark_seen='all')['results']
+        enriched_activities = enricher.enrich_aggregated_activities(notifications)
+        feed = []
+        # for activity in enriched_activities:
+        #     activity_dict = activity.__dict__
+        #     activity_type = activity_dict.get('verb')
+        #     activity_time = activity_dict.get('updated_at')
+        #     feed_object = None
+            # if activity_type is 'comment':
+            #     # user(last).image, updated_at,
+            #     # ( username, user_id ), (username, user_id) commented on 'style_title', 'outfit_id'. (or cloth_title, cloth_id
+            #     # target(object).content
+            #     for small_activity in activity_dict.activities:
+            #         small_activity_dict = activity.__dict__
+            #         actor = small_activity_dict.get('actor')
+            #         # content type & id
+            #         obj = small_activity_dict.get('object')
+            #         # obj_instnace = # obj.content_type & object_id
+            #     # feed_object = small_activity_dict.get('object').
+            #
+            #     # {users: [{id: 5, username: 'michaelvozm_d'}, {id: 1, username: 'jbaek72'}], image: 'https:', updated_at:timeline,
+            #     # title, id, content}
+            # elif activity_type is 'like':
+            #     # user(last).image, updated_at,
+            #     # ( username, user_id ), (username, user_id) liked on 'style_title', 'outfit_id'. (or cloth_title, cloth_id)
+            #     # target(object).content
+            #     for small_activity in activity_dict.activities:
+            #         small_activity_dict = activity.__dict__
+            #         actor = small_activity_dict.get('actor')
+            #         # content type & id
+            #         obj = small_activity_dict.get('object')
+            #         # obj_instnace = # obj.content_type & object_id
+            # elif activity_type is 'follow':
+            #     # user(last).image, updated_at,
+            #     # ( username, user_id ), (username, user_id) started to following you
+            #     for small_activity in activity_dict.activities:
+            #         small_activity_dict = activity.__dict__
+            #         actor = small_activity_dict.get('actor')
+            #         # content type & id
+            #         obj = small_activity_dict.get('object')
+            #         # obj_instnace = # obj.content_type & object_id
+            #
+            # feed.append(feed_object)
+
+        print(enriched_activities)
         json_output = { "feed" : 'feed' }
         return Response(json_output, status=status.HTTP_200_OK)
 

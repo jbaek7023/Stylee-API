@@ -90,6 +90,7 @@ OLD_PASSWORD_FIELD_ENABLED = True
 
 AUTHENTICATION_BACKENDS = (
     # Needed to login by username in Django admin, regardless of `allauth`
+
     'django.contrib.auth.backends.ModelBackend',
 
     # `allauth` specific authentication methods, such as login by e-mail
@@ -216,7 +217,7 @@ JWT_AUTH = {
 
 # Facebook configuration
 SOCIAL_AUTH_FACEBOOK_KEY = '1946324505614230'
-SOCIAL_AUTH_FACEBOOK_SECRET = '7a0cb7b9ec80fbcbf78dcf6fffbaaf4e'
+SOCIAL_AUTH_FACEBOOK_SECRET = '2a2a10ac9f6a5ece6a518a30987b0ae3'
 
 # Define SOCIAL_AUTH_FACEBOOK_SCOPE to get extra permissions from facebook. Email is not sent by default, to get it, you must request the email permission:
 SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']

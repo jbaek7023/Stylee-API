@@ -78,6 +78,23 @@ class Like(models.Model, Activity):
         return 'Like'
 
     @property
+    def activity_target_attr(self):
+        print('tgarget')
+        print('tgarget')
+        print('tgarget')
+        print('tgarget')
+        SomeModel = self.content_type.model_class()
+        object_id = self.object_id
+        qs = SomeModel.objects.filter(id=self.object_id)
+        if qs.exists():
+            target_instance = SomeModel.objects.filter(id=self.object_id).first()
+            if target_instance:
+                print('yeah!')
+                print(target_instance)
+                return target_instance
+        return None
+
+    @property
     def activity_notify(self):
         # get liked object
         # content_type, object_id

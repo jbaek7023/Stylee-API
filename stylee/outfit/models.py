@@ -72,6 +72,6 @@ class Outfit(models.Model, Activity):
     def activity_object_attr(self):
         return self
 
-    @property
-    def activity_notify(self):
-        targets = [feed_manager.get_news_feeds(self.user.id)['timeline']]
+    # @property
+    # def activity_notify(self):
+    #     targets = [feed_manager.get_news_feeds(self.user.id)['timeline']]

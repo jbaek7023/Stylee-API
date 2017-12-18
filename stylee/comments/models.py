@@ -2,6 +2,7 @@ from django.conf import settings
 from django.db import models
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
+from stream_django.activity import Activity
 from stream_django.feed_manager import feed_manager
 
 # from outfit.models import Outfit # circularity.
@@ -42,7 +43,7 @@ class CommentManager(models.Manager):
         return None
 
 # Create your models here.
-class Comment(models.Model):
+class Comment(models.Model, Activity):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, default=1)
 
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
@@ -93,7 +94,7 @@ class Comment(models.Model):
                     user_id = user_object.id
                     author_id = self.user.id
                     if user_id != author_id:
-                    # notify
+                        # notify
                         target_feed = feed_manager.get_notification_feed(user_id)
                         return [target_feed]
         return []

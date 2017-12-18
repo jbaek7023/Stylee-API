@@ -12,11 +12,13 @@ from .views import (
     EmailEditAPIView,
     ProfileImageChangeView,
     SearchProfileListView,
+    NotificationAPIView,
 )
 
 urlpatterns = [
     url(r'^detail/$', UserDetailView.as_view(), name="user_profile"),
     url(r'^search/$', SearchProfileListView.as_view(), name="search_user"),
+    url(r'^notifications/$', NotificationAPIView.as_view(), name="user_notification"),
 
     url(r'^edit/$', ProfileEditAPIView.as_view(), name="edit_profile"),
 

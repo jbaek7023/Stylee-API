@@ -1,7 +1,9 @@
 from rest_framework.pagination import (
-    LimitOffsetPagination,
     PageNumberPagination,
 )
 
-class OutfitLimitOffsetPagination(PageNumberPagination):
-    page_size = 18
+class OutfitPagination(PageNumberPagination):
+    page_size = 24
+
+class CategoryPagination(PageNumberPagination):
+    page_size = 12

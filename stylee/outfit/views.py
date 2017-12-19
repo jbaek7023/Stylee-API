@@ -31,20 +31,21 @@ from rest_framework.pagination import (
     LimitOffsetPagination,
     PageNumberPagination
 )
-from .pagination import OutfitLimitOffsetPagination
+from .pagination import OutfitPagination, CategoryPagination
 
 
 from comments.serializers import CommentSerializer
 enricher = Enrich()
 
 class StyleFeedAPIView(APIView):
-    def get(self, request, format=None):
+    def get(self, request, page=0, format=None):
+        page = self.kwargs['page']
+        if not page:
+            page_num = 0
+        else:
+            page_num = int(page)* 24
         feeds = feed_manager.get_news_feeds(request.user.id)
-        # get the newsfeed for user.
-        # .get(limit=5, offset=5)
-        # limit = maximum number of the items to be return
-        # offset = starting position...
-        activities = feeds.get('timeline').get()['results']
+        activities = feeds.get('timeline').get(limit=24, offset=page_num)['results']
         activities = enricher.enrich_activities(activities)
         feed = []
         for activity in activities:
@@ -59,7 +60,7 @@ class StyleFeedAPIView(APIView):
 
 class PopularFeedAPIView(generics.ListAPIView):
     serializer_class = OutfitDetailFeedSerializer
-    pagination_class = OutfitLimitOffsetPagination
+    pagination_class = OutfitPagination
 
     # User Profile 에 나오는 거 Page 따라하기.
     def get_queryset(self):
@@ -206,6 +207,7 @@ class DeleteOutfitOnCategory(APIView):
 # Create your views here.
 class OutfitListView(generics.ListAPIView):
     serializer_class = OutfitListSerializer
+    pagination_class = OutfitPagination
 
     def get_queryset(self):
         qs = Outfit.objects.all(user=self.request.user)
@@ -215,16 +217,44 @@ class OutfitListView(generics.ListAPIView):
 
 class OutfitListByIdView(generics.ListAPIView):
     serializer_class = OutfitListSerializer
+    pagination_class = OutfitPagination
 
     def get_queryset(self):
         uid = self.kwargs['user_id']
         User = get_user_model()
         outfit_owner = User.objects.filter(id=uid).first()
+
         # this is wrong.
         qs = Outfit.objects.all(user=self.request.user)
         # This is not quite.
         qs = qs.filter(user=outfit_owner)
         return qs
+
+class ProfileOutfitListNext(generics.ListAPIView):
+    serializer_class = OutfitDetailFeedSerializer
+
+    def get_queryset(self):
+        page = self.kwargs['page']
+        if not page:
+            page_num = 12
+        else:
+            page_num = int(page) * 24 + 12
+        page_num_before = page_num - 24
+
+        # limit 24, offset 12.
+        uid = self.kwargs['user_id']
+        User = get_user_model()
+        outfit_owner = User.objects.filter(id=uid).first()
+
+        # this is wrong.
+        qs = Outfit.objects.filter(user=outfit_owner)
+        print(outfit_owner)
+        print(self.request.user)
+        if outfit_owner != self.request.user:
+            qs = qs.filter(only_me=False)
+        print(page_num_before)
+        print(page_num)
+        return qs[page_num_before:page_num]
 
 # Requires [{JWT or Bearer Token} AND outfit_id
 # Returns Outfit fields
@@ -239,6 +269,7 @@ class OutfitDetailView(generics.RetrieveAPIView):
 class CategoryListOnOutfitView(generics.RetrieveAPIView):
     serializer_class = CategoryListOnOutfitSerializer
     lookup_field = 'pk'
+    pagination_class = CategoryPagination
 
     def get_queryset(self):
         qs = Outfit.objects.all(user=self.request.user)

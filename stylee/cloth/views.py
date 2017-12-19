@@ -18,6 +18,8 @@ from .serializers import (
     ClothDetailLikeSerializer,
     ClothDetailDetailSerializer,
 )
+
+from .pagination import ClothPagination
 import base64
 
 class ClothCreateAPIView(APIView):
@@ -81,6 +83,7 @@ class ClothCreateAPIView(APIView):
 
 class ClothesListView(generics.ListAPIView):
     serializer_class = ClothesListSerializer
+    pagination_class = ClothPagination
 
     def get_queryset(self):
         cloth_type = self.kwargs['ctype']
@@ -99,6 +102,7 @@ class ClothesListView(generics.ListAPIView):
 
 class ClothesArchieveList(generics.ListAPIView):
     serializer_class = ClothesListSerializer
+    pagination_class = ClothPagination
 
     def get_queryset(self):
         u = self.request.user
@@ -108,6 +112,7 @@ class ClothesArchieveList(generics.ListAPIView):
 
 class ClothesListByIdView(generics.ListAPIView):
     serializer_class = ClothesListSerializer
+    pagination_class = ClothPagination
 
     def get_queryset(self):
         cloth_type = self.kwargs['ctype']
@@ -140,7 +145,7 @@ class ClothDetailView(generics.RetrieveAPIView):
         qs = Cloth.objects.all(user=self.request.user)
         return qs
 
-class ClothEditAPIView(UpdateModelMixin, generics.RetrieveAPIView):
+class ClothEditAPIView(DestroyModelMixin, UpdateModelMixin, generics.RetrieveAPIView):
     serializer_class = ClothDetailSerializer
     lookup_field = 'pk'
 

@@ -25,8 +25,14 @@ class CategoryDetailSerializer(serializers.ModelSerializer):
         )
 
     def get_outfits(self, obj):
+        page = self.context['request'].query_params["page"]
+        page_num_before = (int(page)-1) * 24 # page 1 -> 0: 24
+        page_num = int(page) * 24
         if obj.outfits is not None:
-            return OutfitListSerializer(obj.outfits, many=True).data
+            outfits = obj.outfits
+            if obj.owner != self.context['request'].user:
+                outfits = outfits.filter(only_me=False)
+            return OutfitListSerializer(outfits.all()[page_num_before:page_num], many=True).data
         return None
 
     def get_outfit_count(self, obj):

@@ -21,6 +21,7 @@ class OutfitCategoryAPIView(generics.RetrieveAPIView):
     lookup_field = 'pk'
 
     def get_queryset(self):
+        print(self.request.user)
         qs = Category.objects.all(owner=self.request.user)
         return qs
 

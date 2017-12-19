@@ -41,7 +41,6 @@ def create_comment_serializer(model_type='outfit', id=None, parent_id=None, user
             SomeModel = model_qs.first().model_class()
 
             obj_qs = SomeModel.objects.filter(id=self.id)
-            # obj_qs = Post.objects.filter(pk=self.pk)
             if not obj_qs.exists() or obj_qs.count() !=1:
                 raise serializers.ValidationError("This is not a id for this content type")
             return data

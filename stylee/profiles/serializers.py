@@ -158,10 +158,10 @@ class ProfilePageSerializer(serializers.ModelSerializer):
 
     def get_outfits(self, obj):
         if(obj.outfit_set):
-            filtered_set = obj.outfit_set.all(user=self.context['request'].user)
-            print(filtered_set)
-            # return OutfitListSerializer(filtered_set, many=True).data
-            return OutfitDetailFeedSerializer(filtered_set, many=True, context={'request': self.context['request']}).data
+            outfits = obj.outfit_set.all()
+            if obj != self.context['request'].user:
+                outfits = outfits.filter(only_me=False)
+            return OutfitDetailFeedSerializer(outfits.all()[:12], many=True, context={'request': self.context['request']}).data
         return {}
 
     def get_is_owner(self, obj):

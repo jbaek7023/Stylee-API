@@ -17,8 +17,10 @@ from .views import (
 urlpatterns = [
     url(r'^list/(?P<ctype>\d+)/$', ClothesListView.as_view(), name="clo_wardrobe_list"),
     url(r'^create/$', ClothCreateAPIView.as_view(), name="create_cloth"),
+    
     url(r'^detail/(?P<pk>\d+)/$', ClothDetailView.as_view(), name="clo_detail"),
     url(r'^edit/(?P<pk>\d+)/$', ClothEditAPIView.as_view(), name="clo_edit"),
+
     url(r'^comments/(?P<pk>\d+)/$', ClothDetailCommentsView.as_view(), name="clo_comments"),
     url(r'^likes/(?P<pk>\d+)/$', ClothDetailLikesView.as_view(), name="clo_likes"),
     url(r'^clothlist/(?P<user_id>\d+)/(?P<ctype>\d+)/$', ClothesListByIdView.as_view(), name="clo_list_id"),

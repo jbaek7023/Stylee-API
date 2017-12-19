@@ -45,9 +45,14 @@ from stream_django.enrich import Enrich
 enricher = Enrich()
 
 class NotificationAPIView(APIView):
-    def get(self, request, format=None):
+    def get(self, request, page=0, format=None):
+        page = self.kwargs['page']
+        if not page:
+            page_num = 0
+        else:
+            page_num = int(page)* 12
         feeds = feed_manager.get_notification_feed(request.user.id)
-        notifications = feeds.get(limit=25, mark_seen='all')['results']
+        notifications = feeds.get(limit=12, offset=page_num, mark_seen='all')['results']
         enriched_activities = enricher.enrich_aggregated_activities(notifications)
         feed = []
         for activity in enriched_activities:

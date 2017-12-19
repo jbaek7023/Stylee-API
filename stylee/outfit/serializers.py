@@ -62,7 +62,7 @@ class OutfitDetailSerializer(serializers.ModelSerializer):
     comment_count = serializers.SerializerMethodField()
     like_count = serializers.SerializerMethodField()
     liked = serializers.SerializerMethodField()
-    categories = serializers.SerializerMethodField()
+    # categories = serializers.SerializerMethodField()
     user = UserRowSerializer(read_only=True)
     tagged_clothes = serializers.SerializerMethodField()
     starred = serializers.SerializerMethodField()
@@ -84,7 +84,7 @@ class OutfitDetailSerializer(serializers.ModelSerializer):
             'comment_count',
             'like_count',
             'liked',
-            'categories',
+            # 'categories',
             'starred',
             'only_me',
             'is_owner',
@@ -98,15 +98,15 @@ class OutfitDetailSerializer(serializers.ModelSerializer):
 
         return ClothesListSerializer(clothes, many=True).data
 
-    def get_categories(self, obj):
-        user = self.context['request'].user
-        categories = Category.objects.filter(owner=user)
-        added = categories.extra(select={'added': '1'}).filter(outfits__pk=obj.pk)
-        added = list(added.values('added', 'name', 'id'))
-        added_f = categories.extra(select={'added': '0'}).exclude(outfits__pk=obj.pk)
-        added_f = list(added_f.values('added', 'name', 'id'))
-        categories = added + added_f
-        return CategorySerializer(categories, many=True).data
+    # def get_categories(self, obj):
+    #     user = self.context['request'].user
+    #     categories = Category.objects.filter(owner=user)
+    #     added = categories.extra(select={'added': '1'}).filter(outfits__pk=obj.pk)
+    #     added = list(added.values('added', 'name', 'id'))
+    #     added_f = categories.extra(select={'added': '0'}).exclude(outfits__pk=obj.pk)
+    #     added_f = list(added_f.values('added', 'name', 'id'))
+    #     categories = added + added_f
+    #     return CategorySerializer(categories, many=True).data
 
     def get_starred(self, obj):
         content_type = obj.get_content_type

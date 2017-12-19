@@ -8,7 +8,7 @@ from rest_framework import status
 from .models import Star
 
 from .serializers import ListStarSerializer
-
+from .pagination import StarPagination
 # class StarCreateAPIView(generics.CreateAPIView):
 #     queryset = Star.objects.all()
 #
@@ -74,6 +74,7 @@ class StarDestroyView(APIView):
 
 class StarListAPIView(generics.ListAPIView):
     serializer_class = ListStarSerializer
+    pagination_class = StarPagination
 
     def get_queryset(self):
         qs = Star.objects.filter(user=self.request.user)

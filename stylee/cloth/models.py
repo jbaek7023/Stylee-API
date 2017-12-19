@@ -26,12 +26,11 @@ def upload_location(instance, filename):
 class ClothManager(models.Manager):
     def all(self, user=None, request=None, *args, **kwargs):
         qs = super(ClothManager, self).all()
-
         # owned by user
         if user: #user logged in
-            qs = qs.exclude(Q(only_me=True) & ~Q(user=user) | Q(archieve=True))
-            print(qs)
+            qs = qs.exclude(Q(only_me=True) & ~Q(user=user))
         return qs
+
 
 # Outfit Detail과 비슷한 구조로가기.
 class Cloth(models.Model):

@@ -78,6 +78,8 @@ class ClothDetailSerializer(serializers.ModelSerializer):
 
     def get_tagged_outfits(self, obj):
         outfits = obj.outfit_set;
+        if obj.user != self.context['request'].user:
+            outfits = outfits.filter(only_me=False)
         return OutfitListSerializer(outfits, many=True).data
 
     def get_like_count(self, obj):

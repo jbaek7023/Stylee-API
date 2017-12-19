@@ -83,10 +83,19 @@ class ClothesListView(generics.ListAPIView):
     serializer_class = ClothesListSerializer
 
     def get_queryset(self):
+        cloth_type = self.kwargs['ctype']
         u = self.request.user
-        qs = Cloth.objects.all(user=u)
-        qs1 = qs.filter(user=u)
-        return qs1
+        big_cloth_type = 'Top'
+        if cloth_type == str(2):
+            big_cloth_type = 'Outerwear'
+        elif cloth_type == str(3):
+            big_cloth_type = 'Bottom'
+        elif cloth_type == str(4):
+            big_cloth_type = 'Shoes'
+        elif cloth_type == str(5):
+            big_cloth_type = 'ETC'
+        qs = Cloth.objects.filter(user=u, big_cloth_type=big_cloth_type, archieve=False)
+        return qs
 
 class ClothesArchieveList(generics.ListAPIView):
     serializer_class = ClothesListSerializer
@@ -101,11 +110,25 @@ class ClothesListByIdView(generics.ListAPIView):
     serializer_class = ClothesListSerializer
 
     def get_queryset(self):
+        cloth_type = self.kwargs['ctype']
         uid = self.kwargs['user_id']
         User = get_user_model()
         cloth_owner = User.objects.filter(id=uid).first()
-        qs = Cloth.objects.all(user=self.request.user)
-        qs = qs.filter(user=cloth_owner)
+
+        big_cloth_type = 'Top'
+        if cloth_type == str(2):
+            big_cloth_type = 'Outerwear'
+        elif cloth_type == str(3):
+            big_cloth_type = 'Bottom'
+        elif cloth_type == str(4):
+            big_cloth_type = 'Shoes'
+        elif cloth_type == str(5):
+            big_cloth_type = 'ETC'
+
+        if cloth_owner == self.request.user:
+            qs = Cloth.objects.filter(user=cloth_owner, big_cloth_type=big_cloth_type, archieve=False)
+        else:
+            qs = Cloth.objects.filter(user=cloth_owner, big_cloth_type=big_cloth_type, only_me=False, archieve=False)
         return qs
 
 class ClothDetailView(generics.RetrieveAPIView):

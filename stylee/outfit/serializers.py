@@ -93,6 +93,9 @@ class OutfitDetailSerializer(serializers.ModelSerializer):
 
     def get_tagged_clothes(self, obj):
         clothes = obj.tagged_clothes
+        if obj.user != self.context['request'].user:
+            clothes = clothes.filter(only_me=False)
+
         return ClothesListSerializer(clothes, many=True).data
 
     def get_categories(self, obj):

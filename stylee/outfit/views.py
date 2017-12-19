@@ -46,16 +46,15 @@ class StyleFeedAPIView(APIView):
         # offset = starting position...
         activities = feeds.get('timeline').get()['results']
         activities = enricher.enrich_activities(activities)
-        print(activities)
-
         feed = []
         for activity in activities:
             outfit_instance = activity.__dict__.get('activity_data').get('object')
-            data = OutfitDetailFeedSerializer(
-                outfit_instance,
-                context={'request': request}).data
-            feed.append(data)
-        json_output = { "feed" : feed }
+            if outfit_instance:
+                data = OutfitDetailFeedSerializer(
+                    outfit_instance,
+                    context={'request': request}).data
+                feed.append(data)
+        json_output = feed
         return Response(json_output, status=status.HTTP_200_OK)
 
 class PopularFeedAPIView(generics.ListAPIView):

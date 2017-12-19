@@ -50,49 +50,79 @@ class NotificationAPIView(APIView):
         notifications = feeds.get(limit=25, mark_seen='all')['results']
         enriched_activities = enricher.enrich_aggregated_activities(notifications)
         feed = []
-        # for activity in enriched_activities:
-        #     activity_dict = activity.__dict__
-        #     activity_type = activity_dict.get('verb')
-        #     activity_time = activity_dict.get('updated_at')
-        #     feed_object = None
-            # if activity_type is 'comment':
-            #     # user(last).image, updated_at,
-            #     # ( username, user_id ), (username, user_id) commented on 'style_title', 'outfit_id'. (or cloth_title, cloth_id
-            #     # target(object).content
-            #     for small_activity in activity_dict.activities:
-            #         small_activity_dict = activity.__dict__
-            #         actor = small_activity_dict.get('actor')
-            #         # content type & id
-            #         obj = small_activity_dict.get('object')
-            #         # obj_instnace = # obj.content_type & object_id
-            #     # feed_object = small_activity_dict.get('object').
-            #
-            #     # {users: [{id: 5, username: 'michaelvozm_d'}, {id: 1, username: 'jbaek72'}], image: 'https:', updated_at:timeline,
-            #     # title, id, content}
-            # elif activity_type is 'like':
-            #     # user(last).image, updated_at,
-            #     # ( username, user_id ), (username, user_id) liked on 'style_title', 'outfit_id'. (or cloth_title, cloth_id)
-            #     # target(object).content
-            #     for small_activity in activity_dict.activities:
-            #         small_activity_dict = activity.__dict__
-            #         actor = small_activity_dict.get('actor')
-            #         # content type & id
-            #         obj = small_activity_dict.get('object')
-            #         # obj_instnace = # obj.content_type & object_id
-            # elif activity_type is 'follow':
-            #     # user(last).image, updated_at,
-            #     # ( username, user_id ), (username, user_id) started to following you
-            #     for small_activity in activity_dict.activities:
-            #         small_activity_dict = activity.__dict__
-            #         actor = small_activity_dict.get('actor')
-            #         # content type & id
-            #         obj = small_activity_dict.get('object')
-            #         # obj_instnace = # obj.content_type & object_id
-            #
-            # feed.append(feed_object)
+        for activity in enriched_activities:
+            activity_type = activity.get('verb')
+            activity_actor_count = activity.get('actor_count')
+            activity_time = activity.get('updated_at')
+            activity_activities = activity.get('activities')
+            feed_object = None
+            if activity_type == 'comment':
+                user_list = []
+                target_content_type = None
+                target_content_id = None
+                for small_activity in activity_activities[:2]:
 
-        print(enriched_activities)
-        json_output = { "feed" : 'feed' }
+                    actor_instance = small_activity.get('actor')
+                    target_address = small_activity.get('target_address')
+                    if not target_content_id and target_address:
+                        target_content_type, target_content_id = target_address.split(':')
+                    if actor_instance:
+                        user_data = UserRowSerializer(actor_instance, context={'request': request}).data
+                        user_list.append(user_data)
+                feed_object = {
+                    'users': user_list,
+                    'updated_at': activity_time,
+                    'target_type': target_content_type,
+                    'target_id': target_content_id,
+                    'actor_count': activity_actor_count,
+                    'activity_type': activity_type
+                    }
+                feed.append(feed_object)
+            elif activity_type == 'like':
+                user_list = []
+                target_content_type = None
+                target_content_id = None
+                for small_activity in activity_activities[:2]:
+                    actor_instance = small_activity.get('actor')
+                    target_address = small_activity.get('target_address')
+                    if not target_content_id and target_address:
+                        target_content_type, target_content_id = target_address.split(':')
+                    if actor_instance:
+                        user_data = UserRowSerializer(actor_instance, context={'request': request}).data
+                        user_list.append(user_data)
+                feed_object = {
+                    'users': user_list,
+                    'updated_at': activity_time,
+                    'target_type': target_content_type,
+                    'target_id': target_content_id,
+                    'actor_count': activity_actor_count,
+                    'activity_type': activity_type
+                    }
+                feed.append(feed_object)
+            elif activity_type == 'follow':
+                user_list = []
+                target_content_type = None
+                target_content_id = None
+                for small_activity in activity_activities[:2]:
+                    actor_instance = small_activity.get('actor') #serialize it!
+                    target_address = small_activity.get('target_address')
+                    target_address = small_activity.get('target_address')
+                    if not target_content_id and target_address:
+                        target_content_type, target_content_id = target_address.split(':')
+                    if actor_instance:
+                        user_data = UserRowSerializer(actor_instance, context={'request': request}).data
+                        user_list.append(user_data)
+                feed_object = {
+                    'users': user_list,
+                    'updated_at': activity_time,
+                    'actor_count': activity_actor_count,
+                    'activity_type': activity_type
+                    }
+                feed.append(feed_object)
+            else:
+                # possible exception
+                pass
+        json_output = feed
         return Response(json_output, status=status.HTTP_200_OK)
 
 # allow only logged in user

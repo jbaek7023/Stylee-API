@@ -58,7 +58,7 @@ class Like(models.Model, Activity):
 
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
-    content_object = GenericForeignKey('content_type', 'object_id')
+    target = GenericForeignKey('content_type', 'object_id')
 
     created_at = models.DateTimeField(auto_now=False, auto_now_add=True)
 
@@ -78,20 +78,13 @@ class Like(models.Model, Activity):
         return 'Like'
 
     @property
-    def activity_target_attr(self):
-        print('tgarget')
-        print('tgarget')
-        print('tgarget')
-        print('tgarget')
+    def extra_activity_data(self):
         SomeModel = self.content_type.model_class()
         object_id = self.object_id
         qs = SomeModel.objects.filter(id=self.object_id)
-        if qs.exists():
-            target_instance = SomeModel.objects.filter(id=self.object_id).first()
-            if target_instance:
-                print('yeah!')
-                print(target_instance)
-                return target_instance
+        if qs:
+            dict_object = '%s:%s' % (self.content_type, self.object_id)
+            return {'target_address': dict_object}
         return None
 
     @property

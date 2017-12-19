@@ -41,9 +41,12 @@ class StyleFeedAPIView(APIView):
     def get(self, request, format=None):
         feeds = feed_manager.get_news_feeds(request.user.id)
         # get the newsfeed for user.
+        # .get(limit=5, offset=5)
+        # limit = maximum number of the items to be return
+        # offset = starting position...
         activities = feeds.get('timeline').get()['results']
         activities = enricher.enrich_activities(activities)
-        # print(activities)
+        print(activities)
 
         feed = []
         for activity in activities:
@@ -52,7 +55,6 @@ class StyleFeedAPIView(APIView):
                 outfit_instance,
                 context={'request': request}).data
             feed.append(data)
-        print(feed)
         json_output = { "feed" : feed }
         return Response(json_output, status=status.HTTP_200_OK)
 

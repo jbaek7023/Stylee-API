@@ -43,7 +43,7 @@ class Star(models.Model):
 
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
-    content_object = GenericForeignKey('content_type', 'object_id')
+    target = GenericForeignKey('content_type', 'object_id')
     #
     # cloth = models.ForeignKey(Cloth, null=True, blank=True)
     #

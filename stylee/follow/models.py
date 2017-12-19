@@ -16,10 +16,6 @@ class Follow(models.Model, Activity):
             self.target.username
         )
 
-    @classmethod
-    def activity_related_models(cls):
-        return ['user', 'target']
-
     @property
     def activity_object_attr(self):
         return self

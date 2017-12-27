@@ -104,6 +104,15 @@ class LikeSerializer(serializers.ModelSerializer):
             'created_at'
         )
 
+class LikedUserSerializer(serializers.ModelSerializer):
+    user = UserRowSerializer(read_only=True)
+    class Meta:
+        model = Like
+        fields = (
+            'id',
+            'user',
+        )
+
 class LikeListSerializer(serializers.ModelSerializer):
     user = UserRowSerializer(read_only=True)
     class Meta:

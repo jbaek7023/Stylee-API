@@ -17,7 +17,7 @@ from .views import (
 urlpatterns = [
     url(r'^list/(?P<ctype>\d+)/$', ClothesListView.as_view(), name="clo_wardrobe_list"),
     url(r'^create/$', ClothCreateAPIView.as_view(), name="create_cloth"),
-    
+
     url(r'^detail/(?P<pk>\d+)/$', ClothDetailView.as_view(), name="clo_detail"),
     url(r'^edit/(?P<pk>\d+)/$', ClothEditAPIView.as_view(), name="clo_edit"),
 

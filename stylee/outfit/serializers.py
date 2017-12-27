@@ -84,11 +84,13 @@ class OutfitDetailSerializer(serializers.ModelSerializer):
             'comment_count',
             'like_count',
             'liked',
+            'description',
             # 'categories',
             'starred',
             'only_me',
             'is_owner',
             'is_following',
+            'link',
         )
 
     def get_tagged_clothes(self, obj):

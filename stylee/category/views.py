@@ -14,23 +14,13 @@ from .serializers import (
     CategorySimpleListSerializer
 )
 
-# Create your views here.
-class OutfitCategoryAPIView(generics.RetrieveAPIView):
-    # queryset = Outfit.objects.all()
-    serializer_class = CategoryDetailSerializer
-    lookup_field = 'pk'
+from .pagination import CategoryPagination
 
-    def get_queryset(self):
-        print(self.request.user)
-        qs = Category.objects.all(owner=self.request.user)
-        return qs
 
 class CreateCategoryView(APIView):
     def post(self, request, format=None):
         outfit_id = self.request.data.get('outfit_id')
-        print(outfit_id)
         if outfit_id == 0:
-            print('passing as expected')
             name = self.request.data.get('name')
             only_me = self.request.data.get('only_me')
             category_instance, created = Category.objects.get_or_create(
@@ -54,10 +44,9 @@ class CreateCategoryView(APIView):
                     only_me=only_me)
                 if category_instance is not None:
                     category_instance.outfits.add(outfit_instance)
-                    print(category_instance.main_img)
-                    print(outfit_instance.outfit_img)
                     if category_instance.main_img is None:
                         print('imhere')
+                        # exception later
 
                     category_instance.main_img = outfit_instance.outfit_img
                     json_output = {"success": True, "name": category_instance.name }
@@ -80,8 +69,6 @@ class CreateSimpleCategoryView(APIView):
                 only_me=only_me)
             if category_instance is not None:
                 category_instance.outfits.add(outfit_instance)
-                print(category_instance.main_img)
-                print(outfit_instance.outfit_img)
                 if category_instance.main_img is None:
                     print('imhere')
 
@@ -95,7 +82,16 @@ class CreateSimpleCategoryView(APIView):
             json_output = {"success": False}
             return Response(json_output, HTTP_409_CONFLICT)
 
+# Category Detail
+class OutfitCategoryAPIView(generics.RetrieveAPIView):
+    serializer_class = CategoryDetailSerializer
+    lookup_field = 'pk'
 
+    def get_queryset(self):
+        qs = Category.objects.all(owner=self.request.user)
+        return qs
+
+# Category Edit Delete
 class CategoryEditAPIView(DestroyModelMixin, UpdateModelMixin, generics.RetrieveAPIView):
     serializer_class = CategoryDetailSerializer
     lookup_field = 'pk'
@@ -111,25 +107,20 @@ class CategoryEditAPIView(DestroyModelMixin, UpdateModelMixin, generics.Retrieve
     def delete(self, request, *args, **kwargs):
         return self.destroy(request, *args, **kwargs)
 
+# StylebookCategory
 class CategoryListAPIView(generics.ListAPIView):
     serializer_class = CategoryListSerializer
+    pagination_class = CategoryPagination
 
     def get_queryset(self):
         qs = Category.objects.all(user=self.request.user)
         qs = qs.filter(owner=self.request.user)
         return qs
 
-class CategorySimpleListAPIView(generics.ListAPIView):
-    serializer_class = CategorySimpleListSerializer
-
-    def get_queryset(self):
-        qs = Category.objects.all(user=self.request.user)
-        qs = qs.filter(owner=self.request.user)
-        return qs
-
+# Profile
 class CategoryListForIdAPIView(generics.ListAPIView):
     serializer_class = CategoryListSerializer
-    # permission
+    pagination_class = CategoryPagination
 
     def get_queryset(self):
         uid = self.kwargs['user_id']
@@ -137,4 +128,13 @@ class CategoryListForIdAPIView(generics.ListAPIView):
         category_owner = User.objects.filter(id=uid).first()
         qs = Category.objects.all(user=self.request.user)
         qs = qs.filter(owner=category_owner)
+        return qs
+
+# Add Style
+class CategorySimpleListAPIView(generics.ListAPIView):
+    serializer_class = CategorySimpleListSerializer
+
+    def get_queryset(self):
+        qs = Category.objects.all(user=self.request.user)
+        qs = qs.filter(owner=self.request.user)
         return qs

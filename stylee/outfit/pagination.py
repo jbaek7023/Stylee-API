@@ -7,3 +7,6 @@ class OutfitPagination(PageNumberPagination):
 
 class CategoryPagination(PageNumberPagination):
     page_size = 12
+
+class OutfitByCategoryPagination(PageNumberPagination):
+    page_size = 18

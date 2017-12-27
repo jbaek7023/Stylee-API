@@ -12,10 +12,11 @@ class UserRowSerializer(serializers.ModelSerializer):
     image = serializers.SerializerMethodField()
     # user_id = serializers.SerializerMethodField()
     # username = serializers.SerializerMethodField()
+    name = serializers.SerializerMethodField()
 
     class Meta:
         model = User
-        fields = ('image', 'id', 'username',)
+        fields = ('image', 'id', 'username', 'name')
 
     def get_image(self, obj):
         try:
@@ -23,6 +24,13 @@ class UserRowSerializer(serializers.ModelSerializer):
         except:
             image = None
         return image
+
+    def get_name(self, obj):
+        try:
+            name = obj.profile.name
+        except:
+            name = None
+        return name
 
 class UserMenuSerializer(serializers.ModelSerializer):
     user = UserRowSerializer(read_only=True)

@@ -27,6 +27,7 @@ def upload_location(instance, filename):
 
 class Profile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL)
+    name = models.CharField(max_length=20, blank=True)
     title = models.TextField(max_length=155, blank=True)
     gender = models.CharField(max_length=10, choices=GENDER_CHOICES, default='u') # Recommend Factor
     # location = models.CharField(max_length=40, choices=LOCATION_CHOICES, default='ud') # Recommend Factor

@@ -40,7 +40,6 @@ class ClothDetailDetailSerializer(serializers.ModelSerializer):
 
 from outfit.serializers import OutfitListSerializer
 
-# In Progress..!!
 class ClothDetailSerializer(serializers.ModelSerializer):
     comments = serializers.SerializerMethodField()
     comment_count = serializers.SerializerMethodField()

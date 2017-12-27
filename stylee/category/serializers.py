@@ -4,8 +4,6 @@ from .models import Category
 from outfit.serializers import OutfitListSerializer
 from profiles.serializers import UserRowSerializer
 
-
-
 class CategoryDetailSerializer(serializers.ModelSerializer):
     outfits = serializers.SerializerMethodField()
     is_owner = serializers.SerializerMethodField()
@@ -26,8 +24,12 @@ class CategoryDetailSerializer(serializers.ModelSerializer):
 
     def get_outfits(self, obj):
         page = self.context['request'].query_params["page"]
-        page_num_before = (int(page)-1) * 24 # page 1 -> 0: 24
-        page_num = int(page) * 24
+        page_num_before = 0
+        page_num = 18
+        if page:
+            page_num_before = (int(page)-1) * 18 # page 1 -> 0: 24
+            page_num = int(page) * 18
+
         if obj.outfits is not None:
             outfits = obj.outfits
             if obj.owner != self.context['request'].user:

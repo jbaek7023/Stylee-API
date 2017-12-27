@@ -5,7 +5,7 @@ from django.contrib.contenttypes.models import ContentType
 from rest_framework.response import Response
 from .models import Like
 
-from .serializers import LikeSerializer
+from .serializers import LikeSerializer, LikedUserSerializer
 # , create_like_serializer, delete_like_serializer
 
 # class LikeCreateAPIView(generics.CreateAPIView):
@@ -91,4 +91,20 @@ class LikeListView(generics.ListAPIView):
     def get_queryset(self):
         qs = Like.objects.all()
         # if undefined user, return 404.(later)
+        return qs
+
+class LikeListByClothId(generics.ListAPIView):
+    serializer_class = LikedUserSerializer
+
+    def get_queryset(self):
+        cloth_id = self.kwargs['cid']
+        qs = Like.objects.filter(content_type=15, object_id=cloth_id)
+        return qs
+
+class LikeListByOutfitId(generics.ListAPIView):
+    serializer_class = LikedUserSerializer
+
+    def get_queryset(self):
+        outfit_id = self.kwargs['oid']
+        qs = Like.objects.filter(content_type=26, object_id=outfit_id)
         return qs

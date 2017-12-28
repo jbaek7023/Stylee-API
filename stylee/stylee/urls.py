@@ -15,6 +15,8 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.contrib import admin
 from rest_framework_jwt.views import refresh_jwt_token
+from django.conf import settings
+from django.conf.urls.static import static
 
 # import JWT
 from .views import FacebookLogin
@@ -37,3 +39,8 @@ urlpatterns = [
     url(r'^rest-auth/registration/', include('rest_auth.registration.urls')),
     # url(r'^rest-auth/facebook/$', FacebookLogin.as_view(), name='fb_login'),
 ]
+
+
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -34,7 +34,7 @@ class CategoryDetailSerializer(serializers.ModelSerializer):
             outfits = obj.outfits
             if obj.owner != self.context['request'].user:
                 outfits = outfits.filter(only_me=False)
-            return OutfitListSerializer(outfits.all()[page_num_before:page_num], many=True).data
+            return OutfitListSerializer(outfits.all()[page_num_before:page_num], many=True, context=self.context).data
         return None
 
     def get_outfit_count(self, obj):
@@ -61,7 +61,10 @@ class CategoryListSerializer(serializers.ModelSerializer):
 
     def get_image(self, obj):
         if obj.outfits.first() is not None:
-            return obj.outfits.first().outfit_img.url
+            if obj.outfits.first().outfit_img:
+                request = self.context.get('request')
+                return request.build_absolute_uri(obj.outfits.first().outfit_img.url)
+            return None
         else:
             return None
 

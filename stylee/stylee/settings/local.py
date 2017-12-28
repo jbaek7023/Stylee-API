@@ -225,26 +225,37 @@ SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {
     'fields': 'id, name, email'
 }
 
-### AWS settings
-AWS_ACCESS_KEY_ID = "AKIAJPOEI4BSXTLWZGMQ"
-# AKIAJPOEI4BSXTLWZGMQ
-AWS_SECRET_ACCESS_KEY = "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"
-# J3j76++C+dHoOw84JiM1CpFx3uJcWbAncF34QUTB
-AWS_FILE_EXPIRE = 200
-AWS_PRELOAD_METADATA = True
-AWS_QUERYSTRING_AUTH = True
+### AWS settings # Enable in Production
+# AWS_ACCESS_KEY_ID = "AKIAJPOEI4BSXTLWZGMQ" #S3
+# # AKIAJPOEI4BSXTLWZGMQ
+# AWS_SECRET_ACCESS_KEY = "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" #S3
+# # J3j76++C+dHoOw84JiM1CpFx3uJcWbAncF34QUTB
+# AWS_FILE_EXPIRE = 200 #S3
+# AWS_PRELOAD_METADATA = True #S3
+# AWS_QUERYSTRING_AUTH = True #S3
+# DEFAULT_FILE_STORAGE = 'stylee.utils.MediaRootS3BotoStorage' #S3
+# STATICFILES_STORAGE = 'stylee.utils.StaticRootS3BotoStorage' #S3
+# AWS_STORAGE_BUCKET_NAME = 'stylee-bucket' #S3
+# S3DIRECT_REGION = 'us-west-2' #S3
+# S3_URL = '//%s.s3.amazonaws.com/' % AWS_STORAGE_BUCKET_NAME #S3
+# MEDIA_URL = '//%s.s3.amazonaws.com/media/' % AWS_STORAGE_BUCKET_NAME #S3
+# MEDIA_ROOT = MEDIA_URL #S3
+# STATIC_URL = S3_URL + 'static/' #S3
+# import datetime #S3
+# two_months = datetime.timedelta(days=61) # S3
+# date_two_months_later = datetime.date.today() + two_months #S3
+# expires = date_two_months_later.strftime("%A, %d %B %Y 20:00:00 GMT") #S3
+# AWS_HEADERS = { #S3
+# 	'Expires': expires,
+# 	'Cache-Control': 'max-age=%d' % (int(two_months.total_seconds()), ),
+# }
+#######END OF AWS
 
-DEFAULT_FILE_STORAGE = 'stylee.utils.MediaRootS3BotoStorage'
-# Enable in Production
-# STATICFILES_STORAGE = 'stylee.utils.StaticRootS3BotoStorage'
-AWS_STORAGE_BUCKET_NAME = 'stylee-bucket'
-S3DIRECT_REGION = 'us-west-2'
-S3_URL = '//%s.s3.amazonaws.com/' % AWS_STORAGE_BUCKET_NAME
-MEDIA_URL = '//%s.s3.amazonaws.com/media/' % AWS_STORAGE_BUCKET_NAME
-MEDIA_ROOT = MEDIA_URL
-# Enable in Production
-# STATIC_URL = S3_URL + 'static/'
-STATIC_URL = '/static/'
+# DEBUG Enable in DEBUG
+MEDIA_URL = '/media/' #DEBUG
+MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'media_cdn') #DEBUG
+STATIC_URL = '/static/' #DEBUG
+
 ADMIN_MEDIA_PREFIX = STATIC_URL + 'admin/'
 
 # Debugging purpose
@@ -255,14 +266,3 @@ STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static-serve")
 
 #
 # LOGOUT_ON_PASSWORD_CHANGE = False
-
-import datetime
-
-two_months = datetime.timedelta(days=61)
-date_two_months_later = datetime.date.today() + two_months
-expires = date_two_months_later.strftime("%A, %d %B %Y 20:00:00 GMT")
-
-AWS_HEADERS = {
-	'Expires': expires,
-	'Cache-Control': 'max-age=%d' % (int(two_months.total_seconds()), ),
-}

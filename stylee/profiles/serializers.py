@@ -20,7 +20,8 @@ class UserRowSerializer(serializers.ModelSerializer):
 
     def get_image(self, obj):
         try:
-            image = obj.profile.profile_img.url
+            request = self.context.get('request')
+            image = request.build_absolute_uri(obj.profile.profile_img.url)
         except:
             image = None
         return image
@@ -131,7 +132,7 @@ class ProfilePageSerializer(serializers.ModelSerializer):
 
     def get_image(self, obj):
         if(obj.profile.profile_img):
-            return obj.profile.profile_img.url
+            return request.build_absolute_uri(obj.profile.profile_img.url)
         return None
 
     def get_title(self, obj):
@@ -169,7 +170,7 @@ class ProfilePageSerializer(serializers.ModelSerializer):
             outfits = obj.outfit_set.all()
             if obj != self.context['request'].user:
                 outfits = outfits.filter(only_me=False)
-            return OutfitDetailFeedSerializer(outfits.all()[:12], many=True, context={'request': self.context['request']}).data
+            return OutfitDetailFeedSerializer(outfits.all()[:12], many=True, context=self.context).data
         return {}
 
     def get_is_owner(self, obj):

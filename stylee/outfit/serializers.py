@@ -31,7 +31,8 @@ class OutfitStarSerializer(serializers.ModelSerializer):
 
     def get_image(self, obj):
         if obj.outfit_img:
-            return str(obj.outfit_img.url)
+            request = self.context.get('request')
+            return request.build_absolute_uri(obj.outfit_img.url)
         return None
 
 class OutfitCreateSerializer(serializers.ModelSerializer):
@@ -98,7 +99,7 @@ class OutfitDetailSerializer(serializers.ModelSerializer):
         if obj.user != self.context['request'].user:
             clothes = clothes.filter(only_me=False)
 
-        return ClothesListSerializer(clothes, many=True).data
+        return ClothesListSerializer(clothes, many=True, context=self.context).data
 
     # def get_categories(self, obj):
     #     user = self.context['request'].user
@@ -108,7 +109,7 @@ class OutfitDetailSerializer(serializers.ModelSerializer):
     #     added_f = categories.extra(select={'added': '0'}).exclude(outfits__pk=obj.pk)
     #     added_f = list(added_f.values('added', 'name', 'id'))
     #     categories = added + added_f
-    #     return CategorySerializer(categories, many=True).data
+    #     return CategorySerializer(categories, many=True, context=self.context).data
 
     def get_starred(self, obj):
         content_type = obj.get_content_type
@@ -141,7 +142,7 @@ class OutfitDetailSerializer(serializers.ModelSerializer):
         content_type = obj.get_content_type
         object_id = obj.id
         comments = Comment.objects.filter_by_instance(obj)[:2]
-        return CommentSerializer(comments, many=True).data
+        return CommentSerializer(comments, many=True, context=self.context).data
 
     def get_comment_count(self, obj):
         content_type = obj.get_content_type
@@ -177,8 +178,8 @@ class CategoryListOnOutfitSerializer(serializers.ModelSerializer):
         added_f = categories.extra(select={'added': '0'}).exclude(outfits__pk=obj.pk)
         added_f = list(added_f.values('added', 'name', 'id', 'only_me'))
         categories = added + added_f
-        return CategorySerializer(categories, many=True).data
-        # return CategorySerializer(categories, many=True).data
+        return CategorySerializer(categories, many=True, context=self.context).data
+        # return CategorySerializer(categories, many=True, context=self.context).data
 
 class OutfitDetailFeedSerializer(serializers.ModelSerializer):
     comments = serializers.SerializerMethodField()
@@ -204,13 +205,12 @@ class OutfitDetailFeedSerializer(serializers.ModelSerializer):
             'starred',
             'only_me',
             'is_owner',
-
         )
 
     # def get_categories(self, obj):
     #     all_categories = Category.objects.filter(owner=self.context['request'].user)
     #     categories = obj.categories.filter(owner=self.context['request'].user)
-    #     return CategorySerializer(categories, many=True).data
+    #     return CategorySerializer(categories, many=True, context=self.context).data
 
     def get_starred(self, obj):
         content_type = obj.get_content_type
@@ -243,7 +243,7 @@ class OutfitDetailFeedSerializer(serializers.ModelSerializer):
         content_type = obj.get_content_type
         object_id = obj.id
         comments = Comment.objects.filter_by_instance(obj)[:2]
-        return CommentSerializer(comments, many=True).data
+        return CommentSerializer(comments, many=True, context=self.context).data
 
     def get_comment_count(self, obj):
         content_type = obj.get_content_type
@@ -270,7 +270,7 @@ class OutfitDetailCommentSerializer(serializers.ModelSerializer):
         content_type = obj.get_content_type
         object_id = obj.id
         comments = Comment.objects.filter_by_instance(obj)
-        return CommentSerializer(comments, many=True).data
+        return CommentSerializer(comments, many=True, context=self.context).data
 
 class OutfitDetailLikeSerializer(serializers.ModelSerializer):
     likes = serializers.SerializerMethodField()
@@ -285,4 +285,4 @@ class OutfitDetailLikeSerializer(serializers.ModelSerializer):
         content_type = obj.get_content_type
         object_id = obj.id
         likes = Like.objects.filter_by_instance(obj)
-        return LikeListSerializer(likes, many=True).data
+        return LikeListSerializer(likes, many=True, context=self.context).data

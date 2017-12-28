@@ -12,11 +12,13 @@ from .views import (
     ClothEditAPIView,
     ClothDetailDetailEditAPIView,
     ClothCreateAPIView,
+    ClothUpdateAPIView,
 )
 
 urlpatterns = [
     url(r'^list/(?P<ctype>\d+)/$', ClothesListView.as_view(), name="clo_wardrobe_list"),
     url(r'^create/$', ClothCreateAPIView.as_view(), name="create_cloth"),
+    url(r'^update/$', ClothUpdateAPIView.as_view(), name="update_cloth"),
 
     url(r'^detail/(?P<pk>\d+)/$', ClothDetailView.as_view(), name="clo_detail"),
     url(r'^edit/(?P<pk>\d+)/$', ClothEditAPIView.as_view(), name="clo_edit"),

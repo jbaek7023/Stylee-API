@@ -137,7 +137,7 @@ class CommentDetailSerializer(serializers.ModelSerializer):
 
     def get_replies(self, obj):
         if obj.is_parent:
-            return CommentChildSerializer(obj.children(), many=True).data
+            return CommentChildSerializer(obj.children(), many=True, context=self.context).data
         return None
 
 class CommentEditSerializer(serializers.ModelSerializer):

@@ -14,6 +14,7 @@ class ClothesListSerializer(serializers.ModelSerializer):
         model = Cloth
         fields = ('cloth_image', 'id', 'big_cloth_type', 'only_me',)
 
+
 class ClothStarSerializer(serializers.ModelSerializer):
     image = serializers.SerializerMethodField()
 
@@ -23,7 +24,8 @@ class ClothStarSerializer(serializers.ModelSerializer):
 
     def get_image(self, obj):
         if obj.cloth_image:
-            return str(obj.cloth_image.url)
+            request = self.context.get('request')
+            return request.build_absolute_uri(obj.cloth_image.url)
         return None
 
 class ClothDetailDetailSerializer(serializers.ModelSerializer):
@@ -58,6 +60,7 @@ class ClothDetailSerializer(serializers.ModelSerializer):
             'id',
             'user',
             'content',
+            'big_cloth_type',
             'cloth_type',
             'cloth_image',
             'in_wardrobe',
@@ -79,7 +82,7 @@ class ClothDetailSerializer(serializers.ModelSerializer):
         outfits = obj.outfit_set;
         if obj.user != self.context['request'].user:
             outfits = outfits.filter(only_me=False)
-        return OutfitListSerializer(outfits, many=True).data
+        return OutfitListSerializer(outfits, many=True, context=self.context).data
 
     def get_like_count(self, obj):
         content_type = obj.get_content_type
@@ -109,7 +112,7 @@ class ClothDetailSerializer(serializers.ModelSerializer):
         content_type = obj.get_content_type
         object_id = obj.id
         comments = Comment.objects.filter_by_instance(obj)[:2]
-        return CommentSerializer(comments, many=True).data
+        return CommentSerializer(comments, many=True, context=self.context).data
 
     def get_comment_count(self, obj):
         content_type = obj.get_content_type
@@ -143,7 +146,7 @@ class ClothDetailCommentSerializer(serializers.ModelSerializer):
         content_type = obj.get_content_type
         object_id = obj.id
         comments = Comment.objects.filter_by_instance(obj)
-        return CommentSerializer(comments, many=True).data
+        return CommentSerializer(comments, many=True, context=self.context).data
 
 class ClothDetailLikeSerializer(serializers.ModelSerializer):
     likes = serializers.SerializerMethodField()
@@ -158,4 +161,4 @@ class ClothDetailLikeSerializer(serializers.ModelSerializer):
         content_type = obj.get_content_type
         object_id = obj.id
         likes = Like.objects.filter_by_instance(obj)
-        return LikeListSerializer(likes, many=True).data
+        return LikeListSerializer(likes, many=True, context=self.context).data

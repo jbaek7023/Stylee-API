@@ -6,6 +6,7 @@ from rest_framework import generics
 from .serializers import FollowerUserSerializer, FollowingUserSerializer
 from .models import Follow
 from .pagination import FollowPagination
+from rest_framework import status
 
 class FollowAPIView(APIView):
     def post(self, request, format=None):
@@ -22,8 +23,8 @@ class FollowAPIView(APIView):
                 instance = Follow(user=self.request.user, target=following_user)
                 instance.save()
                 json_output = {"success": True}
-                return Response(json_output)
-        return Response({})
+                return Response(json_output, status=status.HTTP_200_OK)
+        return Response({}, status=status.HTTP_400_BAD_REQUEST)
 
 class UnFollowAPIView(APIView):
     def post(self, request, format=None):
@@ -34,12 +35,12 @@ class UnFollowAPIView(APIView):
             if follow_obj is not None:
                 follow_obj.delete()
                 json_output = {"success": True}
-                return Response(json_output)
+                return Response(json_output, status=status.HTTP_200_OK)
             else:
                 json_output = {"followed": False}
                 # 404 Later
-                return Response(json_output)
-        return Response({})
+                return Response(json_output, status=status.HTTP_400_BAD_REQUEST)
+        return Response({}, status=status.HTTP_400_BAD_REQUEST)
 
 class FollowingUserView(generics.ListAPIView):
     serializer_class = FollowingUserSerializer

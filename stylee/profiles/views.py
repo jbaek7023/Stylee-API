@@ -279,11 +279,11 @@ class UserCheckEmail(APIView):
             ).distinct()
 
         if(len(qs)==1):
-            json_output = {"obtained": 0}
+            json_output = {"obtained": True}
             return Response(json_output, status=status.HTTP_200_OK)
         else:
             email = create_unique_username(email)
-            json_output = {"username": email}
+            json_output = {"obtained": False, "username": email}
             return Response(json_output, status=status.HTTP_200_OK)
 
 class UserCheckUsername(APIView):

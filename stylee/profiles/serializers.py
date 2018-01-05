@@ -132,6 +132,7 @@ class ProfilePageSerializer(serializers.ModelSerializer):
 
     def get_image(self, obj):
         if(obj.profile.profile_img):
+            request = self.context['request']
             return request.build_absolute_uri(obj.profile.profile_img.url)
         return None
 

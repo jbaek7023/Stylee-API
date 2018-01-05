@@ -59,9 +59,9 @@ class ListStarSerializer(serializers.ModelSerializer):
 
     def get_mobject(self, obj):
         if obj.content_type_id == 26:
-            serializer = OutfitStarSerializer(obj.target)
+            serializer = OutfitStarSerializer(obj.target, context=self.context)
         elif obj.content_type_id == 15:
-            serializer = ClothStarSerializer(obj.target)
+            serializer = ClothStarSerializer(obj.target, context=self.context)
         else:
             return {}
 

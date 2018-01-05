@@ -11,7 +11,8 @@ from outfit.models import Outfit
 from .serializers import (
     CategoryDetailSerializer,
     CategoryListSerializer,
-    CategorySimpleListSerializer
+    CategorySimpleListSerializer,
+    CategoryEditSerializer
 )
 
 from .pagination import CategoryPagination
@@ -93,15 +94,15 @@ class OutfitCategoryAPIView(generics.RetrieveAPIView):
 
 # Category Edit Delete
 class CategoryEditAPIView(DestroyModelMixin, UpdateModelMixin, generics.RetrieveAPIView):
-    serializer_class = CategoryDetailSerializer
+    serializer_class = CategoryEditSerializer
     lookup_field = 'pk'
 
     def get_queryset(self):
         qs = Category.objects.all(owner=self.request.user)
+        print(qs)
         return qs
 
     def put(self, request, *args, **kwargs):
-        # Raise 404 if user has self.request.user != Category(obj_.id).owner
         return self.update(request, *args, **kwargs)
 
     def delete(self, request, *args, **kwargs):

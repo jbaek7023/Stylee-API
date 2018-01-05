@@ -67,6 +67,8 @@ def create_comment_serializer(model_type='outfit', id=None, parent_id=None, user
 
 class CommentSerializer(serializers.ModelSerializer):
     reply_count = serializers.SerializerMethodField()
+    is_owner = serializers.SerializerMethodField()
+    child = serializers.SerializerMethodField()
     user = UserRowSerializer(read_only=True)
 
     class Meta:
@@ -80,6 +82,8 @@ class CommentSerializer(serializers.ModelSerializer):
             'created_at',
             # 'parent',
             'reply_count',
+            'is_owner',
+            'child',
         )
 
     def get_reply_count(self, obj):
@@ -87,28 +91,41 @@ class CommentSerializer(serializers.ModelSerializer):
             return obj.children().count()
         return 0
 
-class CommentsOnPostSerializer(serializers.ModelSerializer):
-    reply_count = serializers.SerializerMethodField()
-    user = UserRowSerializer(read_only=True)
+    def get_is_owner(self, obj):
+        if obj.user:
+            return obj.user == self.context['request'].user
+        return False
 
-    class Meta:
-        model = Comment
-        fields = (
-            'id',
-            'user',
-            'content',
-            'created_at',
-            'reply_count',
-        )
-
-    def get_reply_count(self, obj):
+    def get_child(self, obj):
         if obj.is_parent:
-            return obj.children().count()
-        return 0
+            if obj.children():
+                return CommentChildSerializer(obj.children().first(), context=self.context).data
+            return None
+        return None
+
+# class CommentsOnPostSerializer(serializers.ModelSerializer):
+#     reply_count = serializers.SerializerMethodField()
+#     user = UserRowSerializer(read_only=True)
+#
+#     class Meta:
+#         model = Comment
+#         fields = (
+#             'id',
+#             'user',
+#             'content',
+#             'created_at',
+#             'reply_count',
+#         )
+#
+#     def get_reply_count(self, obj):
+#         if obj.is_parent:
+#             return obj.children().count()
+#         return 0
 
 
 class CommentChildSerializer(serializers.ModelSerializer):
     user = UserRowSerializer(read_only=True)
+    is_owner = serializers.SerializerMethodField()
 
     class Meta:
         model = Comment
@@ -117,10 +134,17 @@ class CommentChildSerializer(serializers.ModelSerializer):
             'user',
             'content',
             'created_at',
+            'is_owner',
         )
+
+    def get_is_owner(self, obj):
+        if(obj.user):
+            return obj.user == self.context['request'].user
+        return False
 
 class CommentDetailSerializer(serializers.ModelSerializer):
     replies = serializers.SerializerMethodField()
+    is_owner = serializers.SerializerMethodField()
     user = UserRowSerializer(read_only=True)
 
     class Meta:
@@ -131,6 +155,7 @@ class CommentDetailSerializer(serializers.ModelSerializer):
             'content',
             'created_at',
             'replies',
+            'is_owner',
         )
         read_only_fields = (
         )
@@ -139,6 +164,11 @@ class CommentDetailSerializer(serializers.ModelSerializer):
         if obj.is_parent:
             return CommentChildSerializer(obj.children(), many=True, context=self.context).data
         return None
+
+    def get_is_owner(self, obj):
+        if(obj.user):
+            return obj.user == self.context['request'].user
+        return False
 
 class CommentEditSerializer(serializers.ModelSerializer):
     class Meta:

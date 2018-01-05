@@ -4,6 +4,18 @@ from .models import Category
 from outfit.serializers import OutfitListSerializer
 from profiles.serializers import UserRowSerializer
 
+class CategoryEditSerializer(serializers.ModelSerializer):
+    owner = UserRowSerializer(read_only=True)
+
+    class Meta:
+        model = Category
+        fields = (
+            'id',
+            'name',
+            'owner',
+            'only_me',
+        )
+
 class CategoryDetailSerializer(serializers.ModelSerializer):
     outfits = serializers.SerializerMethodField()
     is_owner = serializers.SerializerMethodField()
@@ -13,6 +25,7 @@ class CategoryDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = (
+            'id',
             'name',
             'owner',
             'is_owner',

@@ -4,21 +4,10 @@ from rest_framework.views import APIView
 from django.contrib.contenttypes.models import ContentType
 from rest_framework.response import Response
 from .models import Like
+from rest_framework import status
 
 from .serializers import LikeSerializer, LikedUserSerializer
-# , create_like_serializer, delete_like_serializer
-
-# class LikeCreateAPIView(generics.CreateAPIView):
-#     queryset = Like.objects.all()
-#
-#     def get_serializer_class(self):
-#         model_type = self.request.GET.get("type")
-#         id = self.request.GET.get("id")
-#         return create_like_serializer(
-#             model_type=model_type,
-#             id=id,
-#             user=self.request.user
-#         )
+from .pagination import LikePagination
 
 class LikeCreateView(APIView):
     def post(self, request, format=None):
@@ -40,10 +29,10 @@ class LikeCreateView(APIView):
                 if created:
                     json_output = {"success": True}
                     # 404 later
-                    return Response(json_output)
+                    return Response(json_output, status=status.HTTP_200_OK)
                 else:
                     json_output = {"success": False}
-                    return Response(json_output)
+                    return Response(json_output, status=status.HTTP_400_BAD_REQUEST)
 
 class LikeDestroyView(APIView):
     def post(self, request, format=None):
@@ -65,25 +54,10 @@ class LikeDestroyView(APIView):
                 if like_instance is not None:
                     like_instance.delete()
                     json_output = {"success": True}
-                    return Response(json_output)
+                    return Response(json_output, status=status.HTTP_200_OK)
                 else:
                     json_output = {"success": False}
-                    return Response(json_output)
-
-# class LikeDestroyAPIView(generics.DestroyAPIView):
-#     queryset = Like.objects.all()
-#
-#     def get_serializer_class(self):
-#         model_type = self.request.GET.get("type")
-#         id = self.request.GET.get("id")
-#
-#
-#
-#         return delete_like_serializer(
-#             model_type=model_type,
-#             id=id,
-#             user=self.request.user
-#         )
+                    return Response(json_output, status=status.HTTP_400_BAD_REQUEST)
 
 class LikeListView(generics.ListAPIView):
     serializer_class = LikeSerializer
@@ -95,6 +69,7 @@ class LikeListView(generics.ListAPIView):
 
 class LikeListByClothId(generics.ListAPIView):
     serializer_class = LikedUserSerializer
+    pagination_class = LikePagination
 
     def get_queryset(self):
         cloth_id = self.kwargs['cid']
@@ -103,6 +78,7 @@ class LikeListByClothId(generics.ListAPIView):
 
 class LikeListByOutfitId(generics.ListAPIView):
     serializer_class = LikedUserSerializer
+    pagination_class = LikePagination
 
     def get_queryset(self):
         outfit_id = self.kwargs['oid']

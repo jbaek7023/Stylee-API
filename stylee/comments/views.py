@@ -4,6 +4,9 @@ from rest_framework import generics
 
 from .models import Comment
 from outfit.models import Outfit
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
 
 from rest_framework.mixins import DestroyModelMixin, UpdateModelMixin
 
@@ -12,8 +15,25 @@ from .serializers import (
     CommentDetailSerializer,
     create_comment_serializer,
     CommentEditSerializer,
-    CommentsOnPostSerializer
 )
+
+class CommentsOnOutfit(generics.ListAPIView):
+    serializer_class = CommentSerializer
+
+    def get_queryset(self):
+        content_type = 26
+        oid = self.kwargs['oid']
+        comments = Comment.objects.filter(content_type=content_type, object_id=oid)
+        return comments
+
+class CommentsOnCloth(generics.ListAPIView):
+    serializer_class = CommentSerializer
+
+    def get_queryset(self):
+        content_type = 15
+        cid = self.kwargs['cid']
+        comments = Comment.objects.filter(content_type=content_type, object_id=cid)
+        return comments
 
 # Create your views here.
 class CommentListView(generics.ListAPIView):
@@ -60,11 +80,26 @@ class CommentCreateAPIView(generics.CreateAPIView):
             parent_id=parent_id
         )
 
-# Requires [{JWT or Bearer Token}]
-# Returns Category. [{name:'Gym', main:'aws_img', count: '5'}]
-# class OutfitCategoryListView(generics.ListAPIView):
-#     serializer_class = OutfitListSerializer
+class CreateReplyAPIView(APIView):
+    def post(self, request, format=None):
+        # get parent comment
+        parent_comment_id = self.request.data.get('pid')
+        parent_comment_qs = Comment.objects.filter(id=parent_comment_id)
 
-# Requires [{JWT or Bearer Token} AND Category_id]
-# Returns Outfits in the category
-# class OutfitCategoryDetailView(generi
+        if parent_comment_qs:
+            parent_instance = parent_comment_qs.first()
+            content = self.request.data.get('message')
+
+            # create Comment on Parent (Reply)
+            reply = Comment(
+                parent=parent_instance,
+                content=content,
+                content_type=parent_instance.content_type,
+                object_id=parent_instance.object_id
+                )
+            reply.save()
+            json_output = {"success": True}
+            return Response(json_output, status=status.HTTP_200_OK)
+
+        json_output = {"success": False}
+        return Response(json_output, status=status.HTTP_404_NOT_FOUND)
